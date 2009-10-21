@@ -1,0 +1,7 @@
+<h1>Build output <%= @project.name %> #<%= @build.position %></h1>
+
+<pre>
+<%= @build.output %>
+</pre>
+
+<%= link_to 'Back to Builds', project_builds_path(@project) %>
