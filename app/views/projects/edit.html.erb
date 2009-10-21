@@ -1,0 +1,6 @@
+<h1>Edit Project <%= @project.name %></h1>
+
+<% form_for @project, project_path(@project) do |f| %>
+  <%= render :partial => "form", :locals => { :f => f } %>
+  <%= f.submit 'Update' %>
+<% end %>

@@ -1,0 +1,9 @@
+<h1>Project <%= @project.name %></h1>
+
+<p><strong>Description</strong></p>
+<%= simple_format @project.description %>
+
+<p><strong>Steps</strong></p>
+<pre><%= @project.steps %></pre>
+
+<%= button_to 'Build now', project_builds_path(@project) %>
