@@ -10,6 +10,7 @@ module SimpleCI
           end
           
           system cmdline
+          raise(CommandExecutionFailed) unless $? == 0
         end
       end
       

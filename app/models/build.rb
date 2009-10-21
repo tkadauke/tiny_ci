@@ -13,6 +13,8 @@ class Build < ActiveRecord::Base
   def build_without_background!
     SimpleCI::DSL.evaluate(project.name, project.steps)
     update_attributes :status => 'success'
+  rescue SimpleCI::Connection::CommandExecutionFailed => e
+    update_attributes :status => 'failure'
   end
   
   def buildable?
@@ -25,7 +27,6 @@ private
       output = ""
       while !stdout.eof?
         if line = stdout.gets
-          puts output
           output << line
           reload.update_attributes(:output => output)
         end
