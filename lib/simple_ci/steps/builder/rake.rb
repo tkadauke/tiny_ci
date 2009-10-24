@@ -9,7 +9,7 @@ module SimpleCI
         end
         
         def execute!
-          run('rake', (['--trace'] + @tasks), nil, @environment)
+          run('rake', (['--trace'] + @tasks), nil, @environment.merge('TESTOPTS' => '-v'))
         end
       end
     end

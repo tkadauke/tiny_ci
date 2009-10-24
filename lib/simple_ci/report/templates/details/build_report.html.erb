@@ -1,0 +1,14 @@
+<h2>Build</h2>
+
+<dl>
+  <dt>Build tool</dt>
+  <dd><%= report.build_tool %></dd>
+  <dt>Targets</dt>
+  <dd><%= report.targets %></dd>
+</dl>
+
+<h2>Tasks</h2>
+
+<ul class="tasks">
+  <%= report.tasks.collect { |task| task.to_html(:details) }.reject { |html| html.strip.blank? }.collect { |html| %{<li>#{html}</li>} }.join("\n") %>
+</ul>

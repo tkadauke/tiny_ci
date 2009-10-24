@@ -1,16 +1,11 @@
 module SimpleCI
   class DSL
-    def self.run(build_name, &block)
-      new(build_name).instance_eval &block
+    def self.evaluate(build)
+      new(build).instance_eval build.project.steps
     end
     
-    def self.evaluate(build_name, code)
-      new(build_name).instance_eval code
-    end
-    
-    def initialize(build_name)
-      @connection = SimpleCI::Connection::Localhost.new
-      @build = SimpleCI::Build.new(@connection, build_name)
+    def initialize(build)
+      @build = build
     end
     
     def env(hash)

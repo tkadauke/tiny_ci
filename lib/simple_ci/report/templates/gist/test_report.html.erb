@@ -1,0 +1,14 @@
+<h2>Test Run <%= report.name %></h2>
+
+<dl>
+  <dt>Total time</dt>
+  <dd><%= report.summary.total_time %></dd>
+  <dt>Tests</dt>
+  <dd><%= report.summary.tests %></dd>
+  <dt>Assertions</dt>
+  <dd><%= report.summary.assertions %></dd>
+  <dt>Failures</dt>
+  <dd><%= report.summary.failures %></dd>
+  <dt>Errors</dt>
+  <dd><%= report.summary.errors %></dd>
+</dl>

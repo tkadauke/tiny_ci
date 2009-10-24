@@ -1,6 +1,10 @@
 module SimpleCI
-  module Connection
+  module Shell
     class Localhost
+      def initialize(build)
+        @build = build
+      end
+      
       def run(command, parameters, working_dir, environment)
         cmdline = "#{command} #{[parameters].flatten.join(' ')}"
         puts cmdline
@@ -9,7 +13,16 @@ module SimpleCI
             ENV[key] = value
           end
           
-          system cmdline
+          IO.popen("#{cmdline} 2>&1") do |stdout|
+            output = []
+            while !stdout.eof?
+              if line = stdout.gets
+                @build.add_to_output(Time.now, command, line)
+              end
+            end
+            @build.flush_output!
+          end
+          
           raise(CommandExecutionFailed) unless $? == 0
         end
       end

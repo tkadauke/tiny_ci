@@ -1,7 +1,13 @@
 <h1>Build output <%= @project.name %> #<%= @build.position %></h1>
 
 <pre>
-<%= @build.output %>
+<%#= @build.output %>
 </pre>
+
+<% if @build.output %>
+  <%= SimpleCI::OutputParser::RakeParser.parse(SimpleCI::Output.new(@build.output)).to_html(:details) %>
+<% else %>
+  <p>No output (yet)</p>
+<% end %>
 
 <%= link_to 'Back to Builds', project_builds_path(@project) %>

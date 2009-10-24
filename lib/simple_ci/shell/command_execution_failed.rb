@@ -1,5 +1,5 @@
 module SimpleCI
-  module Connection
+  module Shell
     class CommandExecutionFailed < StandardError
     end
   end

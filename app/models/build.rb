@@ -1,4 +1,7 @@
 class Build < ActiveRecord::Base
+  attr_reader :shell, :environment
+  attr_accessor :source_control
+
   belongs_to :project
   acts_as_list :scope => :project_id
   
@@ -7,13 +10,17 @@ class Build < ActiveRecord::Base
   def build!
     update_attributes :status => 'running'
     
-    capture_output %{script/runner "Build.find(#{id}).build_without_background!"}
+    system %{script/runner "Build.find(#{id}).build_without_background!"}
   end
   
   def build_without_background!
-    SimpleCI::DSL.evaluate(project.name, project.steps)
+    puts "building #{name}"
+    @shell = SimpleCI::Shell::Localhost.new(self)
+    @environment = {}
+    
+    SimpleCI::DSL.evaluate(self)
     update_attributes :status => 'success'
-  rescue SimpleCI::Connection::CommandExecutionFailed => e
+  rescue SimpleCI::Shell::CommandExecutionFailed => e
     update_attributes :status => 'failure'
   end
   
@@ -21,16 +28,21 @@ class Build < ActiveRecord::Base
     project.buildable?
   end
   
-private
-  def capture_output(command)
-    IO.popen("#{command} 2>&1") do |stdout|
-      output = ""
-      while !stdout.eof?
-        if line = stdout.gets
-          output << line
-          reload.update_attributes(:output => output)
-        end
-      end
-    end
+  def name
+    project.name
+  end
+  
+  def workspace_path
+    "#{ENV['HOME']}/simple_ci/#{name}"
+  end
+  
+  def add_to_output(time, command, line)
+    @output ||= []
+    @output << [time.to_i, command, line.strip].to_csv
+    flush_output! if updated_at < 1.second.ago
+  end
+  
+  def flush_output!
+    reload.update_attributes(:output => @output.join)
   end
 end
