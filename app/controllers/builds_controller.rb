@@ -22,6 +22,6 @@ class BuildsController < ApplicationController
 
 protected
   def find_project
-    @project = Project.find(params[:project_id])
+    @project = Project.find_by_name(params[:project_id])
   end
 end

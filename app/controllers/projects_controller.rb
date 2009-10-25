@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
   end
   
   def show
-    @project = Project.find(params[:id])
+    @project = Project.find_by_name(params[:id])
   end
   
   def new
@@ -17,7 +17,7 @@ class ProjectsController < ApplicationController
   end
   
   def edit
-    @project = Project.find(params[:id])
+    @project = Project.find_by_name(params[:id])
   end
   
   def create
@@ -31,7 +31,7 @@ class ProjectsController < ApplicationController
   end
   
   def update
-    @project = Project.find(params[:id])
+    @project = Project.find_by_name(params[:id])
     if @project.update_attributes(params[:project])
       flash[:notice] = "Successfully updated project"
       redirect_to project_path(@project)

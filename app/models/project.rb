@@ -10,4 +10,8 @@ class Project < ActiveRecord::Base
   def buildable?
     running_builds.empty?
   end
+  
+  def to_param
+    name
+  end
 end
