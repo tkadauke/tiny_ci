@@ -12,7 +12,7 @@ module SimpleCI
       end
       
       class TestCase
-        attr_accessor :name, :status
+        attr_accessor :name, :status, :duration
         
         def initialize(name, status)
           @name, @status = name, status
@@ -31,7 +31,9 @@ module SimpleCI
       
       def add_test_case(test_name, test_case_name, status)
         @tests[test_name] ||= Test.new(test_name)
-        @tests[test_name].test_cases << TestCase.new(test_case_name, status)
+        test_case = TestCase.new(test_case_name, status)
+        @tests[test_name].test_cases << test_case
+        test_case
       end
       
       def summary

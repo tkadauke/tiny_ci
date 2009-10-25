@@ -3,8 +3,6 @@
 .report ul li a { background-image: url("/images/bullete.gif"); background-position: left; background-repeat: no-repeat; padding: 2px 0 2px 20px; line-height: 20px; }
 .report ul li:last-child { background-repeat: no-repeat; }
 
-.report ul {  }
-
 dl { border: 1px solid gray; margin: 1em 0; padding: 1em; }
 dl dt { font-weight: bold; width: 10em; }
 dl dd { margin-left: 12em; top: -1em; position: relative; margin-bottom: -0.5em;}
@@ -17,10 +15,10 @@ dl dd { margin-left: 12em; top: -1em; position: relative; margin-bottom: -0.5em;
 .test-report table { border: 1px solid gray; width: 100%; }
 .test-report th { text-align: left; border-bottom: 2px solid gray; }
 
-.test-report th.name,
-.test-report td.name { width: 90%; }
 .test-report th.status,
-.test-report td.status { width: 5em; }
+.test-report td.status,
+.test-report th.duration,
+.test-report td.duration { width: 6em; }
 
 .raw-output { overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
 .raw-output td.row { background-color: lightgrey; }

@@ -26,6 +26,7 @@
             <thead>
               <tr>
                 <th class="name">Test Case</th>
+                <th class="duration">Duration</th>
                 <th class="status">Status</th>
               </tr>
             </thead>
@@ -33,6 +34,7 @@
               <% test.test_cases.each do |test_case| %>
                 <tr class="<%= test_case.status %>">
                   <td class="name"><%= test_case.name %></td>
+                  <td class="duration"><%= test_case.duration %></td>
                   <td class="status"><%= test_case.status %></td>
                 </tr>
               <% end %>

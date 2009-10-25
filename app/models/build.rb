@@ -38,7 +38,7 @@ class Build < ActiveRecord::Base
   
   def add_to_output(time, command, line)
     @output ||= []
-    @output << [time.to_i, command, line.strip].to_csv
+    @output << [time.to_f, command, line.strip].to_csv
     flush_output! if updated_at < 1.second.ago
   end
   

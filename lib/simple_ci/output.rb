@@ -6,7 +6,7 @@ module SimpleCI
       attr_accessor :timestamp, :command, :line
       
       def initialize(timestamp, command, line)
-        @timestamp, @command, @line = Time.at(timestamp.to_i), command, line
+        @timestamp, @command, @line = Time.at(timestamp.to_f), command, line
       end
     end
     
