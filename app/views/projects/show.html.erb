@@ -1,6 +1,6 @@
 <h1>Project <%= @project.name %></h1>
 
-<p><%= link_to 'Builds', project_builds_path(@project) %></p>
+<p><%= link_to 'Edit', edit_project_path(@project) %> | <%= link_to 'Builds', project_builds_path(@project) %></p>
 
 <p><strong>Description</strong></p>
 <%= simple_format @project.description %>
