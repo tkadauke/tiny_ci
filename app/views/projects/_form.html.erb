@@ -1,8 +1,13 @@
-<%= f.label :name, 'Name' %>
-<%= f.text_field :name %><br/>
+<p class="form_item">
+  <span class="label"><%= f.label :name, 'Name' %></span>
+  <%= f.text_field :name %>
+</p>
 
-<%= f.label :description, 'Description' %>
-<%= f.text_area :description %><br/>
+<p class="form_item">
+  <span class="label"><%= f.label :description, 'Description' %></span>
+  <%= f.text_area :description, :rows => 5 %>
 
-<%= f.label :steps, 'Steps' %>
-<%= f.text_area :steps %><br/>
+<p class="form_item">
+  <span class="label"><%= f.label :steps, 'Steps' %></span>
+  <%= f.text_area :steps, :rows => 10 %>
+</p>
