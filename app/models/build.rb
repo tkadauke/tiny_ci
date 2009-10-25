@@ -45,4 +45,8 @@ class Build < ActiveRecord::Base
   def flush_output!
     reload.update_attributes(:output => @output.join)
   end
+  
+  def to_param
+    position.to_s
+  end
 end
