@@ -1,11 +1,30 @@
 <h1>Build output <%= @project.name %> #<%= @build.position %></h1>
 
-<pre>
-<%#= @build.output %>
-</pre>
-
 <% if @build.output %>
-  <%= SimpleCI::OutputParser::RakeParser.parse(SimpleCI::Output.new(@build.output)).to_html(:details) %>
+  <% output = SimpleCI::Output.new(@build.output) %>
+
+  <div class="raw-output">
+  <table>
+    <tbody>
+      <% last_command = last_timestamp = nil %>
+      <% output.each_with_index do |row, i| %>
+        <tr>
+          <td class="row"><%= i %></td>
+          <td class="timestamp"><%= row.timestamp.strftime("%H:%M:%S") unless row.timestamp == last_timestamp %></td>
+          <td class="command"><%= row.command unless row.command == last_command %></td>
+          <td class="line"><%= row.line %></td>
+        </tr>
+        <% last_command = row.command; last_timestamp = row.timestamp %>
+      <% end %>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="report">
+    <ul>
+      <li><%= SimpleCI::OutputParser::RakeParser.parse(output).to_html(:details) %></li>
+    </ul>
+  </div>
 <% else %>
   <p>No output (yet)</p>
 <% end %>

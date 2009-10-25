@@ -1,5 +1,7 @@
 module SimpleCI
   class Output
+    include Enumerable
+    
     class OutputLine
       attr_accessor :timestamp, :command, :line
       
@@ -10,7 +12,7 @@ module SimpleCI
     
     def initialize(output_string)
       @output = []
-      FasterCSV.parse(output_string) { |timestamp, command, line| @output << OutputLine.new(timestamp, command, line) }
+      FasterCSV.parse(output_string || "") { |timestamp, command, line| @output << OutputLine.new(timestamp, command, line) }
     end
     
     def consume!
@@ -21,6 +23,6 @@ module SimpleCI
       @output.first
     end
     
-    delegate :empty?, :to => "@output"
+    delegate :each, :empty?, :to => "@output"
   end
 end

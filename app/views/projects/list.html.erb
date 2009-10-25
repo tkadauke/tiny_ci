@@ -11,7 +11,7 @@
     <% @projects.each do |project| %>
       <tr>
         <td><%= link_to project.name, project_path(project) %></td>
-        <td><%= truncate project.description, 40 %></td>
+        <td><%= truncate project.description, :length => 40 %></td>
       </tr>
     <% end %>
   </tbody>
