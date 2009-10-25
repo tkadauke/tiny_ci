@@ -10,6 +10,6 @@
   <h2>Tasks</h2>
 
   <ul>
-    <%= report.tasks.collect { |task| task.to_html(:gist) }.reject { |html| html.strip.blank? }.collect { |html| %{<li>#{html}</li>} }.join("\n") %>
+    <%= report.tasks.collect { |task| render_report task, :gist }.reject { |html| html.strip.blank? }.collect { |html| %{<li>#{html}</li>} }.join("\n") %>
   </ul>
 </div>

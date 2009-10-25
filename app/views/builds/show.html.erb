@@ -22,7 +22,7 @@
 
   <div class="report">
     <ul>
-      <li><%= SimpleCI::OutputParser::RakeParser.parse(output).to_html(:gist) %></li>
+      <li><%= render_report SimpleCI::OutputParser::RakeParser.parse(output), :details %></li>
     </ul>
   </div>
 <% else %>
