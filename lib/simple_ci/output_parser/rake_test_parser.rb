@@ -27,7 +27,52 @@ module SimpleCI
             @result.summary.assertions = $2
             @result.summary.failures = $3
             @result.summary.errors = $4
+          elsif line =~ /^\d+\) (Error|Failure):$/
+            if $1 == 'Error'
+              parse_error!
+            else
+              parse_failure!
+            end
           end
+        end
+      end
+      
+      def parse_error!
+        row = consume!
+        line = row.line
+        
+        if line =~ /(test_[a-zA-Z0-9\_]*)\((.*?)\)/
+          test_name, test_case_name = $2, $1
+          error_message = consume!.line
+          
+          backtrace = []
+          while !empty? && !peek.line.empty?
+            backtrace << consume!.line.split(':')
+          end
+          @result.test_case(test_name, test_case_name).error!(error_message, backtrace)
+        end
+      end
+      
+      def parse_failure!
+        row = consume!
+        line = row.line
+        
+        if line =~ /(test_[a-zA-Z0-9\_]*)\((.*?)\)/
+          test_name, test_case_name = $2, $1
+          
+          backtrace = []
+          while !empty? && !peek.line.empty?
+            line = consume!.line
+            backtrace << line.gsub(/^\[/, '').gsub(/\]:$/, '').split(':')
+            break if line =~ /\]:$/
+          end
+
+          error_message = []
+          while !empty? && !peek.line.empty?
+            error_message << consume!.line
+          end
+          
+          @result.test_case(test_name, test_case_name).error!(error_message.join(' '), backtrace)
         end
       end
     end

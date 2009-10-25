@@ -12,6 +12,8 @@ dl dd { margin-left: 12em; top: -1em; position: relative; margin-bottom: -0.5em;
 .test-report tr.success:nth-child(odd) { background-color: lime; }
 .test-report tr.failure:nth-child(even) { background-color: purple; }
 .test-report tr.failure:nth-child(odd) { background-color: red; }
+.test-report tr.error:nth-child(even) { background-color: purple; }
+.test-report tr.error:nth-child(odd) { background-color: red; }
 .test-report table { border: 1px solid gray; width: 100%; }
 .test-report th { text-align: left; border-bottom: 2px solid gray; }
 

@@ -33,7 +33,27 @@
             <tbody>
               <% test.test_cases.each do |test_case| %>
                 <tr class="<%= test_case.status %>">
-                  <td class="name"><%= test_case.name %></td>
+                  <td class="name">
+                    <% if test_case.status == 'success' %>
+                      <%= test_case.name %>
+                    <% else %>
+                      <a href="#"><%= test_case.name %></a>
+                      <div style="display: none">
+                        <strong><%= test_case.error_message %></strong>
+                        <table>
+                          <tbody>
+                            <% test_case.backtrace.each do |invocation| %>
+                              <tr>
+                                <td><%= invocation[0] %></td>
+                                <td><%= invocation[1] %></td>
+                                <td><%= invocation[2] %></td>
+                              </tr>
+                            <% end %>
+                          </tbody>
+                        </table>
+                      </div>
+                    <% end %>
+                  </td>
                   <td class="duration"><%= test_case.duration %></td>
                   <td class="status"><%= test_case.status %></td>
                 </tr>

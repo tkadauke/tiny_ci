@@ -167,6 +167,7 @@ padding: 3px 3px 0 3px;
 #body {
 	background: url(../images/body_bg.jpg) top left repeat-x;
 	padding: 25px 20px 0 20px;
+	font-size: 1.2em;
 }
 #body .body_left {
 	float: left;
@@ -353,14 +354,14 @@ ul.asterix a {
 		padding: 0 0 15px 0;
 		margin: 0;
 	}
-	.notice {
+	.flash .notice {
 		background: #CAEA99; 
 		border: 1px solid #70A522; 
 		margin-bottom: 15px;
 		font-size: 1.2em;
 		color: #333333;
 	}
-	.error {
+	.flash .error {
 		background: #FEDCDA; 
 		border: 1px solid  #CE090E; 
 		margin-bottom: 15px;
