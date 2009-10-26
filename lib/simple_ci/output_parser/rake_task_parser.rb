@@ -7,7 +7,7 @@ module SimpleCI
         @result = SimpleCI::Report::TaskReport.new
         
         while !empty? && peek.line !~ /\*\* (Execute|Invoke)/
-          consume!.line
+          consume!
         end
       end
     end
