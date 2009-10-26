@@ -18,6 +18,7 @@ class Build < ActiveRecord::Base
     @shell = SimpleCI::Shell::Localhost.new(self)
     @environment = {}
     
+    create_project_directory
     SimpleCI::DSL.evaluate(self)
     update_attributes :status => 'success'
   rescue SimpleCI::Shell::CommandExecutionFailed => e
@@ -48,5 +49,10 @@ class Build < ActiveRecord::Base
   
   def to_param
     position.to_s
+  end
+
+private
+  def create_project_directory
+    @shell.mkdir(workspace_path)
   end
 end

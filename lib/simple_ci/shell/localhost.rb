@@ -32,6 +32,10 @@ module SimpleCI
           File.exists?(path)
         end
       end
+      
+      def mkdir(path)
+        FileUtils.mkdir_p(path)
+      end
     end
   end
 end
