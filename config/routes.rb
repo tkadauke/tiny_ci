@@ -2,6 +2,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :projects do |projects|
     projects.resources :builds
   end
+  
+  map.connect '/', :controller => '/start', :action => 'index'
 
   # The priority is based upon order of creation: first created -> highest priority.
 
