@@ -2,6 +2,8 @@ class Build < ActiveRecord::Base
   attr_reader :shell, :environment
   attr_accessor :source_control
 
+  delegate :name, :buildable?, :to => :project
+
   belongs_to :project
   acts_as_list :scope => :project_id
   
@@ -14,7 +16,6 @@ class Build < ActiveRecord::Base
   end
   
   def build_without_background!
-    puts "building #{name}"
     @shell = SimpleCI::Shell::Localhost.new(self)
     @environment = {}
     
@@ -23,14 +24,6 @@ class Build < ActiveRecord::Base
     update_attributes :status => 'success'
   rescue SimpleCI::Shell::CommandExecutionFailed => e
     update_attributes :status => 'failure'
-  end
-  
-  def buildable?
-    project.buildable?
-  end
-  
-  def name
-    project.name
   end
   
   def workspace_path
