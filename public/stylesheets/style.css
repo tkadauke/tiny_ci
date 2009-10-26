@@ -196,25 +196,25 @@ padding: 3px 3px 0 3px;
 }
 
 #body p a,
-ul.asterix a {
+ul.asterisk a {
 	color: #336699;
 	text-decoration: underline;
 }
 #body p a:hover {
 }
 
-#body ul.asterix {
+#body ul.asterisk {
 	padding: 0 20px;
 	margin: 0 0 15px 0;
 	list-style: none;
 	font-size: 1.1em;
 }
-#body ul.asterix li {
+#body ul.asterisk li {
 	padding: 0 0 5px 15px;
-	background: url(../images/ul_asterix_li.jpg) 1px 3px no-repeat;
+	background: url(../images/ul_asterisk_li.jpg) 1px 3px no-repeat;
 }
-#body ul.asterix li.green {
-	background: url(../images/ul_asterix_li_green.jpg) 1px 3px no-repeat;
+#body ul.asterisk li.green {
+	background: url(../images/ul_asterisk_li_green.jpg) 1px 3px no-repeat;
 	color: #00CC00;
 }
 
