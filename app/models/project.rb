@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
   has_many :pending_builds, :class_name => 'Build', :conditions => { :status => 'pending' }
   
   def build!
-    Build.create(:project_id => self.id, :status => 'pending')
+    builds.create(:status => 'pending')
   end
   
   def buildable?

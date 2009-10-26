@@ -55,4 +55,37 @@ class BuildTest < ActiveSupport::TestCase
     build.expects(:update_attributes).with(:status => 'failure')
     build.build_without_background!
   end
+  
+  test "should use project name as workspace path" do
+    build = Build.new
+    build.stubs(:project).returns(mock(:name => 'some_project'))
+    assert_equal "#{ENV['HOME']}/simple_ci/some_project", build.workspace_path
+  end
+  
+  test "should not flush output when past line is younger than one second" do
+    build = Build.new(:updated_at => Time.now)
+    build.expects(:flush_output!).never
+    build.add_to_output(Time.now, 'command', 'some output')
+  end
+  
+  test "should flush output after one second" do
+    build = Build.new(:updated_at => 2.seconds.ago)
+    build.expects(:flush_output!)
+    build.add_to_output(Time.now, 'command', 'some output')
+  end
+  
+  test "should flush output" do
+    time = Time.now
+    
+    build = Build.new(:updated_at => time)
+    build.add_to_output(time, 'command', 'some output')
+    build.expects(:reload).returns(build)
+    build.expects(:update_attributes).with(:output => "#{time.to_f},command,some output\n")
+    build.flush_output!
+  end
+  
+  test "should use position as param" do
+    build = Build.new(:position => 10)
+    assert_equal '10', build.to_param
+  end
 end
