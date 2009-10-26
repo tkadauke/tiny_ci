@@ -11,7 +11,7 @@ class BuildsController < ApplicationController
   end
   
   def show
-    @build = @project.builds.find_by_position(params[:id])
+    @build = @project.builds.find_by_position!(params[:id])
   end
   
   def create
@@ -22,6 +22,6 @@ class BuildsController < ApplicationController
 
 protected
   def find_project
-    @project = Project.find_by_name(params[:project_id])
+    @project = Project.find_by_name!(params[:project_id])
   end
 end
