@@ -1,5 +1,6 @@
 $(document).observe('dom:loaded', function() {
-  Report.attach();
+  if ($('report'))
+    Report.attach();
 });
 
 var Report = {
