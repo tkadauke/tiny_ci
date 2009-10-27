@@ -1,6 +1,6 @@
 <%= juggernaut :channels => ["build_#{@build.name}_#{@build.position}"] %>
 
-<h1>Build output <%= @project.name %> #<%= @build.position %></h1>
+<h1>Build output <%= link_to @project.name, project_path(@project) %> #<%= @build.position %></h1>
 
 <p>
   <%= link_to 'Raw output', project_build_path(@project, @build, :report => 'raw') %> |
