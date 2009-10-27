@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'shell/system-command'
+require 'shell'
+
+app_root = File.expand_path(File.dirname(__FILE__) + '/..')
+Dir.chdir(app_root)
+
+$server = Shell::SystemCommand.new(Shell.new, "script/server")
+$queue = Shell::SystemCommand.new(Shell.new, "script/queue")
+$juggernaut = Shell::SystemCommand.new(Shell.new, "juggernaut", "-c", "juggernaut.yml")
+
+at_exit do
+  [$server, $queue, $juggernaut].each do |process|
+    process.kill("TERM")
+  end
+end
+
+sleep

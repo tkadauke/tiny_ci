@@ -8,3 +8,13 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 require 'tasks/rails'
+
+task :start => ['db:migrate'] do
+  sh "script/daemon start"
+end
+
+task :stop do
+  sh "script/daemon stop"
+end
+
+task :restart => [:stop, :start]
