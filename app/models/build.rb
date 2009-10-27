@@ -22,7 +22,8 @@ class Build < ActiveRecord::Base
     create_project_directory
     SimpleCI::DSL.evaluate(self)
     update_attributes :status => 'success'
-  rescue SimpleCI::Shell::CommandExecutionFailed => e
+  rescue Exception => e
+    add_lines_to_output(Time.now, 'runner', [e.message] + e.backtrace)
     update_attributes :status => 'failure'
   end
   
@@ -30,15 +31,21 @@ class Build < ActiveRecord::Base
     "#{ENV['HOME']}/simple_ci/#{name}"
   end
   
-  def add_to_output(time, command, line)
-    @output ||= []
-    @output << [time.to_f, command, line.strip].to_csv
+  def add_to_output(time, command, lines)
+    add_lines_to_output(time, command, lines)
     flush_output! if updated_at < 1.second.ago
+  end
+  
+  def add_lines_to_output(time, command, lines)
+    @output ||= []
+    [lines].flatten.each do |line|
+      @output << [time.to_f, command, line.strip].to_csv
+    end
   end
   
   def flush_output!
     reload.update_attributes(:output => @output.join)
-    Juggernaut.send_to_channel("Report.update()", "build_#{project.name}_#{position}")
+    Juggernaut.send_to_channel("Report.update()", "build_#{name}_#{position}")
   end
   
   def to_param

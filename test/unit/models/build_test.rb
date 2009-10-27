@@ -78,6 +78,7 @@ class BuildTest < ActiveSupport::TestCase
     time = Time.now
     
     build = Build.new(:updated_at => time)
+    build.stubs(:project).returns(stub(:name => 'some_project'))
     build.add_to_output(time, 'command', 'some output')
     build.expects(:reload).returns(build)
     build.expects(:update_attributes).with(:output => "#{time.to_f},command,some output\n")
