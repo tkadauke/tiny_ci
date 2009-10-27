@@ -11,6 +11,7 @@ class BuildsController < ApplicationController
   end
   
   def show
+    @report = ['raw', 'details', 'gist'].find { |type| params[:report].to_s == type } || 'raw'
     @build = @project.builds.find_by_position!(params[:id])
   end
   

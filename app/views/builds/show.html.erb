@@ -1,17 +1,11 @@
 <h1>Build output <%= @project.name %> #<%= @build.position %></h1>
 
-<% if @build.output %>
-  <% output = SimpleCI::Output.new(@build.output) %>
+<p>
+  <%= link_to 'Raw output', :action => 'show', :report => 'raw' %> |
+  <%= link_to 'Gist', :action => 'show', :report => 'gist' %> |
+  <%= link_to 'Details', :action => 'show', :report => 'details' %>
+</p>
 
-  <%= render :partial => 'raw_output', :locals => { :output => output } %>
-
-  <div class="report">
-    <ul>
-      <li><%= render_report SimpleCI::OutputParser::RakeParser.parse(output), :details %></li>
-    </ul>
-  </div>
-<% else %>
-  <p>No output (yet)</p>
-<% end %>
+<%= render :partial => 'report' %>
 
 <%= link_to 'Back to Builds', project_builds_path(@project) %>
