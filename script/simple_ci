@@ -7,7 +7,7 @@ Dir.chdir(app_root)
 
 $server = Shell::SystemCommand.new(Shell.new, "script/server")
 $queue = Shell::SystemCommand.new(Shell.new, "script/queue")
-$juggernaut = Shell::SystemCommand.new(Shell.new, "juggernaut", "-c", "juggernaut.yml")
+$juggernaut = Shell::SystemCommand.new(Shell.new, "juggernaut", "-c", "config/juggernaut.yml")
 
 at_exit do
   [$server, $queue, $juggernaut].each do |process|
