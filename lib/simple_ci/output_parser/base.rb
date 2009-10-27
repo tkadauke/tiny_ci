@@ -16,6 +16,10 @@ module SimpleCI
       
       delegate :peek, :empty?, :to => "@output"
       
+      def parse!
+        raise NotImplementedError
+      end
+      
       def consume!
         returning @output.consume! do |output_line|
           consumed_output << output_line
