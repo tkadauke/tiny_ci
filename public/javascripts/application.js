@@ -4,7 +4,7 @@ $(document).observe('dom:loaded', function() {
 
 var Report = {
   update: function() {
-    new Ajax.Updater('report', document.location.href, { method: 'get', onComplete: function() { Report.attach(); } })
+    new Ajax.Updater('report', document.location.href, { method: 'get', onComplete: function() { Report.attach(); $('bottom_anchor').scrollTo(); } })
   },
   
   attach: function() {

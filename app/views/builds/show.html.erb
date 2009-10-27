@@ -8,6 +8,9 @@
   <%= link_to 'Details', project_build_path(@project, @build, :report => 'details') %>
 </p>
 
-<%= render :partial => 'report' %>
+<div class="report" id="report">
+  <%= render :partial => 'report' %>
+</div>
+<div id="bottom_anchor"></div>
 
 <%= link_to 'Back to Builds', project_builds_path(@project) %>

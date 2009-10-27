@@ -1,15 +1,13 @@
-<div class="report" id="report">
-  <% if @build.output %>
-    <% output = SimpleCI::Output.new(@build.output) %>
-    
-    <% if @report == 'raw' %>
-      <%= render :partial => 'raw_output', :locals => { :output => output } %>
-    <% else %>
-      <ul>
-        <li><%= render_report SimpleCI::OutputParser::RakeParser.parse(output), @report %></li>
-      </ul>
-    <% end %>
+<% if @build.output %>
+  <% output = SimpleCI::Output.new(@build.output) %>
+  
+  <% if @report == 'raw' %>
+    <%= render :partial => 'raw_output', :locals => { :output => output } %>
   <% else %>
-    <p>No output (yet)</p>
+    <ul>
+      <li><%= render_report SimpleCI::OutputParser::RakeParser.parse(output), @report %></li>
+    </ul>
   <% end %>
-</div>
+<% else %>
+  <p>No output (yet)</p>
+<% end %>
