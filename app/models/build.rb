@@ -10,12 +10,6 @@ class Build < ActiveRecord::Base
   named_scope :pending, :conditions => { :status => 'pending' }
   
   def build!
-    update_attributes :status => 'running'
-    
-    system %{script/runner "Build.find(#{id}).build_without_background!"}
-  end
-  
-  def build_without_background!
     @shell = SimpleCI::Shell::Localhost.new(self)
     @environment = {}
     

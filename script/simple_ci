@@ -1,13 +1,10 @@
 #!/usr/bin/env ruby
-require 'shell/system-command'
-require 'shell'
-
 app_root = File.expand_path(File.dirname(__FILE__) + '/..')
 Dir.chdir(app_root)
 
 commands = [
   "script/server",
-  "script/queue",
+  "script/scheduler",
   "juggernaut -c config/juggernaut.yml"
 ]
 

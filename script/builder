@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/environment'
+
+build_id = ARGV.shift
+Build.find(build_id.to_i).build!
