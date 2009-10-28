@@ -20,9 +20,13 @@ class Build < ActiveRecord::Base
     create_project_directory
     SimpleCI::DSL.evaluate(self)
     update_attributes :status => 'success'
+  rescue SignalException => e
+    update_attributes :status => 'stopped'
+  rescue SimpleCI::Shell::CommandExecutionFailed => e
+    update_attributes :status => 'failure'
   rescue Exception => e
     add_lines_to_output(Time.now, 'runner', [e.message] + e.backtrace)
-    update_attributes :status => 'failure'
+    update_attributes :status => 'error'
   end
   
   def stop!

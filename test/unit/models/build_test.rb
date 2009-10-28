@@ -40,12 +40,30 @@ class BuildTest < ActiveSupport::TestCase
     build.build!
   end
   
-  test "should set status to failure on error" do
+  test "should set status to failure on failing command" do
     build = Build.new
     build.stubs(:create_project_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SimpleCI::Shell::CommandExecutionFailed)
     
     build.expects(:update_attributes).with(:status => 'failure')
+    build.build!
+  end
+  
+  test "should set status to stopped when build process is killed" do
+    build = Build.new
+    build.stubs(:create_project_directory)
+    SimpleCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
+    
+    build.expects(:update_attributes).with(:status => 'stopped')
+    build.build!
+  end
+  
+  test "should set status to error on internal error" do
+    build = Build.new
+    build.stubs(:create_project_directory)
+    SimpleCI::DSL.stubs(:evaluate).raises(RuntimeError)
+    
+    build.expects(:update_attributes).with(:status => 'error')
     build.build!
   end
   
