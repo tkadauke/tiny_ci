@@ -9,6 +9,10 @@ class Build < ActiveRecord::Base
   
   named_scope :pending, :conditions => { :status => 'pending' }
   
+  def running?
+    status == 'running'
+  end
+  
   def build!
     @shell = SimpleCI::Shell::Localhost.new(self)
     @environment = {}
@@ -19,6 +23,10 @@ class Build < ActiveRecord::Base
   rescue Exception => e
     add_lines_to_output(Time.now, 'runner', [e.message] + e.backtrace)
     update_attributes :status => 'failure'
+  end
+  
+  def stop!
+    SimpleCI::Scheduler::Client.stop(self)
   end
   
   def workspace_path

@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :projects do |projects|
-    projects.resources :builds
+    projects.resources :builds, :member => { :stop => :post }
   end
   
   map.connect '/', :controller => '/start', :action => 'index'

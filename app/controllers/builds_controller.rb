@@ -23,6 +23,12 @@ class BuildsController < ApplicationController
     flash[:notice] = "Building project #{@project.name}"
     redirect_to project_build_path(@project, @build)
   end
+  
+  def stop
+    @build = @project.builds.find_by_position!(params[:id])
+    @build.stop!
+    redirect_to project_builds_path(@project)
+  end
 
 protected
   def find_project

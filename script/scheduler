@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../config/environment'
+require 'drb'
 
-SimpleCI::Scheduler.run
+DRb.start_service "druby://localhost:2250", SimpleCI::Scheduler::Server.instance
+
+SimpleCI::Scheduler::Server.run
