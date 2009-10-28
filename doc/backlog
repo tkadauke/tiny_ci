@@ -1,8 +1,7 @@
 scheduler
-stop builds
 remote-slaves
 custom reports
-frontend optimizations (e.g. auto-reload in build output)
-child projets
+frontend optimizations
+child projects
 trends
 login area
