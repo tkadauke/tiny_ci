@@ -22,7 +22,7 @@ class Build < ActiveRecord::Base
   end
   
   def build!
-    @shell = SimpleCI::Shell::Localhost.new(self)
+    @shell = SimpleCI::Shell::SSH.new(self)
     @environment = {}
     
     create_project_directory
