@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  map.namespace :admin do |admin|
+    admin.resources :slaves
+  end
+
   map.resources :projects do |projects|
     projects.resources :builds, :member => { :stop => :post }
   end

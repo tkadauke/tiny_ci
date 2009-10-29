@@ -1,18 +1,20 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class BuildTest < ActiveSupport::TestCase
-  test "should use localhost as shell when building" do
+  test "should use the slave's shell when building" do
     build = Build.new
+    build.stubs(:slave => stub(:protocol => 'ssh'))
     build.stubs(:create_project_directory)
     SimpleCI::DSL.stubs(:evaluate)
     build.stubs(:update_attributes)
     
-    SimpleCI::Shell::Localhost.expects(:new).returns(stub(:mkdir))
+    SimpleCI::Shell::SSH.expects(:new).returns(stub(:mkdir))
     build.build!
   end
   
   test "should create build directory" do
     build = Build.new
+    build.stubs(:slave => stub(:protocol => 'localhost'))
     build.expects(:name => 'some_project')
     shell = mock(:mkdir)
     SimpleCI::Shell::Localhost.stubs(:new).returns(shell)
@@ -24,6 +26,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should evaluate steps" do
     build = Build.new
+    build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_project_directory)
     SimpleCI::DSL.expects(:evaluate)
     
@@ -33,6 +36,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to success when finished" do
     build = Build.new
+    build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_project_directory)
     SimpleCI::DSL.stubs(:evaluate)
     
@@ -42,6 +46,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to failure on failing command" do
     build = Build.new
+    build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_project_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SimpleCI::Shell::CommandExecutionFailed)
     
@@ -51,6 +56,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to stopped when build process is killed" do
     build = Build.new
+    build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_project_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
     

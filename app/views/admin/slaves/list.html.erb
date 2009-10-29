@@ -1,0 +1,22 @@
+<h1>Listing Slaves</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Protocol</th>
+      <th>Name</th>
+      <th>Hostname</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @slaves.each do |slave| %>
+      <tr>
+        <td><%= slave.protocol %></td>
+        <td><%= link_to slave.name, admin_slave_path(slave) %></td>
+        <td><%= slave.hostname %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= link_to 'New Slave', new_admin_slave_path %></p>

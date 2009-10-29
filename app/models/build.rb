@@ -5,9 +5,14 @@ class Build < ActiveRecord::Base
   delegate :name, :to => :project
 
   belongs_to :project
+  belongs_to :slave
   acts_as_list :scope => :project_id
   
   named_scope :pending, :conditions => { :status => 'pending' }
+  
+  def assign_to!(slave)
+    update_attributes(:slave => slave)
+  end
   
   def buildable?
     project.buildable? && pending?
@@ -22,7 +27,7 @@ class Build < ActiveRecord::Base
   end
   
   def build!
-    @shell = SimpleCI::Shell::SSH.new(self)
+    @shell = SimpleCI::Shell.open(self)
     @environment = {}
     
     create_project_directory

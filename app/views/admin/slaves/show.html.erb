@@ -1,0 +1,16 @@
+<h1>Slave <%= @slave.name %></h1>
+
+<p><%= link_to 'Edit', edit_admin_slave_path(@slave) %></p>
+
+<dl>
+  <dt>Protocol</dt>
+  <dd><%= @slave.protocol %></dd>
+
+  <dt>Host name</dt>
+  <dd><%= @slave.hostname %>&nbsp;</dd>
+
+  <dt>Busy?</dt>
+  <dd><%= @slave.busy?.inspect %>&nbsp;</dd>
+</dl>
+
+<p><%= link_to 'Slaves Overview', admin_slaves_path %></p>
