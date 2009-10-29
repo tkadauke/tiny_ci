@@ -16,9 +16,9 @@ module SimpleCI
             ch.env key, value
           end
           
-          env = environment.merge(ENV).reject { |key, value| key == 'PS1' || key == 'EDITOR' || key =~ /TM/ }.collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
+          env = environment.reject { |key, value| key == 'PS1' || key == 'EDITOR' || key =~ /TM/ }.collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
           
-          ch.exec %{cd #{working_dir}; sh -c '#{env} #{cmdline} 2>&1'} do |ch, success|
+          ch.exec %{/bin/bash -c 'cd #{working_dir}; #{env} #{cmdline} 2>&1'} do |ch, success|
             raise CommandExecutionFailed, "could not execute command" unless success
           
             ch.on_data do |c, data|

@@ -5,7 +5,7 @@ module SimpleCI
         if exists?('.git')
           run("git", "pull origin master")
         else
-          run("git", "clone #{repository_url} .")
+          run("git", "clone #{repository_url}", SimpleCI::Config.base_path)
         end
         
         run("git", "submodule init")

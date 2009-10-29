@@ -25,5 +25,9 @@ module SimpleCI
       environment = tasks.extract_options!
       SimpleCI::Steps::Builder::Rake.new(@build, tasks, environment).run!
     end
+    
+    def sh(command, *parameters)
+      @build.shell.run(command, parameters, @build.workspace_path, @build.environment)
+    end
   end
 end

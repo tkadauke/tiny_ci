@@ -4,7 +4,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should use the slave's shell when building" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'ssh'))
-    build.stubs(:create_project_directory)
+    build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate)
     build.stubs(:update_attributes)
     
@@ -12,10 +12,9 @@ class BuildTest < ActiveSupport::TestCase
     build.build!
   end
   
-  test "should create build directory" do
+  test "should create base directory" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
-    build.expects(:name => 'some_project')
     shell = mock(:mkdir)
     SimpleCI::Shell::Localhost.stubs(:new).returns(shell)
     SimpleCI::DSL.stubs(:evaluate)
@@ -27,7 +26,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should evaluate steps" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
-    build.stubs(:create_project_directory)
+    build.stubs(:create_base_directory)
     SimpleCI::DSL.expects(:evaluate)
     
     build.stubs(:update_attributes)
@@ -37,7 +36,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should set status to success when finished" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
-    build.stubs(:create_project_directory)
+    build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate)
     
     build.expects(:update_attributes).with(:status => 'success')
@@ -47,7 +46,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should set status to failure on failing command" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
-    build.stubs(:create_project_directory)
+    build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SimpleCI::Shell::CommandExecutionFailed)
     
     build.expects(:update_attributes).with(:status => 'failure')
@@ -57,7 +56,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should set status to stopped when build process is killed" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
-    build.stubs(:create_project_directory)
+    build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
     
     build.expects(:update_attributes).with(:status => 'stopped')
@@ -66,17 +65,17 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to error on internal error" do
     build = Build.new(:updated_at => Time.now)
-    build.stubs(:create_project_directory)
+    build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(RuntimeError)
     
     build.expects(:update_attributes).with(:status => 'error')
     build.build!
   end
   
-  test "should use project name as workspace path" do
+  test "should have project name in workspace path" do
     build = Build.new
     build.stubs(:project).returns(mock(:name => 'some_project'))
-    assert_equal "#{ENV['HOME']}/simple_ci/some_project", build.workspace_path
+    assert build.workspace_path =~ /some_project/
   end
   
   test "should not flush output when past line is younger than one second" do

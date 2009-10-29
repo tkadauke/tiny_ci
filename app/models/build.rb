@@ -30,7 +30,7 @@ class Build < ActiveRecord::Base
     @shell = SimpleCI::Shell.open(self)
     @environment = {}
     
-    create_project_directory
+    create_base_directory
     SimpleCI::DSL.evaluate(self)
     update_attributes :status => 'success'
   rescue SignalException => e
@@ -47,7 +47,7 @@ class Build < ActiveRecord::Base
   end
   
   def workspace_path
-    "#{ENV['HOME']}/simple_ci/#{name}"
+    "#{SimpleCI::Config.base_path}/#{name}"
   end
   
   def add_to_output(time, command, lines)
@@ -75,7 +75,7 @@ class Build < ActiveRecord::Base
   end
 
 private
-  def create_project_directory
-    @shell.mkdir(workspace_path)
+  def create_base_directory
+    @shell.mkdir(SimpleCI::Config.base_path)
   end
 end
