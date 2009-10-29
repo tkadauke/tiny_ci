@@ -59,7 +59,7 @@ class BuildTest < ActiveSupport::TestCase
   end
   
   test "should set status to error on internal error" do
-    build = Build.new
+    build = Build.new(:updated_at => Time.now)
     build.stubs(:create_project_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(RuntimeError)
     
@@ -93,6 +93,7 @@ class BuildTest < ActiveSupport::TestCase
     build.add_to_output(time, 'command', 'some output')
     build.expects(:reload).returns(build)
     build.expects(:update_attributes).with(:output => "#{time.to_f},command,some output\n")
+    Juggernaut.expects(:send_to_channel)
     build.flush_output!
   end
   
