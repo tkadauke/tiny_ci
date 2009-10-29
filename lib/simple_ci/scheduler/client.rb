@@ -7,9 +7,9 @@ module SimpleCI
       
     private
       def self.server
+        require 'drb'
+        
         @server ||= begin
-          require 'drb'
-          
           DRb.start_service
           DRbObject.new(nil, "druby://localhost:2250")
         end
