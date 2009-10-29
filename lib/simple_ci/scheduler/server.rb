@@ -22,6 +22,7 @@ module SimpleCI
       end
     
       def stop(build)
+        build.update_attributes :status => 'canceled'
         pid = processes[build.id]
         if pid
           Process.kill("TERM", pid)
