@@ -29,6 +29,16 @@ module SimpleCI
               @build.add_to_output(Time.now, command, lines) unless lines.blank?
             end
             
+            ch.on_request("exit-status") do |ch, data|
+              exit_code = data.read_long
+              
+              raise CommandExecutionFailed if exit_code > 0
+            end
+
+            ch.on_request("exit-signal") do |ch, data|
+              raise CommandExecutionFailed
+            end
+
             ch.on_close { @build.flush_output! }
           end
         end
