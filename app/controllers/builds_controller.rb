@@ -7,7 +7,7 @@ class BuildsController < ApplicationController
   end
   
   def list
-    @builds = @project.builds :include => :children
+    @builds = @project.builds.find :all, :include => { :children => :project }, :order => 'created_at DESC'
   end
   
   def show
