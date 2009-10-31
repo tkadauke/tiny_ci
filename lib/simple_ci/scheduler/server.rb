@@ -6,6 +6,13 @@ module SimpleCI
       def self.run
         instance.run
       end
+      
+      def initialize
+        trap("CLD") do
+          pid = Process.wait
+          process_finished(pid)
+        end
+      end
     
       def stop(build_id)
         build = Build.find(build_id)
@@ -21,7 +28,7 @@ module SimpleCI
         build = Build.find(build_id)
         
         project = Project.find(build.project_id)
-        if project.has_children?
+        if build.waiting? && project.has_children?
           project.build_children!(build)
         end
       end
@@ -47,6 +54,12 @@ module SimpleCI
     private
       def processes
         @processes ||= {}
+      end
+      
+      def process_finished(pid)
+        build_id = processes.invert[pid]
+        processes.delete(build_id)
+        finished(build_id)
       end
     end
   end

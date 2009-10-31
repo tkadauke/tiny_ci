@@ -7,7 +7,7 @@ class BuildsController < ApplicationController
   end
   
   def list
-    @builds = @project.builds
+    @builds = @project.builds :include => :children
   end
   
   def show
