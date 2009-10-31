@@ -8,4 +8,14 @@
 <p><strong>Steps</strong></p>
 <pre><%= @project.steps %></pre>
 
-<%= button_to 'Build now', project_builds_path(@project) %>
+<% if @project.standalone? %>
+  <%= button_to 'Build now', project_builds_path(@project) %>
+<% else %>
+  <p><%= link_to 'Back to parent project %s' % @project.parent.name, project_path(@project.parent) %></p>
+<% end %>
+
+<% if @project.has_children? %>
+  <p><strong>Children</strong></p>
+  
+  <%= render :partial => "list", :locals => { :projects => @project.children } %>
+<% end %>
