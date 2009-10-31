@@ -7,7 +7,7 @@
           <td class="row"><%= i %></td>
           <td class="timestamp"><%= row.timestamp.strftime("%H:%M:%S") unless row.timestamp.to_i == last_timestamp %></td>
           <td class="command"><%= row.command unless row.command == last_command %></td>
-          <td class="line"><%= row.line %></td>
+          <td class="line"><%= h row.line %></td>
         </tr>
         <% last_command = row.command; last_timestamp = row.timestamp.to_i %>
       <% end %>
