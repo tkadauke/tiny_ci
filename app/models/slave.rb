@@ -13,4 +13,8 @@ class Slave < ActiveRecord::Base
   def self.find_free_slave
     all.find { |slave| slave.free? }
   end
+  
+  def current_builds
+    Build.find(:all, :conditions => { :status => 'running', :slave_id => self.id })
+  end
 end
