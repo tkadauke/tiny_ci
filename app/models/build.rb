@@ -100,7 +100,6 @@ class Build < ActiveRecord::Base
   
   def flush_output!
     reload.update_attributes(:output => build_output.join)
-    Juggernaut.send_to_channel("Report.update()", "build_#{name}_#{position}")
   end
   
   def to_param
