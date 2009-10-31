@@ -2,7 +2,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class BuildTest < ActiveSupport::TestCase
   test "should use the slave's shell when building" do
-    build = Build.new
+    build = Build.new(:updated_at => Time.now)
+    build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'ssh'))
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate)
@@ -13,7 +14,8 @@ class BuildTest < ActiveSupport::TestCase
   end
   
   test "should create base directory" do
-    build = Build.new
+    build = Build.new(:updated_at => Time.now)
+    build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     shell = mock(:mkdir)
     SimpleCI::Shell::Localhost.stubs(:new).returns(shell)
@@ -24,7 +26,8 @@ class BuildTest < ActiveSupport::TestCase
   end
   
   test "should evaluate steps" do
-    build = Build.new
+    build = Build.new(:updated_at => Time.now)
+    build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     SimpleCI::DSL.expects(:evaluate)
@@ -34,12 +37,24 @@ class BuildTest < ActiveSupport::TestCase
   end
   
   test "should set status to success when finished" do
-    build = Build.new
+    build = Build.new(:updated_at => Time.now)
+    build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate)
     
     build.expects(:update_attributes).with(:status => 'success')
+    build.build!
+  end
+  
+  test "should set status to waiting when finished but children are present" do
+    build = Build.new(:updated_at => Time.now)
+    build.stubs(:project).returns(mock(:has_children? => true))
+    build.stubs(:slave => stub(:protocol => 'localhost'))
+    build.stubs(:create_base_directory)
+    SimpleCI::DSL.stubs(:evaluate)
+    
+    build.expects(:update_attributes).with(:status => 'waiting')
     build.build!
   end
   

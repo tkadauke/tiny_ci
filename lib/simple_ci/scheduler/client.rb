@@ -2,7 +2,11 @@ module SimpleCI
   module Scheduler
     class Client
       def self.stop(build)
-        server.stop(build)
+        server.stop(build.id)
+      end
+      
+      def self.finished(build)
+        server.finished(build.id)
       end
       
     private

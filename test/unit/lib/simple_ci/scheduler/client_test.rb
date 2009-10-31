@@ -9,6 +9,6 @@ class SimpleCI::Scheduler::ClientTest < ActiveSupport::TestCase
     DRb.expects(:start_service)
     DRbObject.expects(:new).returns(mock(:stop))
     
-    SimpleCI::Scheduler::Client.stop(stub)
+    SimpleCI::Scheduler::Client.stop(stub(:id => 7))
   end
 end

@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% projects.each do |project| %>
+      <tr>
+        <td><%= link_to project.name, project_path(project) %></td>
+        <td><%= truncate project.description, :length => 40 %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

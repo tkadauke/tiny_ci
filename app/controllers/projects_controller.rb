@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   end
   
   def list
-    @projects = Project.all
+    @projects = Project.root_set
   end
   
   def show

@@ -13,8 +13,9 @@ class SimpleCI::Scheduler::ServerTest < ActiveSupport::TestCase
     SimpleCI::Scheduler::Server.instance.stubs(:processes).returns({ 7 => 1234 })
     Process.expects(:kill).with('TERM', 1234)
     build = stub(:id => 7)
+    Build.expects(:find).with(7).returns(build)
     build.expects(:update_attributes).with(:status => 'canceled')
     
-    SimpleCI::Scheduler::Server.instance.stop(build)
+    SimpleCI::Scheduler::Server.instance.stop(build.id)
   end
 end

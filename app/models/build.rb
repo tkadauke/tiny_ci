@@ -7,8 +7,12 @@ class Build < ActiveRecord::Base
   belongs_to :project
   belongs_to :slave
   acts_as_list :scope => :project_id
+  acts_as_tree
   
   named_scope :pending, :conditions => { :status => 'pending' }
+  
+  attr_accessor :previous_changes
+  before_save { |build| build.previous_changes = build.changes }
   
   def assign_to!(slave)
     update_attributes(:slave => slave)
@@ -26,13 +30,33 @@ class Build < ActiveRecord::Base
     status == 'pending'
   end
   
+  def waiting?
+    status == 'waiting'
+  end
+  
+  def finished?
+    !running? && !pending?
+  end
+  
+  def success?
+    status == 'success'
+  end
+  
+  def has_children?
+    !children.empty?
+  end
+  
   def build!
     @shell = SimpleCI::Shell.open(self)
     @environment = {}
     
     create_base_directory
     SimpleCI::DSL.evaluate(self)
-    update_attributes :status => 'success'
+    if project.has_children?
+      update_attributes :status => 'waiting'
+    else
+      update_attributes :status => 'success'
+    end
   rescue SignalException => e
     update_attributes :status => 'stopped'
   rescue SimpleCI::Shell::CommandExecutionFailed => e
@@ -40,10 +64,23 @@ class Build < ActiveRecord::Base
   rescue Exception => e
     add_to_output(Time.now, 'runner', [e.message] + e.backtrace)
     update_attributes :status => 'error'
+  ensure
+    finished
   end
   
   def stop!
     SimpleCI::Scheduler::Client.stop(self)
+  end
+  
+  def finished
+    parent.child_finished(self) if parent
+  end
+  
+  def child_finished(child)
+    if waiting? && children.all?(&:finished?)
+      success = children.all?(&:success?)
+      update_attributes :status => (success ? 'success' : 'failure')
+    end
   end
   
   def workspace_path
