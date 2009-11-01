@@ -1,6 +1,6 @@
 <h1>Project <%= @project.name %></h1>
 
-<p><%= link_to 'Edit', edit_project_path(@project) %> | <%= link_to 'Builds', project_builds_path(@project) %></p>
+<p><%= link_to 'Edit', edit_project_path(@project) %> | <%= link_to 'Builds', project_builds_path(@project) %> | <%= link_to 'Clone', new_project_path(:clone => @project) %></p>
 
 <% if @project.previous || @project.next %>
   <h2>Build chain</h2>

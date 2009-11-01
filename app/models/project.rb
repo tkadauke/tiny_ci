@@ -10,6 +10,14 @@ class Project < ActiveRecord::Base
   
   named_scope :root_set, :conditions => 'parent_id is null'
   
+  def self.find_for_cloning!(name)
+    project = find_by_name!(name)
+    project.id = nil
+    project.name = nil
+    project.instance_variable_set(:@new_record, true)
+    project
+  end
+  
   def has_children?
     !children.empty?
   end

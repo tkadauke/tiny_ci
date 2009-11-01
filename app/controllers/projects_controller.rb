@@ -13,7 +13,11 @@ class ProjectsController < ApplicationController
   end
   
   def new
-    @project = Project.new
+    if params[:clone]
+      @project = Project.find_for_cloning!(params[:clone])
+    else
+      @project = Project.new
+    end
   end
   
   def edit
