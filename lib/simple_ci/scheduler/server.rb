@@ -39,8 +39,10 @@ module SimpleCI
           next_build = builds.find { |build| build.buildable? }
           if next_build
             slave = Slave.find_free_slave
-            next_build.assign_to!(slave)
-            start(next_build)
+            if slave
+              next_build.assign_to!(slave)
+              start(next_build)
+            end
           end
           sleep 2
         end
