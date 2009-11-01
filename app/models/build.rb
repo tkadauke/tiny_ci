@@ -15,6 +15,10 @@ class Build < ActiveRecord::Base
   attr_accessor :previous_changes
   before_save { |build| build.previous_changes = build.changes }
   
+  def current_environment
+    slave.current_environment.merge(environment)
+  end
+  
   def assign_to!(slave)
     update_attributes(:slave => slave)
   end

@@ -1,7 +1,15 @@
 class Slave < ActiveRecord::Base
+  serialize :environment_variables, Hash
+  
+  before_save :cleanup_environment
+  
   has_many :builds
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   
+  def current_environment
+    SimpleCI::Config.environment.merge(environment)
+  end
+
   def busy?
     !free?
   end
@@ -16,5 +24,14 @@ class Slave < ActiveRecord::Base
   
   def current_builds
     Build.find(:all, :conditions => { :status => 'running', :slave_id => self.id })
+  end
+  
+  def environment
+    environment_variables.inject({}) { |hash, ev| hash[ev.last['key']] = ev.last['value']; hash }
+  end
+  
+protected
+  def cleanup_environment
+    environment_variables.reject! { |index, kv| kv['key'].blank? }
   end
 end

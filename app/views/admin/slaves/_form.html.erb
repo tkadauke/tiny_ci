@@ -22,3 +22,29 @@
   <span class="label"><%= f.label :password, 'Password' %></span>
   <%= f.text_field :password %>
 </p>
+
+<p class="form_item">
+  <span class="label"><%= f.label :base_path, 'Base Path' %></span>
+  <span class="desc">Leave blank to use the default of <%= SimpleCI::Config.base_path %></span>
+  <%= f.text_field :base_path %>
+</p>
+
+<div class="form_item">
+  <span class="label"><%= f.label :environment, 'Environment variables' %></span>
+  <table>
+    <thead>
+      <tr>
+        <th>Variable name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% ((@slave.environment_variables || {}).sort << [(@slave.environment_variables || {}).size, { 'key' => nil, 'value' => nil }]).each do |index, kv| %>
+        <tr>
+          <td><%= text_field_tag "slave[environment_variables][#{index}][key]", kv['key'] %></td>
+          <td><%= text_field_tag "slave[environment_variables][#{index}][value]", kv['value'] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

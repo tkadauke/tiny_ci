@@ -1,1 +1,3 @@
 base_path: /Users/tkadauke/simple_ci
+environment:
+  CI_SERVER: SimpleCI

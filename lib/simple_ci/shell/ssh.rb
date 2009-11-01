@@ -12,11 +12,7 @@ module SimpleCI
         output = ""
         cmdline = "#{command} #{[parameters].flatten.join(' ')}"
         channel = @ssh.open_channel do |ch|
-          environment.merge(ENV).each do |key, value|
-            ch.env key, value
-          end
-          
-          env = environment.reject { |key, value| key == 'PS1' || key == 'EDITOR' || key =~ /TM/ }.collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
+          env = @build.current_environment.merge(environment).collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
           
           ch.exec %{/bin/bash -c 'cd #{working_dir}; #{env} #{cmdline} 2>&1'} do |ch, success|
             raise CommandExecutionFailed, "could not execute command" unless success
@@ -30,12 +26,14 @@ module SimpleCI
             end
             
             ch.on_request("exit-status") do |ch, data|
+              @build.flush_output!
               exit_code = data.read_long
               
               raise CommandExecutionFailed if exit_code > 0
             end
-
+            
             ch.on_request("exit-signal") do |ch, data|
+              @build.flush_output!
               raise CommandExecutionFailed
             end
 

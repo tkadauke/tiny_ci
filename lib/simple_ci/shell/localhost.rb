@@ -7,13 +7,12 @@ module SimpleCI
       
       def run(command, parameters, working_dir, environment)
         cmdline = "#{command} #{[parameters].flatten.join(' ')}"
-        puts cmdline
         Dir.chdir(working_dir) do
-          environment.each do |key, value|
+          @build.current_environment.merge(environment).each do |key, value|
             ENV[key] = value
           end
           
-          IO.popen("#{cmdline} 2>&1") do |stdout|
+          IO.popen("sh -c '#{cmdline} 2>&1'") do |stdout|
             output = []
             while !stdout.eof?
               if line = stdout.gets
