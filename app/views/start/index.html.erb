@@ -21,3 +21,7 @@
     </li>
   <% end %>
 </ul>
+
+<h2>Recently finished builds</h2>
+
+<%= render :partial => "/builds/completed", :locals => { :builds => @recent_builds } %>

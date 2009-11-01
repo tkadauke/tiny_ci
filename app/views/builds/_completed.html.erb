@@ -1,0 +1,24 @@
+<% if builds.empty? %>
+  <p>No builds</p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Timestamp</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% builds.each do |build| %>
+        <tr>
+          <td><%= link_to build.position, project_build_path(build.project, build) %></td>
+          <td><%= link_to build.name, project_build_path(build.project, build) %></td>
+          <td><%= link_to build.created_at.to_s, project_build_path(build.project, build) %></td>
+          <td><%= build.status %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -10,6 +10,7 @@ class Build < ActiveRecord::Base
   acts_as_tree
   
   named_scope :pending, :conditions => { :status => 'pending' }
+  named_scope :finished, :conditions => ['status != ? and status != ?', 'pending', 'running']
   
   attr_accessor :previous_changes
   before_save { |build| build.previous_changes = build.changes }
