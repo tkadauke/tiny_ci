@@ -13,7 +13,11 @@ class Admin::SlavesController < ApplicationController
   end
   
   def new
-    @slave = Slave.new
+    if params[:clone]
+      @slave = Slave.find_for_cloning!(params[:clone])
+    else
+      @slave = Slave.new
+    end
   end
   
   def edit

@@ -1,6 +1,6 @@
 <h1>Slave <%= @slave.name %></h1>
 
-<p><%= link_to 'Edit', edit_admin_slave_path(@slave) %></p>
+<p><%= link_to 'Edit', edit_admin_slave_path(@slave) %> | <%= link_to 'Clone', new_admin_slave_path(:clone => @slave) %></p>
 
 <dl>
   <dt>Protocol</dt>

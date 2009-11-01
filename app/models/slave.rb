@@ -8,6 +8,14 @@ class Slave < ActiveRecord::Base
   
   overrides_field :base_path, :from => "SimpleCI::Config"
   
+  def self.find_for_cloning!(id)
+    slave = find(id)
+    slave.id = nil
+    slave.name = nil
+    slave.instance_variable_set(:@new_record, true)
+    slave
+  end
+  
   def current_environment
     SimpleCI::Config.environment.merge(environment)
   end
