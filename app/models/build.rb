@@ -89,7 +89,7 @@ class Build < ActiveRecord::Base
   end
   
   def workspace_path
-    "#{SimpleCI::Config.base_path}/#{name}"
+    "#{slave.base_path}/#{name}"
   end
   
   def add_to_output(time, command, lines)
@@ -117,6 +117,6 @@ class Build < ActiveRecord::Base
 
 private
   def create_base_directory
-    @shell.mkdir(SimpleCI::Config.base_path)
+    @shell.mkdir(slave.base_path)
   end
 end

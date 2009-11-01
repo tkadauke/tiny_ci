@@ -16,7 +16,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should create base directory" do
     build = Build.new(:updated_at => Time.now)
     build.stubs(:project).returns(mock(:has_children? => false))
-    build.stubs(:slave => stub(:protocol => 'localhost'))
+    build.stubs(:slave => stub(:protocol => 'localhost', :base_path => '/some/base/path'))
     shell = mock(:mkdir)
     SimpleCI::Shell::Localhost.stubs(:new).returns(shell)
     SimpleCI::DSL.stubs(:evaluate)
@@ -80,6 +80,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to error on internal error" do
     build = Build.new(:updated_at => Time.now)
+    build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(RuntimeError)
     
@@ -90,6 +91,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should have project name in workspace path" do
     build = Build.new
     build.stubs(:project).returns(mock(:name => 'some_project'))
+    build.stubs(:slave).returns(mock(:base_path => '/some/base/path'))
     assert build.workspace_path =~ /some_project/
   end
   

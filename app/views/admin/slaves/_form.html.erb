@@ -25,8 +25,8 @@
 
 <p class="form_item">
   <span class="label"><%= f.label :base_path, 'Base Path' %></span>
-  <span class="desc">Leave blank to use the default of <%= SimpleCI::Config.base_path %></span>
-  <%= f.text_field :base_path %>
+  <span class="desc">Leave blank to use the default of <%= @slave.default_base_path %></span>
+  <%= f.text_field :base_path, :value => @slave.base_path(:skip_default) %>
 </p>
 
 <div class="form_item">

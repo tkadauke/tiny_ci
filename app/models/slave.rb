@@ -6,6 +6,8 @@ class Slave < ActiveRecord::Base
   has_many :builds
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   
+  overrides_field :base_path, :from => "SimpleCI::Config"
+  
   def current_environment
     SimpleCI::Config.environment.merge(environment)
   end
