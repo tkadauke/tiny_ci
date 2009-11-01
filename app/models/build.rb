@@ -79,12 +79,14 @@ class Build < ActiveRecord::Base
   
   def finished
     parent.child_finished(self) if parent
+    project.next.build! if success? && project.next
   end
   
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
       update_attributes :status => (success ? 'success' : 'failure')
+      project.next.build! if success? && project.next
     end
   end
   

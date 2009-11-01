@@ -3,6 +3,9 @@ class Project < ActiveRecord::Base
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   has_many :pending_builds, :class_name => 'Build', :conditions => { :status => 'pending' }
   
+  belongs_to :previous, :class_name => 'Project', :foreign_key => 'previous_project_id'
+  has_one :next, :class_name => 'Project', :foreign_key => 'previous_project_id'
+  
   acts_as_tree
   
   named_scope :root_set, :conditions => 'parent_id is null'

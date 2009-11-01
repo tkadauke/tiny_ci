@@ -17,3 +17,10 @@
   <span class="label"><%= f.label :steps, 'Steps' %></span>
   <%= f.text_area :steps, :rows => 10 %>
 </p>
+
+<h2>Run this project after</h2>
+
+<p class="form_item">
+  <span class="label"><%= f.label :previous_project_id, 'Previous Project' %></span>
+  <%= f.select :previous_project_id, Project.root_set.reject { |p| p == @project }.collect { |p| [p.name, p.id] }, :include_blank => true %>
+</p>
