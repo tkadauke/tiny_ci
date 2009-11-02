@@ -1,6 +1,6 @@
 <%= juggernaut :channels => ["build_#{@build.name}_#{@build.position}"] %>
 
-<h1>Build output <%= link_to @project.name, project_path(@project) %> #<%= @build.position %></h1>
+<h1>Build output <%= link_to @project.name, project_path(@project) %> #<%= @build.position %> <%= 'on slave %s' % @build.slave.name if @build.slave %></h1>
 
 <% if @build.running? || @build.pending? %>
   <p><%= link_to 'Stop', stop_project_build_path(@project, @build), :method => :post %></p>
