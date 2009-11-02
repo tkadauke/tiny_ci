@@ -29,7 +29,7 @@ class Slave < ActiveRecord::Base
   end
   
   def self.find_free_slave
-    all.find { |slave| slave.free? }
+    all.find { |slave| !slave.offline? && slave.free? }
   end
   
   def current_builds

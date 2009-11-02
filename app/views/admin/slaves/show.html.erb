@@ -3,6 +3,9 @@
 <p><%= link_to 'Edit', edit_admin_slave_path(@slave) %> | <%= link_to 'Clone', new_admin_slave_path(:clone => @slave) %></p>
 
 <dl>
+  <dt>Offline</dt>
+  <dd><%= @slave.offline ? 'Yes' : 'No' %></dd>
+
   <dt>Protocol</dt>
   <dd><%= @slave.protocol %></dd>
 
