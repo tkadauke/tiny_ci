@@ -35,16 +35,20 @@ module SimpleCI
       
       def run
         loop do
-          builds = ::Build.pending.find(:all)
-          next_build = builds.find { |build| build.buildable? }
-          if next_build
-            slave = Slave.find_free_slave
-            if slave
-              next_build.assign_to!(slave)
-              start(next_build)
+          begin
+            builds = ::Build.pending.find(:all)
+            next_build = builds.find { |build| build.buildable? }
+            if next_build
+              slave = Slave.find_free_slave
+              if slave
+                next_build.assign_to!(slave)
+                start(next_build)
+              end
             end
+            sleep 2
+          rescue => e
+            puts e.message, e.backtrace
           end
-          sleep 2
         end
       end
       
