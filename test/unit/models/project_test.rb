@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ProjectTest < ActiveSupport::TestCase
   test "should create build" do
     project = Project.new
-    project.builds.expects(:create).with(:status => 'pending')
+    project.builds.expects(:create).with(:status => 'pending', :parameters => {})
     project.build!
   end
   

@@ -22,8 +22,8 @@ class Project < ActiveRecord::Base
     !children.empty?
   end
   
-  def build!
-    builds.create(:status => 'pending')
+  def build!(parameters = {})
+    builds.create(:status => 'pending', :parameters => parameters)
   end
   
   def build_children!(build)
@@ -33,7 +33,7 @@ class Project < ActiveRecord::Base
   end
   
   def build_with_parent_build!(build)
-    builds.create(:status => 'pending', :parent => build)
+    builds.create(:status => 'pending', :parent => build, :parameters => build.environment)
   end
   
   def buildable?

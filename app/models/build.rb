@@ -1,6 +1,8 @@
 class Build < ActiveRecord::Base
-  attr_reader :shell, :environment
+  attr_reader :shell
   attr_accessor :source_control
+  
+  serialize :parameters, Hash
 
   delegate :name, :to => :project
 
@@ -14,6 +16,10 @@ class Build < ActiveRecord::Base
   
   attr_accessor :previous_changes
   before_save { |build| build.previous_changes = build.changes }
+  
+  def environment
+    @environment ||= (self.parameters || {})
+  end
   
   def current_environment
     slave.current_environment.merge(environment)
@@ -53,7 +59,6 @@ class Build < ActiveRecord::Base
   
   def build!
     @shell = SimpleCI::Shell.open(self)
-    @environment = {}
     
     create_base_directory
     SimpleCI::DSL.evaluate(self)
@@ -79,14 +84,14 @@ class Build < ActiveRecord::Base
   
   def finished
     parent.child_finished(self) if parent
-    project.next.build! if success? && project.next
+    project.next.build!(environment) if success? && project.next
   end
   
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
       update_attributes :status => (success ? 'success' : 'failure')
-      project.next.build! if success? && project.next
+      project.next.build!(environment) if success? && project.next
     end
   end
   

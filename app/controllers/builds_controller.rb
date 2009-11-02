@@ -19,7 +19,7 @@ class BuildsController < ApplicationController
   end
   
   def create
-    @build = @project.build!
+    @build = @project.build!(params.except(:controller, :action, :project_id))
     flash[:notice] = "Building project #{@project.name}"
     redirect_to project_build_path(@project, @build)
   end
