@@ -14,6 +14,11 @@
 </p>
 
 <p class="form_item">
+  <span class="label"><%= f.label :repository_url, 'Repository URL' %></span>
+  <%= f.text_field :repository_url %>
+</p>
+
+<p class="form_item">
   <span class="label"><%= f.label :steps, 'Steps' %></span>
   <%= f.text_area :steps, :rows => 10 %>
 </p>

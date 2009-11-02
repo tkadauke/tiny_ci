@@ -8,6 +8,10 @@ module SimpleCI
       def exists?(path, working_dir = nil)
         @build.shell.exists?(path, working_dir || @build.workspace_path)
       end
+      
+      def capture(command, working_dir = nil)
+        @build.shell.capture(command, working_dir || @build.workspace_path)
+      end
     end
   end
 end

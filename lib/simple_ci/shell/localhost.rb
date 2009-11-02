@@ -35,6 +35,12 @@ module SimpleCI
       def mkdir(path)
         FileUtils.mkdir_p(path)
       end
+      
+      def capture(command, working_dir)
+        Dir.chdir(wokring_dir) do
+          %x{#{command}}
+        end
+      end
     end
   end
 end

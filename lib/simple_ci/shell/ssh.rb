@@ -12,8 +12,9 @@ module SimpleCI
         output = ""
         cmdline = "#{command} #{[parameters].flatten.join(' ')}"
         channel = @ssh.open_channel do |ch|
-          env = @build.current_environment.merge(environment).collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
+          env = build_environment(environment)
           
+          puts "executing ssh command: " + %{/bin/bash -c 'cd #{working_dir}; #{env} #{cmdline} 2>&1'}
           ch.exec %{/bin/bash -c 'cd #{working_dir}; #{env} #{cmdline} 2>&1'} do |ch, success|
             raise CommandExecutionFailed, "could not execute command" unless success
           
@@ -51,6 +52,16 @@ module SimpleCI
       
       def mkdir(path)
         run('mkdir', ["-p", path], '/', {})
+      end
+      
+      def capture(command, working_dir)
+        env = build_environment
+        @ssh.exec! %{cd #{working_dir}; #{env} #{command}}
+      end
+      
+    private
+      def build_environment(environment = {})
+        @build.current_environment.merge(environment).collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
       end
     end
   end

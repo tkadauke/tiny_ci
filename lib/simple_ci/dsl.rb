@@ -1,7 +1,14 @@
 module SimpleCI
   class DSL
     def self.evaluate(build)
-      new(build).instance_eval build.project.steps
+      dsl = new(build)
+      dsl.instance_eval do
+        if build.repository_url
+          repository :git, build.repository_url
+          update
+        end
+      end
+      dsl.instance_eval build.project.steps
     end
     
     def initialize(build)

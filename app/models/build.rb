@@ -4,7 +4,7 @@ class Build < ActiveRecord::Base
   
   serialize :parameters, Hash
 
-  delegate :name, :to => :project
+  delegate :name, :repository_url, :to => :project
 
   belongs_to :project
   belongs_to :slave
@@ -13,6 +13,8 @@ class Build < ActiveRecord::Base
   
   named_scope :pending, :conditions => { :status => 'pending' }
   named_scope :finished, :conditions => ['status != ? and status != ?', 'pending', 'running']
+  
+  overrides_field :revision, :from => :parent, :if => lambda { |build| build.repository_url == build.parent.repository_url }
   
   attr_accessor :previous_changes
   before_save { |build| build.previous_changes = build.changes }
@@ -84,14 +86,14 @@ class Build < ActiveRecord::Base
   
   def finished
     parent.child_finished(self) if parent
-    project.next.build!(environment) if success? && project.next
+    project.next.build_with_parent_build!(self) if success? && project.next
   end
   
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
       update_attributes :status => (success ? 'success' : 'failure')
-      project.next.build!(environment) if success? && project.next
+      project.next.build_with_parent_build!(self) if success? && project.next
     end
   end
   
