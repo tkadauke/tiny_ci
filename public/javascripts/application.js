@@ -5,7 +5,8 @@ $(document).observe('dom:loaded', function() {
 
 var Report = {
   update: function() {
-    new Ajax.Updater('report', document.location.href, { method: 'get', onComplete: function() { Report.attach(); $('bottom_anchor').scrollTo(); } })
+    Report.measureWindow();
+    new Ajax.Updater('report', document.location.href, { method: 'get', onComplete: Report.afterUpdate })
   },
   
   attach: function() {
@@ -15,5 +16,18 @@ var Report = {
         event.stop();
       });
     });
+  },
+  
+  measureWindow: function() {
+    Report.documentHeight = $(document.body).getDimensions().height;
+    Report.viewportHeight = document.viewport.getDimensions().height;
+    Report.scrollOffset = document.viewport.getScrollOffsets().top;
+  },
+  
+  afterUpdate: function() {
+    Report.attach();
+    if (Report.scrollOffset + Report.viewportHeight + 100 >= Report.documentHeight) {
+      $('bottom_anchor').scrollTo();
+    }
   }
 };
