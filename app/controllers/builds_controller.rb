@@ -3,11 +3,15 @@ class BuildsController < ApplicationController
   
   def index
     list
-    render :action => 'list'
   end
   
   def list
     @builds = @project.builds.find :all, :include => { :children => :project }, :order => 'created_at DESC'
+    if request.xhr?
+      render :partial => 'list', :locals => { :builds => @builds }
+    else
+      render :action => 'list'
+    end
   end
   
   def show

@@ -1,5 +1,9 @@
+<%= juggernaut :channels => ["queue"] %>
+
 <h1>Builds of Project <%= link_to @project.name, project_path(@project) %></h1>
 
-<%= render :partial => 'list', :locals => { :builds => @builds } %>
+<div id="queue">
+  <%= render :partial => 'list', :locals => { :builds => @builds } %>
+</div>
 
-<%= link_to 'Back to Project', project_path(@project) %>
+<p><%= link_to 'Back to Project', project_path(@project) %></p>

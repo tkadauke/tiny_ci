@@ -31,3 +31,9 @@ var Report = {
     }
   }
 };
+
+var Queue = {
+  update: function() {
+    new Ajax.Updater('queue', document.location.href, { method: 'get' })
+  }
+}

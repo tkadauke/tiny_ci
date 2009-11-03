@@ -1,3 +1,5 @@
+<%= juggernaut :channels => ["queue"] %>
+
 <h2>Quick links</h2>
 
 <ul class="asterisk">
@@ -5,27 +7,6 @@
   <li><%= link_to 'Manage build slaves', admin_slaves_path %></li>
 </ul>
 
-<h2>Build queue</h2>
-
-<%= render :partial => "/builds/list", :locals => { :builds => Build.pending } %>
-
-<h2>Slave status</h2>
-
-<ul>
-  <% @slaves.each do |slave| %>
-    <li>
-      <p><strong><%= slave.name %></strong></p>
-      <% if slave.offline? %>
-        <p>Slave is offline. <%= link_to 'Configure', edit_admin_slave_path(slave) %></p>
-      <% else %>
-        <ul>
-          <%= render :partial => "/builds/list", :locals => { :builds => slave.current_builds } %>
-        </ul>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
-
-<h2>Recently finished builds</h2>
-
-<%= render :partial => "/builds/completed", :locals => { :builds => @recent_builds } %>
+<div id="queue">
+  <%= render :partial => "queue" %>
+</div>
