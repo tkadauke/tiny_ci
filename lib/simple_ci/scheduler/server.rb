@@ -17,7 +17,7 @@ module SimpleCI
       def stop(build_id)
         build = Build.find(build_id)
         
-        build.update_attributes :status => 'canceled'
+        build.update_attributes :status => 'canceled', :finished_at => Time.now
         pid = processes[build.id]
         if pid
           Process.kill("TERM", pid)
@@ -53,7 +53,7 @@ module SimpleCI
       end
       
       def start(build)
-        build.update_attributes :status => 'running'
+        build.update_attributes :status => 'running', :started_at => Time.now
         processes[build.id] = fork { exec "script/builder", build.id.to_s }
       end
   

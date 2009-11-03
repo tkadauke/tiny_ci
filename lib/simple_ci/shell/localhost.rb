@@ -37,7 +37,7 @@ module SimpleCI
       end
       
       def capture(command, working_dir)
-        Dir.chdir(wokring_dir) do
+        Dir.chdir(working_dir) do
           %x{#{command}}
         end
       end

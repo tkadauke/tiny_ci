@@ -5,6 +5,9 @@
 <dl>
   <dt>Revision</dt>
   <dd><%= @build.revision.blank? ? 'unknown' : @build.revision %></dd>
+  
+  <dt>Duration</dt>
+  <dd><%= duration(@build.duration) %></dd>
 </dl>
 
 <% if @build.running? || @build.pending? %>

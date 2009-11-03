@@ -4,7 +4,7 @@ class SimpleCI::Scheduler::ServerTest < ActiveSupport::TestCase
   test "should start build" do
     SimpleCI::Scheduler::Server.instance.expects(:fork)
     build = stub(:id => 7)
-    build.expects(:update_attributes).with(:status => 'running')
+    build.expects(:update_attributes).with(has_entry(:status => 'running'))
     
     SimpleCI::Scheduler::Server.instance.start(build)
   end
@@ -14,7 +14,7 @@ class SimpleCI::Scheduler::ServerTest < ActiveSupport::TestCase
     Process.expects(:kill).with('TERM', 1234)
     build = stub(:id => 7)
     Build.expects(:find).with(7).returns(build)
-    build.expects(:update_attributes).with(:status => 'canceled')
+    build.expects(:update_attributes).with(has_entry(:status => 'canceled'))
     
     SimpleCI::Scheduler::Server.instance.stop(build.id)
   end

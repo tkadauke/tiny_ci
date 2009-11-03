@@ -14,7 +14,6 @@ module SimpleCI
         channel = @ssh.open_channel do |ch|
           env = build_environment(environment)
           
-          puts "executing ssh command: " + %{/bin/bash -c 'cd #{working_dir}; #{env} #{cmdline} 2>&1'}
           ch.exec %{/bin/bash -c 'cd #{working_dir}; #{env} #{cmdline} 2>&1'} do |ch, success|
             raise CommandExecutionFailed, "could not execute command" unless success
           

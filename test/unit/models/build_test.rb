@@ -43,7 +43,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate)
     
-    build.expects(:update_attributes).with(:status => 'success')
+    build.expects(:update_attributes).with(has_entry(:status => 'success'))
     build.build!
   end
   
@@ -64,7 +64,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SimpleCI::Shell::CommandExecutionFailed)
     
-    build.expects(:update_attributes).with(:status => 'failure')
+    build.expects(:update_attributes).with(has_entry(:status => 'failure'))
     build.build!
   end
   
@@ -74,7 +74,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
     
-    build.expects(:update_attributes).with(:status => 'stopped')
+    build.expects(:update_attributes).with(has_entry(:status => 'stopped'))
     build.build!
   end
   
@@ -84,7 +84,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:create_base_directory)
     SimpleCI::DSL.stubs(:evaluate).raises(RuntimeError)
     
-    build.expects(:update_attributes).with(:status => 'error')
+    build.expects(:update_attributes).with(has_entry(:status => 'error'))
     build.build!
   end
   

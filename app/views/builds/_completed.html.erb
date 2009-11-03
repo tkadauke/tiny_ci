@@ -8,6 +8,7 @@
         <th>Name</th>
         <th>Timestamp</th>
         <th>Status</th>
+        <th>Duration</th>
       </tr>
     </thead>
     <tbody>
@@ -17,6 +18,7 @@
           <td><%= link_to build.name, project_path(build.project) %></td>
           <td><%= link_to build.created_at.to_s, project_build_path(build.project, build) %></td>
           <td><%= build.status %></td>
+          <td><%= duration(build.duration) %></td>
         </tr>
       <% end %>
     </tbody>

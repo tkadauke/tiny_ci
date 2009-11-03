@@ -19,6 +19,10 @@ class Build < ActiveRecord::Base
   attr_accessor :previous_changes
   before_save { |build| build.previous_changes = build.changes }
   
+  def duration
+    finished_at && started_at ? (finished_at - started_at) : nil
+  end
+  
   def environment
     @environment ||= (self.parameters || {})
   end
@@ -67,15 +71,15 @@ class Build < ActiveRecord::Base
     if project.has_children?
       update_attributes :status => 'waiting'
     else
-      update_attributes :status => 'success'
+      update_attributes :status => 'success', :finished_at => Time.now
     end
   rescue SignalException => e
-    update_attributes :status => 'stopped'
+    update_attributes :status => 'stopped', :finished_at => Time.now
   rescue SimpleCI::Shell::CommandExecutionFailed => e
-    update_attributes :status => 'failure'
+    update_attributes :status => 'failure', :finished_at => Time.now
   rescue Exception => e
     add_to_output(Time.now, 'runner', [e.message] + e.backtrace)
-    update_attributes :status => 'error'
+    update_attributes :status => 'error', :finished_at => Time.now
   ensure
     finished
   end
@@ -92,7 +96,7 @@ class Build < ActiveRecord::Base
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
-      update_attributes :status => (success ? 'success' : 'failure')
+      update_attributes :status => (success ? 'success' : 'failure'), :finished_at => Time.now
       project.next.build_with_parent_build!(self) if success? && project.next
     end
   end
