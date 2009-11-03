@@ -39,7 +39,7 @@ module SimpleCI
             builds = ::Build.pending.find(:all)
             next_build = builds.find { |build| build.buildable? }
             if next_build
-              slave = Slave.find_free_slave
+              slave = Slave.find_free_slave_for(next_build)
               if slave
                 next_build.assign_to!(slave)
                 start(next_build)

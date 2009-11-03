@@ -4,7 +4,7 @@ class Build < ActiveRecord::Base
   
   serialize :parameters, Hash
 
-  delegate :name, :repository_url, :to => :project
+  delegate :name, :repository_url, :requirements, :to => :project
 
   belongs_to :project
   belongs_to :slave

@@ -28,8 +28,8 @@ class Slave < ActiveRecord::Base
     running_builds.empty?
   end
   
-  def self.find_free_slave
-    all.find { |slave| !slave.offline? && slave.free? }
+  def self.find_free_slave_for(build)
+    all.find { |slave| !slave.offline? && slave.free? && slave.can_build?(build) }
   end
   
   def current_builds
@@ -38,6 +38,13 @@ class Slave < ActiveRecord::Base
   
   def environment
     environment_variables.inject({}) { |hash, ev| hash[ev.last['key']] = ev.last['value']; hash }
+  end
+  
+  def can_build?(build)
+    req = (build.requirements || "").split(',').map(&:strip).map(&:downcase)
+    cap = (self.capabilities || "").split(',').map(&:strip).map(&:downcase)
+    
+    req - cap == []
   end
   
 protected

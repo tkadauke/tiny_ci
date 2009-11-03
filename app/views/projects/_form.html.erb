@@ -23,6 +23,12 @@
   <%= f.text_area :steps, :rows => 10 %>
 </p>
 
+<p class="form_item">
+  <span class="label"><%= f.label :requirements, 'Project requirements' %></span>
+  <span class="desc">Capabilities a build slave must have to build this project, separated by commas</span>
+  <%= f.text_area :requirements, :rows => 3 %>
+</p>
+
 <h2>Run this project after</h2>
 
 <p class="form_item">

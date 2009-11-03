@@ -26,11 +26,16 @@
 
 <h2>Project details</h2>
 
-<p><strong>Description</strong></p>
-<%= simple_format @project.description %>
+<dl>
+  <dt>Description</dt>
+  <dd><%= simple_format @project.description %></dd>
 
-<p><strong>Steps</strong></p>
-<pre><%= @project.steps %></pre>
+  <dt>Steps</dt>
+  <dd><pre><%= @project.steps %></pre></dd>
+
+  <dt>Requirements</dt>
+  <dd><%= @project.requirements %></dd>
+</dl>
 
 <% if @project.standalone? %>
   <%= button_to 'Build now', project_builds_path(@project) %>
