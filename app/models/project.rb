@@ -6,6 +6,9 @@ class Project < ActiveRecord::Base
   belongs_to :previous, :class_name => 'Project', :foreign_key => 'previous_project_id'
   has_one :next, :class_name => 'Project', :foreign_key => 'previous_project_id'
   
+  validates_presence_of :name
+  validates_uniqueness_of :name
+  
   acts_as_tree
   
   named_scope :root_set, :conditions => 'parent_id is null'

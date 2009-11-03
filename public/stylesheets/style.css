@@ -372,3 +372,8 @@ ul.asterisk a {
 		color: #333333;
 		text-decoration: underline;
 	}
+
+
+.errorExplanation { border: 2px solid red; color: red; padding: 1em; margin-bottom: 1em; }
+.fieldWithErrors label { color: red; }
+.fieldWithErrors input { border: 2px solid red; }

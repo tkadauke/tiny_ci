@@ -6,6 +6,9 @@ class Slave < ActiveRecord::Base
   has_many :builds
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   
+  validates_presence_of :name, :protocol
+  validates_uniqueness_of :name
+  
   overrides_field :base_path, :from => "SimpleCI::Config"
   
   def self.find_for_cloning!(id)
