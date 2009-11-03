@@ -377,3 +377,8 @@ ul.asterisk a {
 .errorExplanation { border: 2px solid red; color: red; padding: 1em; margin-bottom: 1em; }
 .fieldWithErrors label { color: red; }
 .fieldWithErrors input { border: 2px solid red; }
+
+table.list { border: 1px solid gray; width: 100%; }
+table.list th { text-align: left; border-bottom: 2px solid gray; }
+table.list tr:nth-child(even) { background-color: lightgray; }
+table.list tr:nth-child(odd) { background-color: white; }

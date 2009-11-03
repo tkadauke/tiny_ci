@@ -1,7 +1,7 @@
 <%= f.error_messages %>
 
 <p class="form_item">
-  <span class="label"><%= f.label :name, 'Parent project' %></span>
+  <span class="label"><%= f.label :parent_id, 'Parent project' %></span>
   <%= f.select :parent_id, Project.root_set.reject { |p| p == @project }.collect { |p| [p.name, p.id] }, :include_blank => true %>
 </p>
 
