@@ -39,24 +39,22 @@ class Build < ActiveRecord::Base
     project.buildable? && pending?
   end
   
-  def running?
-    status == 'running'
-  end
-  
-  def pending?
-    status == 'pending'
-  end
-  
-  def waiting?
-    status == 'waiting'
-  end
-  
   def finished?
     !running? && !pending?
   end
   
-  def success?
-    status == 'success'
+  [:running, :pending, :waiting, :success, :error, :failure, :canceled, :stopped].each do |status_name|
+    define_method "#{status_name}?" do
+      self.status == status_name.to_s
+    end
+  end
+  
+  def good?
+    success?
+  end
+  
+  def bad?
+    error? || failure? || canceled? || stopped?
   end
   
   def has_children?
