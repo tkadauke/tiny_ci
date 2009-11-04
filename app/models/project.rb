@@ -21,6 +21,10 @@ class Project < ActiveRecord::Base
     project
   end
   
+  def needed_resources
+    SimpleCI::Resources::Parser.parse(self.requirements)
+  end
+  
   def has_children?
     !children.empty?
   end

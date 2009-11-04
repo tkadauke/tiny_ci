@@ -1,5 +1,3 @@
-parallel builds / max # of builds per slave
-  - resources
 xfd
 statistics
   - weather

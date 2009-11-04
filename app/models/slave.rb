@@ -32,7 +32,7 @@ class Slave < ActiveRecord::Base
   end
   
   def self.find_free_slave_for(build)
-    all.find { |slave| !slave.offline? && slave.free? && slave.can_build?(build) }
+    all.find { |slave| puts "#{build.name} #{build.needed_resources.inspect}, #{slave.name} #{slave.free_resources.inspect}"; !slave.offline? && slave.can_build?(build) }
   end
   
   def current_builds
@@ -43,11 +43,24 @@ class Slave < ActiveRecord::Base
     environment_variables.inject({}) { |hash, ev| hash[ev.last['key']] = ev.last['value']; hash }
   end
   
+  def all_resources
+    SimpleCI::Resources::Parser.parse(self.capabilities)
+  end
+  
+  def free_resources
+    res = all_resources
+    running_builds.each do |build|
+      res -= build.needed_resources
+    end
+    res
+  end
+  
   def can_build?(build)
-    req = (build.requirements || "").split(',').map(&:strip).map(&:downcase)
-    cap = (self.capabilities || "").split(',').map(&:strip).map(&:downcase)
-    
-    req - cap == []
+    free_resources.includes?(build.needed_resources)
+    # req = (build.requirements || "").split(',').map(&:strip).map(&:downcase)
+    # cap = (self.capabilities || "").split(',').map(&:strip).map(&:downcase)
+    # 
+    # req - cap == []
   end
   
 protected

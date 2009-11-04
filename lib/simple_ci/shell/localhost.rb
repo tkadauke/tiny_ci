@@ -27,6 +27,8 @@ module SimpleCI
       end
       
       def exists?(path, working_dir)
+        return false unless File.exists?(working_dir)
+        
         Dir.chdir(working_dir) do
           File.exists?(path)
         end
