@@ -4,20 +4,7 @@
 
 <h2>Slave status</h2>
 
-<ul>
-  <% @slaves.each do |slave| %>
-    <li>
-      <p><strong><%= slave.name %></strong></p>
-      <% if slave.offline? %>
-        <p>Slave is offline. <%= link_to 'Configure', edit_admin_slave_path(slave) %></p>
-      <% else %>
-        <ul>
-          <%= render :partial => "/builds/list", :locals => { :builds => slave.current_builds } %>
-        </ul>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
+<%= render :partial => "slave_status" %>
 
 <h2>Recently finished builds</h2>
 
