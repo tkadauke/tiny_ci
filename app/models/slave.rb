@@ -34,7 +34,7 @@ class Slave < ActiveRecord::Base
   end
   
   def self.find_free_slave_for(build)
-    least_busy.find(:all).find { |slave| !slave.offline? && slave.can_build?(build) }
+    least_busy.find(:all).find { |slave| slave.can_build?(build) }
   end
   
   def current_builds
