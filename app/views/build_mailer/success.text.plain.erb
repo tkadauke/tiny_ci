@@ -1,0 +1,10 @@
+Hello,
+
+Build #<%= @build.position %> of project <%= @build.name %> succeeded.
+
+See
+
+  http://<%= SimpleCI::Config.site_root %><%= project_build_path(@build.project, @build) %>
+
+Sincerely,
+SimpleCI

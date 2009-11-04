@@ -1,3 +1,6 @@
 base_path: <%= ENV['HOME'] %>/simple_ci
 environment:
   CI_SERVER: SimpleCI
+site_root: localhost:3000
+sender_address: simple_ci@example.com
+recipient_address: developers@example.com
