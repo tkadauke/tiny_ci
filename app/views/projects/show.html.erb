@@ -1,6 +1,13 @@
 <h1>Project <%= @project.name %></h1>
 
-<p><%= link_to 'Edit', edit_project_path(@project) %> | <%= link_to 'Builds', project_builds_path(@project) %> | <%= link_to 'Clone', new_project_path(:clone => @project) %></p>
+<ul class="action-list">
+  <li><%= link_to 'Edit', edit_project_path(@project) %></li>
+  <li><%= link_to 'Builds', project_builds_path(@project) %></li>
+  <li><%= link_to 'Clone', new_project_path(:clone => @project) %></li>
+  <% unless @project.parent %>
+    <li><%= link_to 'New Child Project', new_project_path(:parent => @project) %></li>
+  <% end %>
+</ul>
 
 <% if @project.previous || @project.next %>
   <h2>Build chain</h2>

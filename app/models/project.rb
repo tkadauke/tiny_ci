@@ -21,6 +21,10 @@ class Project < ActiveRecord::Base
     project
   end
   
+  def self.new_with_parent(name)
+    new(:parent => find_by_name!(name))
+  end
+  
   def needed_resources
     TinyCI::Resources::Parser.parse(self.requirements)
   end

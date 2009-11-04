@@ -15,6 +15,8 @@ class ProjectsController < ApplicationController
   def new
     if params[:clone]
       @project = Project.find_for_cloning!(params[:clone])
+    elsif params[:parent]
+      @project = Project.new_with_parent(params[:parent])
     else
       @project = Project.new
     end

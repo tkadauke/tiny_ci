@@ -1,9 +1,5 @@
 <%= f.error_messages %>
-
-<p class="form_item">
-  <span class="label"><%= f.label :parent_id, 'Parent project' %></span>
-  <%= f.select :parent_id, Project.root_set.reject { |p| p == @project }.collect { |p| [p.name, p.id] }, :include_blank => true %>
-</p>
+<%= f.hidden_field :parent_id %>
 
 <p class="form_item">
   <span class="label"><%= f.label :name, 'Name' %></span>
@@ -31,9 +27,11 @@
   <%= f.text_area :requirements, :rows => 3 %>
 </p>
 
-<h2>Run this project after</h2>
+<% unless @project.parent %>
+  <h2>Run this project after</h2>
 
-<p class="form_item">
-  <span class="label"><%= f.label :previous_project_id, 'Previous Project' %></span>
-  <%= f.select :previous_project_id, Project.root_set.reject { |p| p == @project }.collect { |p| [p.name, p.id] }, :include_blank => true %>
-</p>
+  <p class="form_item">
+    <span class="label"><%= f.label :previous_project_id, 'Previous Project' %></span>
+    <%= f.select :previous_project_id, Project.root_set.reject { |p| p == @project }.collect { |p| [p.name, p.id] }, :include_blank => true %>
+  </p>
+<% end %>

@@ -14,11 +14,11 @@
   <p><%= link_to image_tag("icons/small/stopped.png") + ' Stop', stop_project_build_path(@project, @build), :method => :post %></p>
 <% end %>
 
-<p>
-  <%= link_to 'Raw output', project_build_path(@project, @build, :report => 'raw') %> |
-  <%= link_to 'Gist', project_build_path(@project, @build, :report => 'gist') %> |
-  <%= link_to 'Details', project_build_path(@project, @build, :report => 'details') %>
-</p>
+<ul class="action-list">
+  <li><%= link_to 'Raw output', project_build_path(@project, @build, :report => 'raw') %></li>
+  <li><%= link_to 'Gist', project_build_path(@project, @build, :report => 'gist') %></li>
+  <li><%= link_to 'Details', project_build_path(@project, @build, :report => 'details') %></li>
+</ul>
 
 <div class="report" id="report">
   <%= render :partial => 'report' %>

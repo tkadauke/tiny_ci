@@ -1,6 +1,9 @@
 <h1>Slave <%= @slave.name %></h1>
 
-<p><%= link_to 'Edit', edit_admin_slave_path(@slave) %> | <%= link_to 'Clone', new_admin_slave_path(:clone => @slave) %></p>
+<ul class="action-list">
+  <li><%= link_to 'Edit', edit_admin_slave_path(@slave) %></li>
+  <li><%= link_to 'Clone', new_admin_slave_path(:clone => @slave) %></li>
+</ul>
 
 <dl>
   <dt>Offline</dt>
