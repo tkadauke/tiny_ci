@@ -19,6 +19,8 @@ class Build < ActiveRecord::Base
   attr_accessor :previous_changes
   before_save { |build| build.previous_changes = build.changes }
   
+  after_update :update_stats_if_neccessary
+  
   def duration
     finished_at && started_at ? (finished_at - started_at) : nil
   end
@@ -40,7 +42,7 @@ class Build < ActiveRecord::Base
   end
   
   def finished?
-    !running? && !pending?
+    good? || bad?
   end
   
   [:running, :pending, :waiting, :success, :error, :failure, :canceled, :stopped].each do |status_name|
@@ -124,6 +126,12 @@ class Build < ActiveRecord::Base
   
   def build_output
     @build_output ||= []
+  end
+
+  def update_stats_if_neccessary
+    if previous_changes.has_key?('status') && finished?
+      project.update_build_stats!
+    end
   end
 
 private

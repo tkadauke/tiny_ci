@@ -3,6 +3,11 @@ class Project < ActiveRecord::Base
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   has_many :pending_builds, :class_name => 'Build', :conditions => { :status => 'pending' }
   
+  has_many :weather_relevant_builds, :class_name => 'Build', :order => 'created_at DESC', :conditions => 'finished_at is not null', :limit => 5
+  has_one :last_finished_build, :class_name => 'Build', :order => 'created_at DESC', :conditions => 'finished_at is not null'
+  has_one :last_successful_build, :class_name => 'Build', :order => 'created_at DESC', :conditions => ['status = ? and finished_at is not null', 'success']
+  has_one :last_failed_build, :class_name => 'Build', :order => 'created_at DESC', :conditions => ['status in (?) and finished_at is not null', ['error', 'failure']]
+  
   belongs_to :previous, :class_name => 'Project', :foreign_key => 'previous_project_id'
   has_one :next, :class_name => 'Project', :foreign_key => 'previous_project_id'
   
@@ -57,5 +62,16 @@ class Project < ActiveRecord::Base
   
   def standalone?
     parent_id.blank?
+  end
+  
+  def update_build_stats!
+    fill_build_count = 5 - weather_relevant_builds.size
+    
+    self.weather = weather_relevant_builds.collect { |build| build.good? ? 1 : 0 }.sum + fill_build_count
+    self.status = last_finished_build.status rescue nil
+    self.last_build_time = last_finished_build.duration rescue nil
+    self.last_succeeded_at = last_successful_build.finished_at rescue nil
+    self.last_failed_at = last_failed_build.finished_at rescue nil
+    save
   end
 end

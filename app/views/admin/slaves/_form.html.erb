@@ -11,7 +11,7 @@
 
 <p class="form_item">
   <span class="label"><%= f.label :protocol, 'Protocol' %></span>
-  <%= f.text_field :protocol %>
+  <%= f.select :protocol, ['localhost', 'ssh'] %>
 </p>
 
 <p class="form_item">
