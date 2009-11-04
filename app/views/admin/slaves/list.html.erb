@@ -3,6 +3,7 @@
 <table class="list">
   <thead>
     <tr>
+      <th>Status</th>
       <th>Protocol</th>
       <th>Name</th>
       <th>Hostname</th>
@@ -11,6 +12,13 @@
   <tbody>
     <% @slaves.each do |slave| %>
       <tr>
+        <td>
+          <% if slave.offline %>
+            <%= image_tag 'icons/small/offline.png' %> Offline
+          <% else %>
+            <%= image_tag 'icons/small/online.png' %> Online
+          <% end %>
+        </td>
         <td><%= slave.protocol %></td>
         <td><%= link_to slave.name, admin_slave_path(slave) %></td>
         <td><%= slave.hostname %></td>
