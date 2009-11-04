@@ -22,7 +22,7 @@ class Project < ActiveRecord::Base
   end
   
   def needed_resources
-    SimpleCI::Resources::Parser.parse(self.requirements)
+    TinyCI::Resources::Parser.parse(self.requirements)
   end
   
   def has_children?

@@ -2,6 +2,6 @@
 require File.dirname(__FILE__) + '/../config/environment'
 require 'drb'
 
-DRb.start_service "druby://localhost:2250", SimpleCI::Scheduler::Server.instance
+DRb.start_service "druby://localhost:2250", TinyCI::Scheduler::Server.instance
 
-SimpleCI::Scheduler::Server.run
+TinyCI::Scheduler::Server.run

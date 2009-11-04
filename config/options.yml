@@ -1,6 +1,6 @@
-base_path: <%= ENV['HOME'] %>/simple_ci
+base_path: <%= ENV['HOME'] %>/tiny_ci
 environment:
-  CI_SERVER: SimpleCI
+  CI_SERVER: TinyCI
 site_root: localhost:3000
-sender_address: simple_ci@example.com
+sender_address: tiny_ci@example.com
 recipient_address: developers@example.com

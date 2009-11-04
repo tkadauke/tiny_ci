@@ -6,10 +6,10 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'ssh'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.stubs(:evaluate)
+    TinyCI::DSL.stubs(:evaluate)
     build.stubs(:update_attributes)
     
-    SimpleCI::Shell::SSH.expects(:new).returns(stub(:mkdir))
+    TinyCI::Shell::SSH.expects(:new).returns(stub(:mkdir))
     build.build!
   end
   
@@ -18,8 +18,8 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost', :base_path => '/some/base/path'))
     shell = mock(:mkdir)
-    SimpleCI::Shell::Localhost.stubs(:new).returns(shell)
-    SimpleCI::DSL.stubs(:evaluate)
+    TinyCI::Shell::Localhost.stubs(:new).returns(shell)
+    TinyCI::DSL.stubs(:evaluate)
     
     build.stubs(:update_attributes)
     build.build!
@@ -30,7 +30,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.expects(:evaluate)
+    TinyCI::DSL.expects(:evaluate)
     
     build.stubs(:update_attributes)
     build.build!
@@ -41,7 +41,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:project).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.stubs(:evaluate)
+    TinyCI::DSL.stubs(:evaluate)
     
     build.expects(:update_attributes).with(has_entry(:status => 'success'))
     build.build!
@@ -52,7 +52,7 @@ class BuildTest < ActiveSupport::TestCase
     build.stubs(:project).returns(mock(:has_children? => true))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.stubs(:evaluate)
+    TinyCI::DSL.stubs(:evaluate)
     
     build.expects(:update_attributes).with(:status => 'waiting')
     build.build!
@@ -62,7 +62,7 @@ class BuildTest < ActiveSupport::TestCase
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.stubs(:evaluate).raises(SimpleCI::Shell::CommandExecutionFailed)
+    TinyCI::DSL.stubs(:evaluate).raises(TinyCI::Shell::CommandExecutionFailed)
     
     build.expects(:update_attributes).with(has_entry(:status => 'failure'))
     build.build!
@@ -72,7 +72,7 @@ class BuildTest < ActiveSupport::TestCase
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
+    TinyCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
     
     build.expects(:update_attributes).with(has_entry(:status => 'stopped'))
     build.build!
@@ -82,7 +82,7 @@ class BuildTest < ActiveSupport::TestCase
     build = Build.new(:updated_at => Time.now)
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
-    SimpleCI::DSL.stubs(:evaluate).raises(RuntimeError)
+    TinyCI::DSL.stubs(:evaluate).raises(RuntimeError)
     
     build.expects(:update_attributes).with(has_entry(:status => 'error'))
     build.build!

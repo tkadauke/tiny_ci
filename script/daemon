@@ -3,11 +3,11 @@ require 'rubygems'
 require 'daemons'
 
 app_root = File.expand_path(File.dirname(__FILE__) + '/..')
-script_file = File.join(File.expand_path(app_root), 'script', 'simple_ci')
+script_file = File.join(File.expand_path(app_root), 'script', 'tiny_ci')
 tmp_dir = File.join(File.expand_path(app_root), 'tmp', 'pids')
 
 options = {
-  :app_name   => "simple_ci",
+  :app_name   => "tiny_ci",
   :dir_mode   => :normal,
   :dir        => tmp_dir,
   :multiple   => false,

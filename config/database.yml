@@ -3,7 +3,7 @@ development:
   username: root
   password:
   encoding: utf8
-  database: simple_ci_development
+  database: tiny_ci_development
 
 # # SQLite version 3.x
 # #   gem install sqlite3-ruby (not necessary on OS X Leopard)

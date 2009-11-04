@@ -62,10 +62,10 @@ class Build < ActiveRecord::Base
   end
   
   def build!
-    @shell = SimpleCI::Shell.open(self)
+    @shell = TinyCI::Shell.open(self)
     
     create_base_directory
-    SimpleCI::DSL.evaluate(self)
+    TinyCI::DSL.evaluate(self)
     if project.has_children?
       update_attributes :status => 'waiting'
     else
@@ -73,7 +73,7 @@ class Build < ActiveRecord::Base
     end
   rescue SignalException => e
     update_attributes :status => 'stopped', :finished_at => Time.now
-  rescue SimpleCI::Shell::CommandExecutionFailed => e
+  rescue TinyCI::Shell::CommandExecutionFailed => e
     update_attributes :status => 'failure', :finished_at => Time.now
   rescue Exception => e
     add_to_output(Time.now, 'runner', [e.message] + e.backtrace)
@@ -83,7 +83,7 @@ class Build < ActiveRecord::Base
   end
   
   def stop!
-    SimpleCI::Scheduler::Client.stop(self)
+    TinyCI::Scheduler::Client.stop(self)
   end
   
   def finished

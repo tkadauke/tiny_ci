@@ -1,11 +1,11 @@
 <% if @build.output %>
-  <% output = SimpleCI::Output.new(@build.output) %>
+  <% output = TinyCI::Output.new(@build.output) %>
   
   <% if @report == 'raw' %>
     <%= render :partial => 'raw_output', :locals => { :output => output } %>
   <% else %>
     <ul>
-      <li><%= render_report SimpleCI::OutputParser::RakeParser.parse(output), @report %></li>
+      <li><%= render_report TinyCI::OutputParser::RakeParser.parse(output), @report %></li>
     </ul>
   <% end %>
 <% else %>

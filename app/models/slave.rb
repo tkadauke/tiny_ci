@@ -11,7 +11,7 @@ class Slave < ActiveRecord::Base
   validates_presence_of :name, :protocol
   validates_uniqueness_of :name
   
-  overrides_field :base_path, :from => "SimpleCI::Config"
+  overrides_field :base_path, :from => "TinyCI::Config"
   
   def self.find_for_cloning!(id)
     slave = find(id)
@@ -22,7 +22,7 @@ class Slave < ActiveRecord::Base
   end
   
   def current_environment
-    SimpleCI::Config.environment.merge(environment)
+    TinyCI::Config.environment.merge(environment)
   end
 
   def busy?
@@ -46,7 +46,7 @@ class Slave < ActiveRecord::Base
   end
   
   def all_resources
-    SimpleCI::Resources::Parser.parse(self.capabilities)
+    TinyCI::Resources::Parser.parse(self.capabilities)
   end
   
   def free_resources

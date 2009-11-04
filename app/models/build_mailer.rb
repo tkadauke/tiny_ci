@@ -11,8 +11,8 @@ class BuildMailer < ActionMailer::Base
   
 private
   def set_header(build)
-    recipients SimpleCI::Config.recipient_address
-    from SimpleCI::Config.sender_address
+    recipients TinyCI::Config.recipient_address
+    from TinyCI::Config.sender_address
     body :build => build
   end
 end
