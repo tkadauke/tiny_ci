@@ -32,7 +32,7 @@ class Slave < ActiveRecord::Base
   end
   
   def self.find_free_slave_for(build)
-    all.find { |slave| puts "#{build.name} #{build.needed_resources.inspect}, #{slave.name} #{slave.free_resources.inspect}"; !slave.offline? && slave.can_build?(build) }
+    all.find { |slave| !slave.offline? && slave.can_build?(build) }
   end
   
   def current_builds
