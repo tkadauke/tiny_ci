@@ -1,4 +1,12 @@
+parallel builds / max # of builds per slave
+  - resources
+xfd
+statistics
+  - weather
+  - time to fix
 frontend optimizations
 login area
+  - personal builds
+  - personal slaves
 custom reports
 trends
