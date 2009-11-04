@@ -6,6 +6,8 @@ class Slave < ActiveRecord::Base
   has_many :builds
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   
+  named_scope :least_busy, :include => :running_builds, :group => 'builds.id', :order => 'COUNT(builds.id)', :conditions => 'not offline'
+  
   validates_presence_of :name, :protocol
   validates_uniqueness_of :name
   
@@ -32,7 +34,7 @@ class Slave < ActiveRecord::Base
   end
   
   def self.find_free_slave_for(build)
-    all.find { |slave| !slave.offline? && slave.can_build?(build) }
+    least_busy.find(:all).find { |slave| !slave.offline? && slave.can_build?(build) }
   end
   
   def current_builds
