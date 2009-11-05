@@ -1,0 +1,13 @@
+<ul class="project-overview">
+  <% projects.each do |project| %>
+    <li>
+      <div class="status">
+        <%= image_tag "icons/large/#{project.status}.png" if project.status %>
+      </div>
+      <div class="details">
+        <%= link_to project.name, project_path(project) %>
+      </div>
+    </li>
+  <% end %>
+</ul>
+<div class="clearer"></div>

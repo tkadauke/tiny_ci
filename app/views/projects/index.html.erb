@@ -1,5 +1,10 @@
 <h1>Listing Projects</h1>
 
-<%= render :partial => 'list', :locals => { :projects => @projects } %>
+<ul class="action-list">
+  <li><%= link_to 'Details', projects_path(:report => 'list') %></li>
+  <li><%= link_to 'Overview', projects_path(:report => 'overview') %></li>
+</ul>
+
+<%= render :partial => @report, :locals => { :projects => @projects } %>
 
 <p><%= link_to 'New Project', new_project_path %></p>

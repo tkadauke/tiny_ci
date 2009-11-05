@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
   def index
+    @report = params[:report] || 'list'
     @projects = Project.root_set
   end
   
