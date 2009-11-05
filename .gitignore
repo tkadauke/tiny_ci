@@ -1,1 +1,4 @@
 .DS_Store
+dist/*
+vendor/gems
+vendor/rails
