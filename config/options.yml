@@ -4,3 +4,10 @@ environment:
 site_root: localhost:3000
 sender_address: tiny_ci@example.com
 recipient_address: developers@example.com
+
+email_domain: "localhost"
+email_address: "example.com"
+email_port: 25
+email_user_name: "tiny_ci@imedo.de"
+email_password: "password"
+email_authentication: :login
