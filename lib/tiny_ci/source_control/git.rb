@@ -9,7 +9,7 @@ module TinyCI
         end
         
         if @build.revision.blank?
-          revision = capture(%{git log -1 --format="%H"})
+          revision = capture(%{git rev-parse HEAD})
           @build.update_attributes(:revision => revision)
         else
           run("echo", "checking out revision #{@build.revision}")
