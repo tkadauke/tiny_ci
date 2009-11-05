@@ -13,7 +13,7 @@ module TinyCI
         amounts = @parts.inject({}) do |hash, cap|
           num = cap[/^(\d+)/, 1]
           name = cap[/^(\d+)\s+(.*)$/, 2] || cap
-          hash[name] = (num ? num.to_i : nil)
+          hash[name] = num.to_i if num
           hash
         end
         

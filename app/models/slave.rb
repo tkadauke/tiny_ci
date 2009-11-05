@@ -58,15 +58,18 @@ class Slave < ActiveRecord::Base
   end
   
   def can_build?(build)
-    free_resources.includes?(build.needed_resources)
-    # req = (build.requirements || "").split(',').map(&:strip).map(&:downcase)
-    # cap = (self.capabilities || "").split(',').map(&:strip).map(&:downcase)
-    # 
-    # req - cap == []
+    req = unnumbered_resources(build.requirements)
+    cap = unnumbered_resources(self.capabilities)
+    
+    free_resources.includes?(build.needed_resources) && req - cap == []
   end
   
 protected
   def cleanup_environment
     environment_variables.reject! { |index, kv| kv['key'].blank? }
+  end
+  
+  def unnumbered_resources(res)
+    (res || "").split(',').map(&:strip).select { |x| x.to_i == 0 }.map(&:downcase)
   end
 end
