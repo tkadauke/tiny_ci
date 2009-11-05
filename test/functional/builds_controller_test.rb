@@ -6,20 +6,12 @@ class BuildsControllerTest < ActionController::TestCase
     
     get 'index', :project_id => project.name
     assert_response :success
-    assert_template 'list'
   end
   
   test "should raise record not found if project not found" do
     assert_raise ActiveRecord::RecordNotFound do
       get 'index', :project_id => nil
     end
-  end
-  
-  test "should render list page" do
-    project = Project.create(:name => 'some_project')
-    
-    get 'list', :project_id => project.name
-    assert_response :success
   end
   
   test "should show build" do

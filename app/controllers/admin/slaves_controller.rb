@@ -1,10 +1,5 @@
 class Admin::SlavesController < ApplicationController
   def index
-    list
-    render :action => 'list'
-  end
-  
-  def list
     @slaves = Slave.all
   end
   

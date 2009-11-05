@@ -1,10 +1,5 @@
 class ProjectsController < ApplicationController
   def index
-    list
-    render :action => 'list'
-  end
-  
-  def list
     @projects = Project.root_set
   end
   

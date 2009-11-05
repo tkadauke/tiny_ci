@@ -2,16 +2,9 @@ class BuildsController < ApplicationController
   before_filter :find_project
   
   def index
-    list
-  end
-  
-  def list
     @builds = @project.builds.find :all, :include => { :children => :project }, :order => 'created_at DESC'
-    if request.xhr?
-      render :partial => 'list', :locals => { :builds => @builds }
-    else
-      render :action => 'list'
-    end
+    
+    render :partial => 'list', :locals => { :builds => @builds } if request.xhr?
   end
   
   def show

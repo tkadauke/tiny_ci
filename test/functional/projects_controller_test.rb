@@ -2,15 +2,9 @@ require 'test_helper'
 
 class ProjectsControllerTest < ActionController::TestCase
   test "should render index page" do
-    get 'index'
-    assert_response :success
-    assert_template 'list'
-  end
-  
-  test "should render list page" do
     project = Project.create(:name => 'some_project')
     
-    get 'list'
+    get 'index'
     assert_response :success
   end
   
