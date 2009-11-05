@@ -5,6 +5,9 @@
   <li><%= link_to 'Overview', projects_path(:report => 'overview') %></li>
 </ul>
 
-<%= render :partial => @report, :locals => { :projects => @projects } %>
+<%= auto_update 'projects' %>
+<div id="projects">
+  <%= render :partial => @report, :locals => { :projects => @projects } %>
+</div>
 
 <p><%= link_to 'New Project', new_project_path %></p>

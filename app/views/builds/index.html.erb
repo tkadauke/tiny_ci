@@ -2,6 +2,7 @@
 
 <h1>Builds of Project <%= link_to @project.name, project_path(@project) %></h1>
 
+<%= auto_update 'queue' %>
 <div id="queue">
   <%= render :partial => 'list', :locals => { :builds => @builds } %>
 </div>

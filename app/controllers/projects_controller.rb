@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   def index
     @report = params[:report] || 'list'
     @projects = Project.root_set
+    render :partial => @report, :locals => { :projects => @projects } if request.xhr?
   end
   
   def show

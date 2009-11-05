@@ -20,6 +20,7 @@
   <li><%= link_to 'Details', project_build_path(@project, @build, :report => 'details') %></li>
 </ul>
 
+<%= auto_update 'report' unless @build.finished? %>
 <div class="report" id="report">
   <%= render :partial => 'report' %>
 </div>

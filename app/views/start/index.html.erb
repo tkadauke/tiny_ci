@@ -7,6 +7,7 @@
   <li><%= link_to 'Manage build slaves', admin_slaves_path %></li>
 </ul>
 
+<%= auto_update 'queue' %>
 <div id="queue">
   <%= render :partial => "queue" %>
 </div>

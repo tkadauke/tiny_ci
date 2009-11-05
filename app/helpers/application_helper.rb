@@ -12,4 +12,8 @@ module ApplicationHelper
     
     [[days, 'days'], [hours, 'hours'], [minutes, 'minutes'], [seconds, 'seconds']].reject { |part| part.first == 0 }.collect { |part| part.join(' ') }.join(', ')
   end
+  
+  def auto_update(container)
+    periodically_call_remote(:url => request.request_uri, :update => container, :method => 'get')
+  end
 end
