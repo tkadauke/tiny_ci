@@ -1,6 +1,6 @@
-<h1>Edit Plan <%= @plan.name %></h1>
+<h1>Edit Project <%= @project.name %></h1>
 
-<% form_for [@project, @plan] do |f| %>
+<% form_for @project do |f| %>
   <%= render :partial => "form", :locals => { :f => f } %>
   <%= f.submit 'Update' %>
 <% end %>

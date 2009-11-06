@@ -2,6 +2,8 @@ class Build < ActiveRecord::Base
   attr_reader :shell
   attr_accessor :source_control
   
+  validates_presence_of :plan_id
+  
   serialize :parameters, Hash
 
   delegate :name, :repository_url, :requirements, :needed_resources, :to => :plan
@@ -20,6 +22,10 @@ class Build < ActiveRecord::Base
   before_save { |build| build.previous_changes = build.changes }
   
   after_update :update_stats_if_neccessary
+  
+  def project
+    plan.project
+  end
   
   def duration
     finished_at && started_at ? (finished_at - started_at) : nil

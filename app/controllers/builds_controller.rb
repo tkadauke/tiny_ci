@@ -1,4 +1,5 @@
 class BuildsController < ApplicationController
+  before_filter :find_project
   before_filter :find_plan
   
   def index
@@ -18,17 +19,21 @@ class BuildsController < ApplicationController
   def create
     @build = @plan.build!(params.except(:controller, :action, :plan_id))
     flash[:notice] = "Building plan #{@plan.name}"
-    redirect_to plan_build_path(@plan, @build)
+    redirect_to project_plan_build_path(@project, @plan, @build)
   end
   
   def stop
     @build = @plan.builds.find_by_position!(params[:id])
     @build.stop!
-    redirect_to plan_builds_path(@plan)
+    redirect_to project_plan_builds_path(@project, @plan)
   end
 
 protected
+  def find_project
+    @project = Project.find_by_name!(params[:project_id])
+  end
+  
   def find_plan
-    @plan = Plan.find_by_name!(params[:plan_id])
+    @plan = @project.plans.find_by_name!(params[:plan_id])
   end
 end

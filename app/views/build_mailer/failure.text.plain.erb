@@ -4,7 +4,7 @@ Build #<%= @build.position %> of plan <%= @build.name %> failed (status <%= @bui
 
 See
 
-  http://<%= TinyCI::Config.site_root %><%= plan_build_path(@build.plan, @build) %>
+  http://<%= TinyCI::Config.site_root %><%= project_plan_build_path(@build.project, @build.plan, @build) %>
 
 Sincerely,
 TinyCI

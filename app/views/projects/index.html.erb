@@ -1,0 +1,22 @@
+<h1>Listing Projects</h1>
+
+<table class="list">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td><%= link_to project.name, project_plans_path(project) %></td>
+        <td><%= truncate project.description, :length => 40 %></td>
+        <td><%= link_to 'Edit', edit_project_path(project) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= link_to 'New Project', new_project_path %></p>

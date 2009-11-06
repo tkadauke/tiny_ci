@@ -3,8 +3,10 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :slaves
   end
 
-  map.resources :plans do |plans|
-    plans.resources :builds, :member => { :stop => :post }
+  map.resources :projects do |projects|
+    projects.resources :plans do |plans|
+      plans.resources :builds, :member => { :stop => :post }
+    end
   end
   
   map.connect '/', :controller => '/start', :action => 'index'

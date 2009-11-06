@@ -1,12 +1,14 @@
 class PlansController < ApplicationController
+  before_filter :find_project
+  
   def index
     @report = params[:report] || 'list'
-    @plans = Plan.root_set
+    @plans = @project.root_plans
     render :partial => @report, :locals => { :plans => @plans } if request.xhr?
   end
   
   def show
-    @plan = Plan.find_by_name!(params[:id])
+    @plan = @project.plans.find_by_name!(params[:id])
   end
   
   def new
@@ -20,26 +22,31 @@ class PlansController < ApplicationController
   end
   
   def edit
-    @plan = Plan.find_by_name!(params[:id])
+    @plan = @project.plans.find_by_name!(params[:id])
   end
   
   def create
-    @plan = Plan.new(params[:plan])
+    @plan = @project.plans.build(params[:plan])
     if @plan.save
       flash[:notice] = "Successfully created plan"
-      redirect_to plan_path(@plan)
+      redirect_to project_plan_path(@project, @plan)
     else
       render :action => 'new'
     end
   end
   
   def update
-    @plan = Plan.find_by_name(params[:id])
+    @plan = @project.plans.find_by_name!(params[:id])
     if @plan.update_attributes(params[:plan])
       flash[:notice] = "Successfully updated plan"
-      redirect_to plan_path(@plan)
+      redirect_to project_plan_path(@project, @plan)
     else
       render :action => 'edit'
     end
+  end
+
+private
+  def find_project
+    @project = Project.find_by_name!(params[:project_id])
   end
 end

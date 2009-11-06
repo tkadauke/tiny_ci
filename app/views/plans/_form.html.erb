@@ -32,6 +32,6 @@
 
   <p class="form_item">
     <span class="label"><%= f.label :previous_plan_id, 'Previous Plan' %></span>
-    <%= f.select :previous_plan_id, Plan.root_set.reject { |p| p == @plan }.collect { |p| [p.name, p.id] }, :include_blank => true %>
+    <%= f.select :previous_plan_id, @project.root_plans.reject { |p| p == @plan }.collect { |p| [p.name, p.id] }, :include_blank => true %>
   </p>
 <% end %>

@@ -1,8 +1,8 @@
 <h1>Listing Plans</h1>
 
 <ul class="action-list">
-  <li><%= link_to 'Details', plans_path(:report => 'list') %></li>
-  <li><%= link_to 'Overview', plans_path(:report => 'overview') %></li>
+  <li><%= link_to 'Details', project_plans_path(@project, :report => 'list') %></li>
+  <li><%= link_to 'Overview', project_plans_path(@project, :report => 'overview') %></li>
 </ul>
 
 <%= auto_update 'plans' %>
@@ -10,4 +10,4 @@
   <%= render :partial => @report, :locals => { :plans => @plans } %>
 </div>
 
-<p><%= link_to 'New Plan', new_plan_path %></p>
+<p><%= link_to 'New Plan', new_project_plan_path(@project) %></p>

@@ -1,4 +1,5 @@
 class Plan < ActiveRecord::Base
+  belongs_to :project
   has_many :builds
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   has_many :pending_builds, :class_name => 'Build', :conditions => { :status => 'pending' }
@@ -12,11 +13,11 @@ class Plan < ActiveRecord::Base
   has_one :next, :class_name => 'Plan', :foreign_key => 'previous_plan_id'
   
   validates_presence_of :name
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, :scope => :project_id
+  
+  validates_presence_of :project_id
   
   acts_as_tree
-  
-  named_scope :root_set, :conditions => 'parent_id is null'
   
   def self.find_for_cloning!(name)
     plan = find_by_name!(name)

@@ -1,0 +1,11 @@
+<%= f.error_messages %>
+
+<p class="form_item">
+  <span class="label"><%= f.label :name, 'Name' %></span>
+  <%= f.text_field :name %>
+</p>
+
+<p class="form_item">
+  <span class="label"><%= f.label :description, 'Description' %></span>
+  <%= f.text_area :description, :rows => 5 %>
+</p>

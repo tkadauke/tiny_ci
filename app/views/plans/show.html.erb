@@ -1,11 +1,11 @@
 <h1>Plan <%= @plan.name %></h1>
 
 <ul class="action-list">
-  <li><%= link_to 'Edit', edit_plan_path(@plan) %></li>
-  <li><%= link_to 'Builds', plan_builds_path(@plan) %></li>
-  <li><%= link_to 'Clone', new_plan_path(:clone => @plan) %></li>
+  <li><%= link_to 'Edit', edit_project_plan_path(@project, @plan) %></li>
+  <li><%= link_to 'Builds', project_plan_builds_path(@project, @plan) %></li>
+  <li><%= link_to 'Clone', new_project_plan_path(@project, :clone => @plan) %></li>
   <% unless @plan.parent %>
-    <li><%= link_to 'New Child Plan', new_plan_path(:parent => @plan) %></li>
+    <li><%= link_to 'New Child Plan', new_project_plan_path(@project, :parent => @plan) %></li>
   <% end %>
 </ul>
 
@@ -15,11 +15,11 @@
   <table>
     <tr>
       <% if @plan.previous %>
-        <td><%= link_to @plan.previous.name, plan_path(@plan.previous) %></td>
+        <td><%= link_to @plan.previous.name, project_plan_path(@project, @plan.previous) %></td>
       <% end %>
       <td><%= @plan.name %></td>
       <% if @plan.next %>
-        <td><%= link_to @plan.next.name, plan_path(@plan.next) %></td>
+        <td><%= link_to @plan.next.name, project_plan_path(@project, @plan.next) %></td>
       <% end %>
     </tr>
   </table>
@@ -45,7 +45,9 @@
 </dl>
 
 <% if @plan.standalone? %>
-  <%= button_to 'Build now', plan_builds_path(@plan) %>
+  <%= button_to 'Build now', project_plan_builds_path(@project, @plan) %>
 <% else %>
-  <p><%= link_to 'Back to parent plan %s' % @plan.parent.name, plan_path(@plan.parent) %></p>
+  <p><%= link_to 'Back to parent plan %s' % @plan.parent.name, project_plan_path(@project, @plan.parent) %></p>
 <% end %>
+
+<p>Back to project <%= link_to @project.name, project_plans_path(@project) %></p>
