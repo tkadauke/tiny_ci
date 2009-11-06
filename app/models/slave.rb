@@ -66,7 +66,7 @@ class Slave < ActiveRecord::Base
   
 protected
   def cleanup_environment
-    environment_variables.reject! { |index, kv| kv['key'].blank? }
+    (environment_variables || {}).reject! { |index, kv| kv['key'].blank? }
   end
   
   def unnumbered_resources(res)
