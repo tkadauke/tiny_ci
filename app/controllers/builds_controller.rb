@@ -1,34 +1,34 @@
 class BuildsController < ApplicationController
-  before_filter :find_project
+  before_filter :find_plan
   
   def index
-    @builds = @project.builds.find :all, :include => { :children => :project }, :order => 'created_at DESC'
+    @builds = @plan.builds.find :all, :include => { :children => :plan }, :order => 'created_at DESC'
     
     render :partial => 'list', :locals => { :builds => @builds } if request.xhr?
   end
   
   def show
     @report = ['raw', 'details', 'gist'].find { |type| params[:report].to_s == type } || 'raw'
-    @build = @project.builds.find_by_position!(params[:id])
+    @build = @plan.builds.find_by_position!(params[:id])
     if request.xhr?
       render :partial => 'report'
     end
   end
   
   def create
-    @build = @project.build!(params.except(:controller, :action, :project_id))
-    flash[:notice] = "Building project #{@project.name}"
-    redirect_to project_build_path(@project, @build)
+    @build = @plan.build!(params.except(:controller, :action, :plan_id))
+    flash[:notice] = "Building plan #{@plan.name}"
+    redirect_to plan_build_path(@plan, @build)
   end
   
   def stop
-    @build = @project.builds.find_by_position!(params[:id])
+    @build = @plan.builds.find_by_position!(params[:id])
     @build.stop!
-    redirect_to project_builds_path(@project)
+    redirect_to plan_builds_path(@plan)
   end
 
 protected
-  def find_project
-    @project = Project.find_by_name!(params[:project_id])
+  def find_plan
+    @plan = Plan.find_by_name!(params[:plan_id])
   end
 end

@@ -22,16 +22,16 @@
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :requirements, 'Project requirements' %></span>
-  <span class="desc">Capabilities a build slave must have to build this project, separated by commas</span>
+  <span class="label"><%= f.label :requirements, 'Plan requirements' %></span>
+  <span class="desc">Capabilities a build slave must have to build this plan, separated by commas</span>
   <%= f.text_area :requirements, :rows => 3 %>
 </p>
 
-<% unless @project.parent %>
-  <h2>Run this project after</h2>
+<% unless @plan.parent %>
+  <h2>Run this plan after</h2>
 
   <p class="form_item">
-    <span class="label"><%= f.label :previous_project_id, 'Previous Project' %></span>
-    <%= f.select :previous_project_id, Project.root_set.reject { |p| p == @project }.collect { |p| [p.name, p.id] }, :include_blank => true %>
+    <span class="label"><%= f.label :previous_plan_id, 'Previous Plan' %></span>
+    <%= f.select :previous_plan_id, Plan.root_set.reject { |p| p == @plan }.collect { |p| [p.name, p.id] }, :include_blank => true %>
   </p>
 <% end %>

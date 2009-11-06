@@ -1,0 +1,26 @@
+<table class="list">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Last Build time</th>
+      <th>Last Success</th>
+      <th>Last Failure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% plans.each do |plan| %>
+      <tr>
+        <td><%= image_tag "icons/small/#{plan.status}.png" if plan.status %></td>
+        <td><%= image_tag "icons/small/weather-#{plan.weather}.png", :title => "%d of the last 5 builds were successful" % plan.weather if plan.weather %></td>
+        <td><%= link_to plan.name, plan_path(plan) %></td>
+        <td><%= truncate plan.description, :length => 40 %></td>
+        <td><%= plan.last_build_time ? duration(plan.last_build_time) : 'unknown' %></td>
+        <td><%= plan.last_succeeded_at ? "%s ago" % time_ago_in_words(plan.last_succeeded_at) : 'unknown' %></td>
+        <td><%= plan.last_failed_at ? "%s ago" % time_ago_in_words(plan.last_failed_at) : 'unknown' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

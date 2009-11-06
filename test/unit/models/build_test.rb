@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class BuildTest < ActiveSupport::TestCase
   test "should use the slave's shell when building" do
     build = Build.new(:updated_at => Time.now)
-    build.stubs(:project).returns(mock(:has_children? => false))
+    build.stubs(:plan).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'ssh'))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate)
@@ -15,7 +15,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should create base directory" do
     build = Build.new(:updated_at => Time.now)
-    build.stubs(:project).returns(mock(:has_children? => false))
+    build.stubs(:plan).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost', :base_path => '/some/base/path'))
     shell = mock(:mkdir)
     TinyCI::Shell::Localhost.stubs(:new).returns(shell)
@@ -27,7 +27,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should evaluate steps" do
     build = Build.new(:updated_at => Time.now)
-    build.stubs(:project).returns(mock(:has_children? => false))
+    build.stubs(:plan).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     TinyCI::DSL.expects(:evaluate)
@@ -38,7 +38,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to success when finished" do
     build = Build.new(:updated_at => Time.now)
-    build.stubs(:project).returns(mock(:has_children? => false))
+    build.stubs(:plan).returns(mock(:has_children? => false))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate)
@@ -49,7 +49,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should set status to waiting when finished but children are present" do
     build = Build.new(:updated_at => Time.now)
-    build.stubs(:project).returns(mock(:has_children? => true))
+    build.stubs(:plan).returns(mock(:has_children? => true))
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate)
@@ -88,11 +88,11 @@ class BuildTest < ActiveSupport::TestCase
     build.build!
   end
   
-  test "should have project name in workspace path" do
+  test "should have plan name in workspace path" do
     build = Build.new
-    build.stubs(:project).returns(mock(:name => 'some_project'))
+    build.stubs(:plan).returns(mock(:name => 'some_plan'))
     build.stubs(:slave).returns(mock(:base_path => '/some/base/path'))
-    assert build.workspace_path =~ /some_project/
+    assert build.workspace_path =~ /some_plan/
   end
   
   test "should not flush output when past line is younger than one second" do
@@ -111,7 +111,7 @@ class BuildTest < ActiveSupport::TestCase
     time = Time.now
     
     build = Build.new(:updated_at => time)
-    build.stubs(:project).returns(stub(:name => 'some_project'))
+    build.stubs(:plan).returns(stub(:name => 'some_plan'))
     build.add_to_output(time, 'command', 'some output')
     build.expects(:reload).returns(build)
     build.expects(:update_attributes).with(:output => "#{time.to_f},command,some output\n")

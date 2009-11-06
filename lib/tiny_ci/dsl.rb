@@ -8,7 +8,7 @@ module TinyCI
           update
         end
       end
-      dsl.instance_eval build.project.steps
+      dsl.instance_eval build.plan.steps
     end
     
     def initialize(build)

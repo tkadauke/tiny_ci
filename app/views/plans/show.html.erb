@@ -1,0 +1,51 @@
+<h1>Plan <%= @plan.name %></h1>
+
+<ul class="action-list">
+  <li><%= link_to 'Edit', edit_plan_path(@plan) %></li>
+  <li><%= link_to 'Builds', plan_builds_path(@plan) %></li>
+  <li><%= link_to 'Clone', new_plan_path(:clone => @plan) %></li>
+  <% unless @plan.parent %>
+    <li><%= link_to 'New Child Plan', new_plan_path(:parent => @plan) %></li>
+  <% end %>
+</ul>
+
+<% if @plan.previous || @plan.next %>
+  <h2>Build chain</h2>
+  
+  <table>
+    <tr>
+      <% if @plan.previous %>
+        <td><%= link_to @plan.previous.name, plan_path(@plan.previous) %></td>
+      <% end %>
+      <td><%= @plan.name %></td>
+      <% if @plan.next %>
+        <td><%= link_to @plan.next.name, plan_path(@plan.next) %></td>
+      <% end %>
+    </tr>
+  </table>
+<% end %>
+
+<% if @plan.has_children? %>
+  <h2>Children</h2>
+  
+  <%= render :partial => "list", :locals => { :plans => @plan.children } %>
+<% end %>
+
+<h2>Plan details</h2>
+
+<dl>
+  <dt>Description</dt>
+  <dd><%= simple_format @plan.description %></dd>
+
+  <dt>Steps</dt>
+  <dd><pre><%= @plan.steps %></pre></dd>
+
+  <dt>Requirements</dt>
+  <dd><%= @plan.requirements %></dd>
+</dl>
+
+<% if @plan.standalone? %>
+  <%= button_to 'Build now', plan_builds_path(@plan) %>
+<% else %>
+  <p><%= link_to 'Back to parent plan %s' % @plan.parent.name, plan_path(@plan.parent) %></p>
+<% end %>

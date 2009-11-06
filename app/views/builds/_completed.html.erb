@@ -14,9 +14,9 @@
     <tbody>
       <% builds.each do |build| %>
         <tr>
-          <td><%= link_to build.position, project_build_path(build.project, build) %></td>
-          <td><%= link_to build.name, project_path(build.project) %></td>
-          <td><%= link_to build.created_at.to_s(:timestamp), project_build_path(build.project, build) %></td>
+          <td><%= link_to build.position, plan_build_path(build.plan, build) %></td>
+          <td><%= link_to build.name, plan_path(build.plan) %></td>
+          <td><%= link_to build.created_at.to_s(:timestamp), plan_build_path(build.plan, build) %></td>
           <td><%= image_tag "icons/small/#{build.status}.png" %> <%= build.status %></td>
           <td><%= duration(build.duration) %></td>
         </tr>

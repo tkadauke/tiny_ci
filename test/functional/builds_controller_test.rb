@@ -2,38 +2,38 @@ require 'test_helper'
 
 class BuildsControllerTest < ActionController::TestCase
   test "should render index page" do
-    project = Project.create(:name => 'some_project')
+    plan = Plan.create(:name => 'some_plan')
     
-    get 'index', :project_id => project.name
+    get 'index', :plan_id => plan.name
     assert_response :success
   end
   
-  test "should raise record not found if project not found" do
+  test "should raise record not found if plan not found" do
     assert_raise ActiveRecord::RecordNotFound do
-      get 'index', :project_id => nil
+      get 'index', :plan_id => nil
     end
   end
   
   test "should show build" do
-    project = Project.create(:name => 'some_project')
-    build = project.builds.create(:status => 'success')
+    plan = Plan.create(:name => 'some_plan')
+    build = plan.builds.create(:status => 'success')
     
-    get 'show', :project_id => project.name, :id => build.position
+    get 'show', :plan_id => plan.name, :id => build.position
     assert_response :success
   end
   
   test "should raise record not found if build does not exist" do
-    project = Project.create(:name => 'some_project')
+    plan = Plan.create(:name => 'some_plan')
     
     assert_raise ActiveRecord::RecordNotFound do
-      get 'show', :project_id => project.name, :id => nil
+      get 'show', :plan_id => plan.name, :id => nil
     end
   end
   
   test "should create build" do
-    project = Project.create(:name => 'some_project')
+    plan = Plan.create(:name => 'some_plan')
     
-    post 'create', :project_id => project.name
+    post 'create', :plan_id => plan.name
     assert_response :redirect
     assert_not_nil flash[:notice]
   end

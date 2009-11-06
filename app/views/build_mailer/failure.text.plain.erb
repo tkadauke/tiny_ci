@@ -1,10 +1,10 @@
 Hello,
 
-Build #<%= @build.position %> of project <%= @build.name %> failed (status <%= @build.status %>).
+Build #<%= @build.position %> of plan <%= @build.name %> failed (status <%= @build.status %>).
 
 See
 
-  http://<%= TinyCI::Config.site_root %><%= project_build_path(@build.project, @build) %>
+  http://<%= TinyCI::Config.site_root %><%= plan_build_path(@build.plan, @build) %>
 
 Sincerely,
 TinyCI

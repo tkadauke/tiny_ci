@@ -1,0 +1,6 @@
+<h1>Edit Plan <%= @plan.name %></h1>
+
+<% form_for @plan, plan_path(@plan) do |f| %>
+  <%= render :partial => "form", :locals => { :f => f } %>
+  <%= f.submit 'Update' %>
+<% end %>

@@ -4,11 +4,11 @@ class Build < ActiveRecord::Base
   
   serialize :parameters, Hash
 
-  delegate :name, :repository_url, :requirements, :needed_resources, :to => :project
+  delegate :name, :repository_url, :requirements, :needed_resources, :to => :plan
 
-  belongs_to :project
+  belongs_to :plan
   belongs_to :slave
-  acts_as_list :scope => :project_id
+  acts_as_list :scope => :plan_id
   acts_as_tree
   
   named_scope :pending, :conditions => { :status => 'pending' }
@@ -38,7 +38,7 @@ class Build < ActiveRecord::Base
   end
   
   def buildable?
-    project.buildable? && pending?
+    plan.buildable? && pending?
   end
   
   def finished?
@@ -68,7 +68,7 @@ class Build < ActiveRecord::Base
     
     create_base_directory
     TinyCI::DSL.evaluate(self)
-    if project.has_children?
+    if plan.has_children?
       update_attributes :status => 'waiting'
     else
       update_attributes :status => 'success', :finished_at => Time.now
@@ -90,14 +90,14 @@ class Build < ActiveRecord::Base
   
   def finished
     parent.child_finished(self) if parent
-    project.next.build_with_parent_build!(self) if success? && project.next
+    plan.next.build_with_parent_build!(self) if success? && plan.next
   end
   
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
       update_attributes :status => (success ? 'success' : 'failure'), :finished_at => Time.now
-      project.next.build_with_parent_build!(self) if success? && project.next
+      plan.next.build_with_parent_build!(self) if success? && plan.next
     end
   end
   
@@ -130,7 +130,7 @@ class Build < ActiveRecord::Base
 
   def update_stats_if_neccessary
     if previous_changes.has_key?('status') && finished?
-      project.update_build_stats!
+      plan.update_build_stats!
     end
   end
 
