@@ -1,6 +1,6 @@
 class Plan < ActiveRecord::Base
   belongs_to :project
-  has_many :builds
+  has_many :builds, :dependent => :destroy
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   has_many :pending_builds, :class_name => 'Build', :conditions => { :status => 'pending' }
   

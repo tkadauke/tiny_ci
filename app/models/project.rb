@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  has_many :plans
+  has_many :plans, :dependent => :destroy
   has_many :root_plans, :class_name => 'Plan', :conditions => 'parent_id is null'
   
   validates_presence_of :name

@@ -44,6 +44,12 @@ class PlansController < ApplicationController
       render :action => 'edit'
     end
   end
+  
+  def destroy
+    @plan = @project.plans.find_by_name!(params[:id])
+    @plan.destroy
+    redirect_to project_plans_path(@project)
+  end
 
 private
   def find_project

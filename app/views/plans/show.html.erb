@@ -7,6 +7,7 @@
   <% unless @plan.parent %>
     <li><%= link_to 'New Child Plan', new_project_plan_path(@project, :parent => @plan) %></li>
   <% end %>
+  <li><%= link_to 'Delete', project_plan_path(@project), :method => :delete, :confirm => 'Do you really want to delete this plan and all its children and builds? This operation can not be undone.' %></li>
 </ul>
 
 <% if @plan.previous || @plan.next %>
