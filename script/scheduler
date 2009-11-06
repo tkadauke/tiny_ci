@@ -4,4 +4,4 @@ require 'drb'
 
 DRb.start_service "druby://localhost:2250", TinyCI::Scheduler::Server.instance
 
-TinyCI::Scheduler::Server.run
+TinyCI::Scheduler::Runner.run
