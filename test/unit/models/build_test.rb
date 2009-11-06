@@ -122,4 +122,72 @@ class BuildTest < ActiveSupport::TestCase
     build = Build.new(:position => 10)
     assert_equal '10', build.to_param
   end
+  
+  test "should calculate duration" do
+    build = Build.new(:started_at => 2.hours.ago, :finished_at => 1.hour.ago)
+    assert_equal 3600, build.duration.to_i
+  end
+  
+  test "should use parameters as initial environment" do
+    build = Build.new(:parameters => { 'foo' => 'bar' })
+    assert_equal 'bar', build.environment['foo']
+  end
+  
+  test "should use empty hash as environment if parameters are nil" do
+    build = Build.new(:parameters => nil)
+    assert_equal({}, build.environment)
+  end
+  
+  test "should use the slaves environment as fallback for the current environment" do
+    build = Build.new(:parameters => { 'foo' => 'bar' })
+    slave = stub(:current_environment => { 'foo' => 'baz', 'hello' => 'world' })
+    build.stubs(:slave).returns(slave)
+    
+    assert_equal({ 'foo' => 'bar', 'hello' => 'world' }, build.current_environment)
+  end
+  
+  test "should assign build to slave" do
+    slave = stub
+    
+    build = Build.new
+    build.expects(:update_attributes).with(:slave => slave)
+    build.assign_to!(slave)
+  end
+  
+  test "should be buildable if pending and plan is buildable" do
+    build = Build.new(:status => 'pending')
+    build.stubs(:plan).returns(stub(:buildable? => true))
+    assert build.buildable?
+  end
+  
+  test "should not be buildable if not pending" do
+    build = Build.new(:status => 'success')
+    build.stubs(:plan).returns(stub(:buildable? => true))
+    assert ! build.buildable?
+  end
+  
+  test "should not be buildable if plan is not buildable" do
+    build = Build.new(:status => 'pending')
+    build.stubs(:plan).returns(stub(:buildable? => false))
+    assert ! build.buildable?
+  end
+  
+  test "should figure out if build is finished" do
+    assert ! Build.new(:status => 'running').finished?
+    assert ! Build.new(:status => 'pending').finished?
+    assert ! Build.new(:status => 'waiting').finished?
+    assert   Build.new(:status => 'success').finished?
+    assert   Build.new(:status => 'error').finished?
+    assert   Build.new(:status => 'failure').finished?
+    assert   Build.new(:status => 'canceled').finished?
+    assert   Build.new(:status => 'stopped').finished?
+  end
+  
+  test "should classify finished builds in good or bad" do
+    assert Build.new(:status => 'success').good?
+    assert Build.new(:status => 'error').bad?
+    assert Build.new(:status => 'failure').bad?
+    assert Build.new(:status => 'canceled').bad?
+    assert Build.new(:status => 'stopped').bad?
+  end
 end
