@@ -111,6 +111,10 @@ class Build < ActiveRecord::Base
     "#{slave.base_path}/#{name}"
   end
   
+  def build_output
+    @build_output ||= []
+  end
+
   def add_to_output(time, command, lines)
     add_lines_to_output(time, command, lines)
     flush_output! if updated_at < 1.second.ago
@@ -130,10 +134,6 @@ class Build < ActiveRecord::Base
     position.to_s
   end
   
-  def build_output
-    @build_output ||= []
-  end
-
   def update_stats_if_neccessary
     if previous_changes.has_key?('status') && finished?
       plan.update_build_stats!
