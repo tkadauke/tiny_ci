@@ -40,3 +40,19 @@ task :distclean => "rails:unfreeze" do
   sh "rm -rf vendor/gems"
   sh "rm -rf dist"
 end
+
+namespace :test do
+  task :coverage do
+    output_dir = "test/coverage"
+    rm_f "#{output_dir}/*"
+    rm_f "#{output_dir}/coverage.data"
+    mkdir_p output_dir
+    rcov = "rcov -o #{output_dir} --rails --aggregate #{output_dir}/coverage.data --text-summary --exclude=\"gems/*,rubygems/*,rcov*\" -Ilib"
+
+    test_files = Dir.glob('test/unit/**/*_test.rb')
+    sh %{#{rcov} #{test_files.join(' ')}} unless test_files.empty?
+
+    test_files = Dir.glob('test/functional/**/*_test.rb')
+    sh %{#{rcov} --html #{test_files.join(' ')}} unless test_files.empty?
+  end
+end
