@@ -58,7 +58,7 @@ class Admin::SlavesControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "should update invalid slave" do
+  test "should update slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
     post 'update', :id => slave, :slave => { :name => 'some_slave', :protocol => 'ssh' }

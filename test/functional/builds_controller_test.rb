@@ -12,6 +12,13 @@ class BuildsControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should update index page" do
+    plan = @project.plans.create(:name => 'some_plan')
+    
+    xhr :get, 'index', :project_id => @project.name, :plan_id => plan.name
+    assert_response :success
+  end
+  
   test "should raise record not found if plan not found" do
     assert_raise ActiveRecord::RecordNotFound do
       get 'index', :project_id => @project.name, :plan_id => nil
@@ -23,6 +30,14 @@ class BuildsControllerTest < ActionController::TestCase
     build = plan.builds.create(:status => 'success')
     
     get 'show', :project_id => @project.name, :plan_id => plan.name, :id => build.position
+    assert_response :success
+  end
+  
+  test "should update build output" do
+    plan = @project.plans.create(:name => 'some_plan')
+    build = plan.builds.create(:status => 'success')
+    
+    xhr :get, 'show', :project_id => @project.name, :plan_id => plan.name, :id => build.position
     assert_response :success
   end
   

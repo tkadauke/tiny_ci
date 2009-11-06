@@ -12,6 +12,13 @@ class PlansControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should update index page" do
+    plan = @project.plans.create(:name => 'some_plan')
+    
+    xhr :get, 'index', :project_id => @project.name
+    assert_response :success
+  end
+  
   test "should show plan" do
     plan = @project.plans.create(:name => 'some_plan')
     

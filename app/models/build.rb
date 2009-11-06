@@ -6,7 +6,7 @@ class Build < ActiveRecord::Base
   
   serialize :parameters, Hash
 
-  delegate :name, :repository_url, :requirements, :needed_resources, :to => :plan
+  delegate :name, :repository_url, :requirements, :needed_resources, :project, :to => :plan
 
   belongs_to :plan
   belongs_to :slave
@@ -22,10 +22,6 @@ class Build < ActiveRecord::Base
   before_save { |build| build.previous_changes = build.changes }
   
   after_update :update_stats_if_neccessary
-  
-  def project
-    plan.project
-  end
   
   def duration
     finished_at && started_at ? (finished_at - started_at) : nil
