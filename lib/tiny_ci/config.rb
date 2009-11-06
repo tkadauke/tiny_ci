@@ -4,8 +4,12 @@ module TinyCI
     
     attr_reader :config
     
-    def initialize
-      @config = YAML.load(ERB.new(File.read("#{RAILS_ROOT}/config/options.yml")).result).stringify_keys
+    def config
+      @config ||= YAML.load(ERB.new(File.read("#{RAILS_ROOT}/config/options.yml")).result).stringify_keys
+    end
+    
+    def reload!
+      @config = nil
     end
     
     class << self
