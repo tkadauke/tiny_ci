@@ -27,7 +27,7 @@ module TinyCI
       def finished(build_id)
         build = Build.find(build_id)
         
-        plan = Project.find(build.plan_id)
+        plan = Plan.find(build.plan_id)
         if build.waiting? && plan.has_children?
           plan.build_children!(build)
         end
