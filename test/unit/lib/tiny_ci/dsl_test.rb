@@ -38,4 +38,19 @@ class TinyCI::DSLTest < ActiveSupport::TestCase
     TinyCI::Steps::Builder::Rake.expects(:new).with(build, ['test'], { 'some_key' => 'some_value' }).returns(mock(:run!))
     TinyCI::DSL.new(build).rake 'test', 'some_key' => 'some_value'
   end
+
+  test "should run shell command" do
+    shell = mock
+    shell.expects(:run).with('ls', ['-l', '-a'], '/some/path', { 'some_key' => 'some_value' })
+    build = stub(:shell => shell, :workspace_path => '/some/path', :environment => { 'some_key' => 'some_value' })
+    TinyCI::DSL.new(build).sh 'ls', '-l', '-a'
+  end
+  
+  test "should evaluate steps" do
+    build = stub(:plan => mock(:steps => 'rake'), :repository_url => 'ssh://some/url')
+    TinyCI::DSL.any_instance.expects(:repository).with(:git)
+    TinyCI::DSL.any_instance.expects(:update)
+    TinyCI::DSL.any_instance.expects(:rake)
+    TinyCI::DSL.evaluate(build)
+  end
 end

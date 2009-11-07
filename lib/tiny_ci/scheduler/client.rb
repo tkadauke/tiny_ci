@@ -1,19 +1,19 @@
 module TinyCI
   module Scheduler
     class Client
-      def self.stop(build)
-        server.stop(build.id)
-      end
+      class << self
+        def stop(build)
+          server.stop(build.id)
+        end
       
-      def self.finished(build)
-        server.finished(build.id)
-      end
-      
-    private
-      def self.server
-        require 'drb'
+      private
+        def server
+          require 'drb'
         
-        @server ||= begin
+          @server ||= connect_to_server
+        end
+      
+        def connect_to_server
           DRb.start_service
           DRbObject.new(nil, "druby://localhost:2250")
         end

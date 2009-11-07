@@ -19,4 +19,11 @@ class TinyCI::ConfigTest < ActiveSupport::TestCase
     File.expects(:read).returns({ :hello => 'world' }.to_yaml)
     assert_equal 'world', TinyCI::Config.hello
   end
+  
+  test "should raise NoMethodError if config option does not exist" do
+    File.expects(:read).returns({ :hello => 'world' }.to_yaml)
+    assert_raise NoMethodError do
+      assert_equal 'world', TinyCI::Config.foobar
+    end
+  end
 end

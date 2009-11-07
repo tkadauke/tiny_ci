@@ -4,7 +4,7 @@ module TinyCI
       dsl = new(build)
       dsl.instance_eval do
         if build.repository_url
-          repository :git, build.repository_url
+          repository :git
           update
         end
       end

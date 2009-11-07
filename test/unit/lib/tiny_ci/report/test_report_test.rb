@@ -17,4 +17,9 @@ class TinyCI::Report::TestReportTest < ActiveSupport::TestCase
     test_case.error!('it failed!', caller)
     assert_equal 'it failed!', test_case.error_message
   end
+  
+  test "should provide access to test summary" do
+    report = TinyCI::Report::TestReport.new
+    assert report.summary.is_a?(TinyCI::Report::TestReport::Summary)
+  end
 end

@@ -7,10 +7,6 @@ module TinyCI
         @build = build
         @options = options
       end
-      
-      def repository_url
-        @options[:url]
-      end
     end
   end
 end
