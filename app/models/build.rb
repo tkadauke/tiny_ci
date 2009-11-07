@@ -87,6 +87,7 @@ class Build < ActiveRecord::Base
   end
   
   def stop!
+    update_attributes :status => 'canceled', :finished_at => Time.now
     TinyCI::Scheduler::Client.stop(self)
   end
   

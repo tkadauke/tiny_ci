@@ -59,7 +59,6 @@ module TinyCI
 
       def stop(build)
         pid = processes[build.id]
-        build.update_attributes :status => 'canceled', :finished_at => Time.now
         if pid
           Process.kill("TERM", pid)
         end
