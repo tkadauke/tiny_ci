@@ -190,4 +190,12 @@ class BuildTest < ActiveSupport::TestCase
     assert Build.new(:status => 'canceled').bad?
     assert Build.new(:status => 'stopped').bad?
   end
+  
+  test "should figure out if build has children" do
+    assert ! Build.new.has_children?
+    
+    build = Build.new
+    build.expects(:children).returns([stub])
+    assert build.has_children?
+  end
 end
