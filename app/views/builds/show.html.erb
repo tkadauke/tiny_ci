@@ -3,6 +3,9 @@
 <h1>Build output <%= link_to @plan.name, project_plan_path(@project, @plan) %> #<%= @build.position %> <%= 'on slave %s' % @build.slave.name if @build.slave %></h1>
 
 <dl>
+  <dt>Status</dt>
+  <dd><%= image_tag "icons/large/#{@build.status}.png" %> <%= @build.status %></dd>
+  
   <dt>Revision</dt>
   <dd><%= @build.revision.blank? ? 'unknown' : @build.revision %></dd>
   
