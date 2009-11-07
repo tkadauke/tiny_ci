@@ -7,4 +7,17 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
+  
+  before_filter :setup
+  
+  helper_method :setup?
+  
+protected
+  def setup
+    redirect_to '/admin/setup' if setup?
+  end
+  
+  def setup?
+    ENV['SETUP'] == 'true'
+  end
 end

@@ -10,7 +10,7 @@ require 'rake/rdoctask'
 require 'tasks/rails'
 
 desc "Start the TinyCI server"
-task :start => ['db:migrate'] do
+task :start do
   sh "script/daemon start"
 end
 
@@ -50,9 +50,9 @@ namespace :test do
     rcov = "rcov -o #{output_dir} --rails --aggregate #{output_dir}/coverage.data --text-summary --exclude=\"gems/*,rubygems/*,rcov*\" -Ilib"
 
     test_files = Dir.glob('test/unit/**/*_test.rb')
-    sh %{#{rcov} #{test_files.join(' ')}} unless test_files.empty?
-
-    test_files = Dir.glob('test/functional/**/*_test.rb')
     sh %{#{rcov} --html #{test_files.join(' ')}} unless test_files.empty?
+
+    # test_files = Dir.glob('test/functional/**/*_test.rb')
+    # sh %{#{rcov} --html #{test_files.join(' ')}} unless test_files.empty?
   end
 end

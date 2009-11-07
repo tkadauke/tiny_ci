@@ -1,0 +1,52 @@
+<h1>Welcome to TinyCI</h1>
+
+<p>
+  Please fill out the following information to get started with TinyCI. This is the mimimal configuration necessary
+  for the correct operation of TinyCI. This is why you can not change this configuration later on in the user interface.
+</p>
+
+<p>
+  To change the configuration later, either
+</p>
+
+<ul class="asterisk">
+  <li>edit the <code>.yml</code> files in <code><%= RAILS_ROOT %>/config/</code> and restart TinyCI, or</li>
+  <li>remove all <code>.yml</code> files in <code><%= RAILS_ROOT %>/config/</code> and restart TinyCI to get this setup wizard again.</li>
+</ul>
+
+<p><strong>ATTENTION</strong> If you change the database configuration later on (for example the database name), your data may not be accessible anymore.</p>
+
+<h2>Database configuration</h2>
+
+<% form_for :config, @config, :url => '/admin/setup/create', :method => :post do |f| %>
+  <% if @config.error_message %>
+    <div class="errorExplanation">
+      <p>Could not connect to the database. The following error message was received:</p>
+      <p><strong><%= @config.error_message %></strong></p>
+    </div>
+  <% end %>
+  
+  <p class="form_item">
+    <span class="label"><%= f.label :db_user, 'Database Username' %></span>
+    <%= f.text_field :db_user %>
+  </p>
+
+  <p class="form_item">
+    <span class="label"><%= f.label :db_password, 'Database Password' %></span>
+    <span class="desc">This password will be saved as plain text in <code><%= RAILS_ROOT %>/config/database.yml</code>.</span>
+    <%= f.password_field :db_password %>
+  </p>
+  
+  <p class="form_item">
+    <span class="label"><%= f.label :db_name, 'Database Name' %></span>
+    <span class="desc">You can leave this as is if this database already exists or if your database user has enough privileges to create a database. Otherwise, please create a database now and enter its name here.</span>
+    <%= f.text_field :db_name %>
+  </p>
+  
+  <p class="form_item">
+    <span class="label"><%= f.label :db_host, 'Database Host' %></span>
+    <%= f.text_field :db_host %>
+  </p>
+  
+  <%= f.submit 'Save and restart' %>
+<% end %>

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
   <head>
     <title>TinyCI</title>
-    <%= javascript_include_tag :defaults, :juggernaut %>
+    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag :juggernaut unless setup? %>
     <%= stylesheet_link_tag 'style' %>
   </head>
   <body>
@@ -41,9 +42,13 @@
           <div id="menu_container">
             <div id="menu">
               <ul>
-                <li><a href="/" class="first">Home</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/admin/slaves">Slaves</a></li>
+                <% if setup? %>
+                  <li><a href="/admin/setup" class="first">Setup</a></li>
+                <% else %>
+                  <li><a href="/" class="first">Home</a></li>
+                  <li><a href="/projects">Projects</a></li>
+                  <li><a href="/admin/slaves">Slaves</a></li>
+                <% end %>
               </ul>
             </div>
             <div class="clearer"></div>

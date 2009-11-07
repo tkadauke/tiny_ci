@@ -1,0 +1,19 @@
+development: &MYSQL_DB
+  adapter: mysql
+  username: <%= config.db_user %>
+  password: <%= config.db_password %>
+  encoding: utf8
+  host: <%= config.db_host %>
+  database: <%= config.db_name %>
+
+production:
+  <<: *MYSQL_DB
+
+test: &TEST
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
+
+cucumber:
+  <<: *TEST

@@ -2,6 +2,13 @@
 app_root = File.expand_path(File.dirname(__FILE__) + '/..')
 Dir.chdir(app_root)
 
+# setup if database file does not exist
+unless File.exist?('config/database.yml')
+  ENV['SETUP'] = 'true'
+  system "script/server"
+  ENV['SETUP'] = 'false'
+end
+
 commands = [
   "script/server",
   "script/scheduler",

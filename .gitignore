@@ -3,3 +3,4 @@ dist/*
 vendor/gems
 vendor/rails
 test/coverage
+config/*.yml
