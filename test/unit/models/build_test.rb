@@ -1,6 +1,29 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class BuildTest < ActiveSupport::TestCase
+  test "should validate" do
+    assert ! Build.new.valid?
+    assert   Build.new(:plan_id => 1).valid?
+  end
+  
+  test "should inherit revision from parent build if repository_url is equal" do
+    parent = Build.new(:revision => '17')
+    parent.stubs(:repository_url => '/some/url')
+    child = Build.new(:parent => parent)
+    child.stubs(:repository_url => '/some/url')
+    
+    assert_equal '17', child.revision
+  end
+  
+  test "should not inherit revision from parent build if repository_url is not equal" do
+    parent = Build.new(:revision => '17')
+    parent.stubs(:repository_url => '/some/url')
+    child = Build.new(:parent => parent)
+    child.stubs(:repository_url => '/some/other/url')
+    
+    assert_nil child.revision
+  end
+  
   test "should use the slave's shell when building" do
     build = Build.new(:updated_at => Time.now)
     build.stubs(:plan).returns(mock(:has_children? => false))
@@ -86,6 +109,81 @@ class BuildTest < ActiveSupport::TestCase
     
     build.expects(:update_attributes).with(has_entry(:status => 'error'))
     build.build!
+  end
+  
+  test "should stop build" do
+    build = Build.new
+    TinyCI::Scheduler::Client.expects(:stop).with(build)
+    build.stop!
+  end
+  
+  test "should notify parent when finished" do
+    parent = mock(:child_finished)
+    build = Build.new
+    build.stubs(:parent).returns(parent)
+    
+    build.finished
+  end
+  
+  test "should build next when successfully finished" do
+    build = Build.new(:status => 'success')
+    build.stubs(:parent)
+    build.expects(:plan).returns(mock(:build_next!))
+    
+    build.finished
+  end
+  
+  test "should not build next when failed" do
+    build = Build.new(:status => 'failure')
+    build.stubs(:parent)
+    build.expects(:plan).never
+    
+    build.finished
+  end
+  
+  test "should update status to success and build next when all children finished successfully" do
+    build = Build.new(:status => 'waiting')
+    build.stubs(:children).returns([stub(:finished? => true, :success? => true)])
+    build.expects(:update_attributes).with(has_entry(:status => 'success'))
+    
+    build.child_finished(stub)
+  end
+  
+  test "should update status to failure when some children failed" do
+    build = Build.new(:status => 'waiting')
+    build.stubs(:children).returns([stub(:finished? => true, :success? => false)])
+    build.expects(:update_attributes).with(has_entry(:status => 'failure'))
+    
+    build.child_finished(stub)
+  end
+  
+  test "should build next when all children finished" do
+    updated = states('updated').starts_as('no')
+    
+    build = Build.new
+    build.stubs(:status).returns('waiting').when(updated.is('no'))
+    build.stubs(:children).returns([stub(:finished? => true, :success? => true)])
+    build.stubs(:update_attributes).then(updated.is('yes'))
+    build.stubs(:status).returns('success').when(updated.is('yes'))
+    build.expects(:plan).returns(mock(:build_next!))
+    
+    build.child_finished(stub)
+  end
+  
+  test "should do nothing when not all children finished" do
+    build = Build.new(:status => 'waiting')
+    build.stubs(:children).returns([stub(:finished? => false)])
+    build.expects(:update_attributes).never
+    
+    build.child_finished(stub)
+  end
+  
+  test "should do nothing when child finished but parent is not waiting" do
+    build = Build.new(:status => 'success')
+    build.stubs(:children).returns([stub(:finished? => true)])
+    build.expects(:update_attributes).never
+    
+    build.child_finished(stub)
   end
   
   test "should have plan name in workspace path" do
@@ -197,5 +295,19 @@ class BuildTest < ActiveSupport::TestCase
     build = Build.new
     build.expects(:children).returns([stub])
     assert build.has_children?
+  end
+  
+  test "should update build stats if status changed after last save" do
+    build = Build.new(:previous_changes => { 'status' => 'success' }, :status => 'success')
+    build.stubs(:plan).returns(mock(:update_build_stats!))
+    
+    build.update_stats_if_neccessary
+  end
+  
+  test "should not update build stats if status has not changed" do
+    build = Build.new(:previous_changes => {}, :status => 'success')
+    build.expects(:plan).never
+    
+    build.update_stats_if_neccessary
   end
 end
