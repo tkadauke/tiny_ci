@@ -92,14 +92,14 @@ class Build < ActiveRecord::Base
   
   def finished
     parent.child_finished(self) if parent
-    plan.next.build_with_parent_build!(self) if success? && plan.next
+    plan.build_next!(self) if success?
   end
   
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
       update_attributes :status => (success ? 'success' : 'failure'), :finished_at => Time.now
-      plan.next.build_with_parent_build!(self) if success? && plan.next
+      plan.build_next!(self) if success?
     end
   end
   

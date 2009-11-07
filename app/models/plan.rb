@@ -53,6 +53,10 @@ class Plan < ActiveRecord::Base
     builds.create(:status => 'pending', :parent => build, :parameters => build.environment)
   end
   
+  def build_next!(parent)
+    self.next.build_with_parent_build!(parent) if self.next
+  end
+  
   def buildable?
     running_builds.empty?
   end
