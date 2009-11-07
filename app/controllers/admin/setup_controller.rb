@@ -1,5 +1,6 @@
 class Admin::SetupController < ApplicationController
   skip_before_filter :setup
+  before_filter :only_setup, :except => :redirect_me
   
   def index
     @config = InitialConfig.new
@@ -24,5 +25,10 @@ class Admin::SetupController < ApplicationController
   
   def redirect_me
     render :js => "document.location.href='/'"
+  end
+
+protected
+  def only_setup
+    redirect_to '/' unless setup?
   end
 end
