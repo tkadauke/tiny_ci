@@ -11,7 +11,7 @@ class BuildsController < ApplicationController
   def show
     @report = ['raw', 'details', 'gist'].find { |type| params[:report].to_s == type } || 'raw'
     @build = @plan.builds.find_by_position!(params[:id])
-    render :partial => 'report' if request.xhr?
+    render :partial => 'build' if request.xhr?
   end
   
   def create

@@ -1,32 +1,9 @@
 <%= juggernaut :channels => ["build_#{@build.name}_#{@build.position}"] %>
 
-<h1>Build output <%= link_to @plan.name, project_plan_path(@project, @plan) %> #<%= @build.position %> <%= 'on slave %s' % @build.slave.name if @build.slave %></h1>
-
-<dl>
-  <dt>Status</dt>
-  <dd><%= image_tag "icons/large/#{@build.status}.png" %> <%= @build.status %></dd>
-  
-  <dt>Revision</dt>
-  <dd><%= @build.revision.blank? ? 'unknown' : @build.revision %></dd>
-  
-  <dt>Duration</dt>
-  <dd><%= duration(@build.duration) %></dd>
-</dl>
-
-<% if @build.running? || @build.pending? %>
-  <p><%= link_to image_tag("icons/small/stopped.png") + ' Stop', stop_project_plan_build_path(@project, @plan, @build), :method => :post %></p>
-<% end %>
-
-<ul class="action-list">
-  <li><%= link_to 'Raw output', project_plan_build_path(@project, @plan, @build, :report => 'raw') %></li>
-  <li><%= link_to 'Gist', project_plan_build_path(@project, @plan, @build, :report => 'gist') %></li>
-  <li><%= link_to 'Details', project_plan_build_path(@project, @plan, @build, :report => 'details') %></li>
-</ul>
-
-<%= auto_update 'report' unless @build.finished? %>
-<div class="report" id="report">
-  <%= render :partial => 'report' %>
+<%= auto_update 'build' unless @build.finished? %>
+<div id="build">
+  <%= render :partial => "build" %>
 </div>
-<div id="bottom_anchor"></div>
 
+<div id="bottom_anchor"></div>
 <p><%= link_to 'Back to Builds', project_plan_builds_path(@project, @plan) %></p>

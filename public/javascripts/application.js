@@ -6,7 +6,7 @@ $(document).observe('dom:loaded', function() {
 var Report = {
   update: function() {
     Report.measureWindow();
-    new Ajax.Updater('report', document.location.href, { method: 'get', onComplete: Report.afterUpdate })
+    new Ajax.Updater('build', document.location.href, { method: 'get', onComplete: Report.afterUpdate })
   },
   
   attach: function() {
