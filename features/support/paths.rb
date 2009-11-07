@@ -22,6 +22,17 @@ module NavigationHelpers
     when /the edit plan page of plan "([^\"]*)" in project "([^\"]*)"/
       project = Project.find_by_name!($2)
       edit_project_plan_path(project, project.plans.find_by_name!($1))
+    when /the builds page of plan "([^\"]*)" in project "([^\"]*)"/
+      project = Project.find_by_name!($2)
+      project_plan_builds_path(project, project.plans.find_by_name!($1))
+    when /the new slaves page/
+      new_admin_slave_path
+    when /the slaves page/
+      admin_slaves_path
+    when /the page of slave "([^\"]*)"/
+      admin_slave_path(Slave.find_by_name!($1))
+    when /the edit page of slave "([^\"]*)"/
+      edit_admin_slave_path(Slave.find_by_name!($1))
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"

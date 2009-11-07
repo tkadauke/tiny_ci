@@ -2,7 +2,6 @@ tests
 login area
   - personal builds
   - personal slaves
-setup over UI
 configuration over UI
 per-project/per-plan notification config
 plugin architecture
