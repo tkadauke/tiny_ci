@@ -25,6 +25,10 @@ class Slave < ActiveRecord::Base
     TinyCI::Config.environment.merge(environment)
   end
 
+  def environment
+    environment_variables.inject({}) { |hash, ev| hash[ev.last['key']] = ev.last['value']; hash }
+  end
+  
   def busy?
     !free?
   end
@@ -35,14 +39,6 @@ class Slave < ActiveRecord::Base
   
   def self.find_free_slave_for(build)
     least_busy.find(:all).find { |slave| slave.can_build?(build) }
-  end
-  
-  def current_builds
-    Build.find(:all, :conditions => { :status => 'running', :slave_id => self.id })
-  end
-  
-  def environment
-    environment_variables.inject({}) { |hash, ev| hash[ev.last['key']] = ev.last['value']; hash }
   end
   
   def all_resources

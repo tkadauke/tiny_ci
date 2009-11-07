@@ -9,7 +9,7 @@
           <p>Slave is offline. <%= link_to 'Configure', edit_admin_slave_path(slave) %></p>
         <% else %>
           <ul>
-            <%= render :partial => "/builds/list", :locals => { :builds => slave.current_builds } %>
+            <%= render :partial => "/builds/list", :locals => { :builds => slave.running_builds } %>
           </ul>
         <% end %>
       </li>

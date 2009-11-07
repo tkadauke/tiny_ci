@@ -31,10 +31,6 @@ class Plan < ActiveRecord::Base
     new(:parent => find_by_name!(name))
   end
   
-  def needed_resources
-    TinyCI::Resources::Parser.parse(self.requirements)
-  end
-  
   def has_children?
     !children.empty?
   end
@@ -78,5 +74,9 @@ class Plan < ActiveRecord::Base
     self.last_succeeded_at = last_successful_build.finished_at rescue nil
     self.last_failed_at = last_failed_build.finished_at rescue nil
     save
+  end
+
+  def needed_resources
+    TinyCI::Resources::Parser.parse(self.requirements)
   end
 end
