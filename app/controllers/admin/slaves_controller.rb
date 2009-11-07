@@ -38,4 +38,11 @@ class Admin::SlavesController < ApplicationController
       render :action => 'edit'
     end
   end
+  
+  def destroy
+    @slave = Slave.find(params[:id])
+    @slave.destroy
+    flash[:notice] = "Successfully deleted slave"
+    redirect_to admin_slaves_path
+  end
 end

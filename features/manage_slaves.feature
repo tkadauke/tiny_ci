@@ -32,3 +32,9 @@ Feature: Manage slaves
     And I fill in "name" with "clone_slave"
     And I press "Create"
     Then I should see "clone_slave"
+
+  Scenario: Delete a slave
+    Given a slave "localhost"
+    And I am on the page of slave "localhost"
+    When I follow "Delete"
+    Then I should not see "localhost"

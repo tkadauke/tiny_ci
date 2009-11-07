@@ -3,6 +3,7 @@
 <ul class="action-list">
   <li><%= link_to 'Edit', edit_admin_slave_path(@slave) %></li>
   <li><%= link_to 'Clone', new_admin_slave_path(:clone => @slave) %></li>
+  <li><%= link_to 'Delete', admin_slave_path(@slave), :method => :delete, :confirm => 'Do you really want to delete this slave? This operation can not be undone.' %></li>
 </ul>
 
 <dl>

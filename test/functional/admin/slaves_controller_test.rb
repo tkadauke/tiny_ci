@@ -73,4 +73,14 @@ class Admin::SlavesControllerTest < ActionController::TestCase
     assert_response :success
     assert_nil flash[:notice]
   end
+
+  test "should destroy slave" do
+    slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
+
+    assert_difference 'Slave.count', -1 do
+      delete 'destroy', :id => slave
+      assert_response :redirect
+      assert_not_nil flash[:notice]
+    end
+  end
 end
