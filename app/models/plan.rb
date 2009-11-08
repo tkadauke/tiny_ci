@@ -63,6 +63,10 @@ class Plan < ActiveRecord::Base
     name
   end
   
+  def self.from_param!(param)
+    find_by_name!(param)
+  end
+  
   def standalone?
     parent_id.blank?
   end

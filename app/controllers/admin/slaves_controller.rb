@@ -4,7 +4,7 @@ class Admin::SlavesController < ApplicationController
   end
   
   def show
-    @slave = Slave.find(params[:id])
+    @slave = Slave.from_param!(params[:id])
   end
   
   def new
@@ -16,7 +16,7 @@ class Admin::SlavesController < ApplicationController
   end
   
   def edit
-    @slave = Slave.find(params[:id])
+    @slave = Slave.from_param!(params[:id])
   end
   
   def create
@@ -30,7 +30,7 @@ class Admin::SlavesController < ApplicationController
   end
   
   def update
-    @slave = Slave.find(params[:id])
+    @slave = Slave.from_param!(params[:id])
     if @slave.update_attributes(params[:slave])
       flash[:notice] = "Successfully updated slave"
       redirect_to admin_slave_path(@slave)
@@ -40,7 +40,7 @@ class Admin::SlavesController < ApplicationController
   end
   
   def destroy
-    @slave = Slave.find(params[:id])
+    @slave = Slave.from_param!(params[:id])
     @slave.destroy
     flash[:notice] = "Successfully deleted slave"
     redirect_to admin_slaves_path

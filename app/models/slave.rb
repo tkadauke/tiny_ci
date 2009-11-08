@@ -13,8 +13,8 @@ class Slave < ActiveRecord::Base
   
   overrides_field :base_path, :from => "TinyCI::Config"
   
-  def self.find_for_cloning!(id)
-    slave = find(id)
+  def self.find_for_cloning!(name)
+    slave = from_param!(name)
     slave.id = nil
     slave.name = nil
     slave.instance_variable_set(:@new_record, true)
@@ -58,6 +58,14 @@ class Slave < ActiveRecord::Base
     cap = unnumbered_resources(self.capabilities)
     
     free_resources.includes?(build.needed_resources) && req - cap == []
+  end
+  
+  def to_param
+    name
+  end
+  
+  def self.from_param!(param)
+    find_by_name!(param)
   end
   
 protected

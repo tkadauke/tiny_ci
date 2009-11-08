@@ -131,6 +131,10 @@ class Build < ActiveRecord::Base
     position.to_s
   end
   
+  def self.from_param!(param)
+    find_by_position!(param)
+  end
+  
   def update_stats_if_neccessary
     if previous_changes.has_key?('status') && finished?
       plan.update_build_stats!

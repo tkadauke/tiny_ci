@@ -8,7 +8,7 @@ class PlansController < ApplicationController
   end
   
   def show
-    @plan = @project.plans.find_by_name!(params[:id])
+    @plan = @project.plans.from_param!(params[:id])
   end
   
   def new
@@ -22,11 +22,11 @@ class PlansController < ApplicationController
   end
   
   def edit
-    @plan = @project.plans.find_by_name!(params[:id])
+    @plan = @project.plans.from_param!(params[:id])
   end
   
   def child
-    @plan = @project.plans.find_by_name!(params[:id])
+    @plan = @project.plans.from_param!(params[:id])
   end
   
   def create
@@ -40,7 +40,7 @@ class PlansController < ApplicationController
   end
   
   def update
-    @plan = @project.plans.find_by_name!(params[:id])
+    @plan = @project.plans.from_param!(params[:id])
     if @plan.update_attributes(params[:plan])
       flash[:notice] = "Successfully updated plan"
       redirect_to project_plan_path(@project, @plan)
@@ -50,13 +50,13 @@ class PlansController < ApplicationController
   end
   
   def destroy
-    @plan = @project.plans.find_by_name!(params[:id])
+    @plan = @project.plans.from_param!(params[:id])
     @plan.destroy
     redirect_to project_plans_path(@project)
   end
 
 private
   def find_project
-    @project = Project.find_by_name!(params[:project_id])
+    @project = Project.from_param!(params[:project_id])
   end
 end
