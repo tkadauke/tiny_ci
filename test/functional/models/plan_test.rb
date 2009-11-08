@@ -101,4 +101,14 @@ class PlanTest < ActiveSupport::TestCase
       plan.build_next!(parent_build)
     end
   end
+
+  test "should clear previous plan if converted to child plan" do
+    plan = @project.plans.create!(:name => 'some_plan')
+    next_plan = @project.plans.create!(:name => 'another_plan', :previous => plan)
+    new_parent = @project.plans.create!(:name => 'parent_plan')
+    
+    plan.update_attributes(:parent => new_parent)
+    assert_nil plan.next
+    assert_nil next_plan.reload.previous
+  end
 end

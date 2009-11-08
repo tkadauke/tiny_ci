@@ -19,6 +19,8 @@ class Plan < ActiveRecord::Base
   
   acts_as_tree
   
+  before_update :break_chain_if_child
+  
   def self.find_for_cloning!(name)
     plan = find_by_name!(name)
     plan.id = nil
@@ -75,8 +77,17 @@ class Plan < ActiveRecord::Base
     self.last_failed_at = last_failed_build.finished_at rescue nil
     save
   end
-
+  
   def needed_resources
     TinyCI::Resources::Parser.parse(self.requirements)
+  end
+  
+protected
+  def break_chain_if_child
+    if self.parent
+      self.previous = nil
+      self.next = nil
+    end
+    return true
   end
 end

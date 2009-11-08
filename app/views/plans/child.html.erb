@@ -1,0 +1,9 @@
+<h1>Select parent plan for <%= @plan.name %></h1>
+
+<% form_for [@project, @plan] do |f| %>
+  <p class="form_item">
+    <span class="label"><%= f.label :name, 'Select Parent Plan' %></span>
+    <%= f.select :parent_id, @project.root_plans.reject { |p| p == @plan }.collect { |p| [p.name, p.id] }, :include_blank => true %>
+  </p>
+  <%= f.submit 'Update' %>
+<% end %>

@@ -4,7 +4,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :projects do |projects|
-    projects.resources :plans do |plans|
+    projects.resources :plans, :member => { :child => :get } do |plans|
       plans.resources :builds, :member => { :stop => :post }
     end
   end

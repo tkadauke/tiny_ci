@@ -25,6 +25,10 @@ class PlansController < ApplicationController
     @plan = @project.plans.find_by_name!(params[:id])
   end
   
+  def child
+    @plan = @project.plans.find_by_name!(params[:id])
+  end
+  
   def create
     @plan = @project.plans.build(params[:plan])
     if @plan.save

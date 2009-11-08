@@ -59,6 +59,13 @@ class PlansControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should show child form" do
+    plan = @project.plans.create(:name => 'some_plan')
+    
+    get 'child', :project_id => @project.name, :id => plan.name
+    assert_response :success
+  end
+  
   test "should create plan" do
     assert_difference 'Plan.count' do
       post 'create', :project_id => @project.name, :plan => { :name => 'some_plan' }

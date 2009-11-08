@@ -1,11 +1,17 @@
-<h1>Plan <%= @plan.name %></h1>
+<h1>Plan <%= @plan.name %> <%= '(child of %s)' % link_to(@plan.parent.name, project_plan_path(@project, @plan.parent)) if @plan.parent %></h1>
 
 <ul class="action-list">
   <li><%= link_to 'Edit', edit_project_plan_path(@project, @plan) %></li>
   <li><%= link_to 'Builds', project_plan_builds_path(@project, @plan) %></li>
   <li><%= link_to 'Clone', new_project_plan_path(@project, :clone => @plan) %></li>
-  <% unless @plan.parent %>
+  <% if @plan.parent %>
+    <li><%= link_to 'Move to another Parent', child_project_plan_path(@project) %></li>
+    <li><%= link_to 'Convert to Standalone Plan', project_plan_path(@project, :plan => { :parent_id => nil }), :method => :put %></li>
+  <% else %>
     <li><%= link_to 'New Child Plan', new_project_plan_path(@project, :parent => @plan) %></li>
+    <% unless @plan.has_children? %>
+      <li><%= link_to 'Convert to Child Plan', child_project_plan_path(@project) %></li>
+    <% end %>
   <% end %>
   <li><%= link_to 'Delete', project_plan_path(@project), :method => :delete, :confirm => 'Do you really want to delete this plan and all its children and builds? This operation can not be undone.' %></li>
 </ul>

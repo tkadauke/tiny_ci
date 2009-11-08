@@ -27,16 +27,6 @@ Feature: Manage plans
     And I press "Create"
     Then I should see "clone_plan"
 
-  Scenario: Create a child plan
-    Given a project "some_project"
-    And a plan "some_plan" in project "some_project"
-    And I am on the page of plan "some_plan" in project "some_project"
-    When I follow "New Child Plan"
-    And I fill in "name" with "child_plan"
-    And I press "Create"
-    Then I should see "some_plan"
-    And I should see "child_plan"
-
   Scenario: Build a plan manually
     Given a project "some_project"
     And a plan "some_plan" in project "some_project"
