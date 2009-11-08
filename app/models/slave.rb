@@ -6,7 +6,7 @@ class Slave < ActiveRecord::Base
   has_many :builds, :dependent => :nullify
   has_many :running_builds, :class_name => 'Build', :conditions => { :status => 'running' }
   
-  named_scope :least_busy, :include => :running_builds, :group => 'builds.id', :order => 'COUNT(builds.id)', :conditions => 'not offline'
+  named_scope :least_busy, :include => :running_builds, :group => 'builds.id', :order => 'COUNT(builds.id)', :conditions => ['offline != ?', true]
   
   validates_presence_of :name, :protocol
   validates_uniqueness_of :name
