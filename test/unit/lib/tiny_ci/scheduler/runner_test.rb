@@ -5,6 +5,26 @@ class TinyCI::Scheduler::RunnerTest < ActiveSupport::TestCase
     TinyCI::Scheduler::Runner.any_instance.stubs(:trap)
   end
   
+  test "should run" do
+    TinyCI::Scheduler::Runner.instance.expects(:run)
+    TinyCI::Scheduler::Runner.run
+  end
+  
+  test "should enter event loop" do
+    TinyCI::Scheduler::Runner.instance.expects(:poll_messages!)
+    TinyCI::Scheduler::Runner.instance.expects(:schedule!)
+    TinyCI::Scheduler::Runner.instance.stubs(:loop).yields
+    TinyCI::Scheduler::Runner.instance.stubs(:sleep)
+    TinyCI::Scheduler::Runner.run
+  end
+  
+  test "should poll messages" do
+    build = stub
+    TinyCI::Scheduler::Runner.instance.queue.push(:stop, build)
+    TinyCI::Scheduler::Runner.instance.expects(:stop).with(build)
+    TinyCI::Scheduler::Runner.instance.poll_messages!
+  end
+  
   test "should start build" do
     TinyCI::Scheduler::Runner.instance.expects(:fork)
     build = stub(:id => 7)

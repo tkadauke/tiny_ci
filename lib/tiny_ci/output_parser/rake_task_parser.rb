@@ -1,8 +1,6 @@
 module TinyCI
   module OutputParser
     class RakeTaskParser < Base
-      STATUSES = { '.' => 'success', 'F' => 'failure', 'E' => 'error' }
-      
       def parse!
         @result = TinyCI::Report::TaskReport.new
         
