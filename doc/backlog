@@ -1,7 +1,11 @@
 tests
+convert to child plan / convert to standalone plan
 login area
+  - ldap
   - personal builds
   - personal slaves
+  - roles
+experimental plans
 configuration over UI
 per-project/per-plan notification config
 plugin architecture
