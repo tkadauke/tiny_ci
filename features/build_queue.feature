@@ -22,4 +22,3 @@ Feature: Build Queue
     When I am on the dashboard
     And I follow "Stop"
     Then I should see "some_plan"
-    And I should see "canceled"

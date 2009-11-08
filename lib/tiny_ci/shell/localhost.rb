@@ -8,11 +8,9 @@ module TinyCI
       def run(command, parameters, working_dir, environment)
         cmdline = "#{command} #{[parameters].flatten.join(' ')}"
         Dir.chdir(working_dir) do
-          @build.current_environment.merge(environment).each do |key, value|
-            ENV[key] = value
-          end
+          env = build_environment({ 'RAILS_ENV' => 'development' }.merge(@build.current_environment.merge(environment)))
           
-          IO.popen("sh -c '#{cmdline} 2>&1'") do |stdout|
+          IO.popen("sh -c '#{env} #{cmdline} 2>&1'") do |stdout|
             output = []
             while !stdout.eof?
               if line = stdout.gets
@@ -47,6 +45,10 @@ module TinyCI
     private
       def success?
         $? == 0
+      end
+      
+      def build_environment(environment = {})
+        @build.current_environment.merge(environment).collect { |key, value| %{#{key}="#{value.gsub('"', '\\"')}"} }.join(' ')
       end
     end
   end

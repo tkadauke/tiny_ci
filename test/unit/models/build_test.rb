@@ -113,7 +113,6 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should stop build" do
     build = Build.new
-    build.expects(:update_attributes).with(has_entry(:status => 'canceled'))
     TinyCI::Scheduler::Client.expects(:stop).with(build)
     build.stop!
   end

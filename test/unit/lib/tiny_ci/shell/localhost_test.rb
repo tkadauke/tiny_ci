@@ -48,14 +48,11 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should set environment variables when running commands" do
     build = stub(:current_environment => { 'BUILD_KEY' => 'BUILD_VALUE' })
     
-    IO.expects(:popen)
+    IO.expects(:popen).with(all_of(regexp_matches(/BUILD_KEY/), regexp_matches(/COMMAND_VALUE/)), any_parameters)
     
     localhost = TinyCI::Shell::Localhost.new(build)
     localhost.expects(:success?).returns(true)
     localhost.run('some_command', ['parameters'], '.', { 'COMMAND_KEY' => 'COMMAND_VALUE' })
-    
-    assert_equal 'BUILD_VALUE', ENV['BUILD_KEY']
-    assert_equal 'COMMAND_VALUE', ENV['COMMAND_KEY']
   end
   
   test "should raise exception when command fails" do
