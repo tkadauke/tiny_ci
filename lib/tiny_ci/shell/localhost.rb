@@ -22,7 +22,7 @@ module TinyCI
             @build.flush_output!
           end
           
-          raise(CommandExecutionFailed) unless $? == 0
+          raise(CommandExecutionFailed) unless success?
         end
       end
       
@@ -42,6 +42,11 @@ module TinyCI
         Dir.chdir(working_dir) do
           %x{#{command}}
         end
+      end
+      
+    private
+      def success?
+        $? == 0
       end
     end
   end
