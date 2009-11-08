@@ -24,4 +24,10 @@ class TinyCI::Util::ExecutorTest < ActiveSupport::TestCase
     
     TestExecutor.new(@build).exists?('/some/file')
   end
+
+  test "should capture command output" do
+    @shell.expects(:capture).with('/some/command', '/some/path')
+    
+    TestExecutor.new(@build).capture('/some/command')
+  end
 end
