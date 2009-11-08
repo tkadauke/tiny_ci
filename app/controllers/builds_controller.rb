@@ -21,17 +21,17 @@ class BuildsController < ApplicationController
   end
   
   def stop
-    @build = @plan.builds.find_by_position!(params[:id])
+    @build = @plan.builds.from_param!(params[:id])
     @build.stop!
     redirect_to project_plan_builds_path(@project, @plan)
   end
 
 protected
   def find_project
-    @project = Project.find_by_name!(params[:project_id])
+    @project = Project.from_param!(params[:project_id])
   end
   
   def find_plan
-    @plan = @project.plans.find_by_name!(params[:plan_id])
+    @plan = @project.plans.from_param!(params[:plan_id])
   end
 end

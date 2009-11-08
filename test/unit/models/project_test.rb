@@ -9,4 +9,9 @@ class ProjectTest < ActiveSupport::TestCase
   test "should use name as param" do
     assert_equal 'some_project', Project.new(:name => 'some_project').to_param
   end
+
+  test "should find project by name" do
+    Project.expects(:find_by_name!).with("some_plan")
+    Project.from_param!("some_plan")
+  end
 end

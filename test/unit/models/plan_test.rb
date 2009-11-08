@@ -86,6 +86,11 @@ class PlanTest < ActiveSupport::TestCase
     assert_equal 'some_plan', plan.to_param
   end
   
+  test "should find plan by name" do
+    Plan.expects(:find_by_name!).with("some_plan")
+    Plan.from_param!("some_plan")
+  end
+  
   test "should find out if build can be manually executed" do
     assert   Plan.new.standalone?
     assert ! Plan.new(:parent_id => 5).standalone?

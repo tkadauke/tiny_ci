@@ -10,9 +10,9 @@ class SlaveTest < ActiveSupport::TestCase
   
   test "should clone slave" do
     original = Slave.new(:name => 'some_name', :protocol => 'ssh', :username => 'johndoe', :password => 'drowssap')
-    Slave.expects(:find).with(1).returns(original)
+    Slave.expects(:find_by_name!).with('some_name').returns(original)
     
-    clone = Slave.find_for_cloning!(1)
+    clone = Slave.find_for_cloning!('some_name')
     assert_nil clone.name
     assert_equal original.protocol, clone.protocol
     assert_equal original.username, clone.username
@@ -92,5 +92,14 @@ class SlaveTest < ActiveSupport::TestCase
     slave = Slave.new(:environment_variables => { 1 => { 'key' => 'foo', 'value' => 'bar' }, 2 => { 'key' => nil, 'value' => nil } })
     slave.send(:cleanup_environment)
     assert_equal({ 1 => { 'key' => 'foo', 'value' => 'bar' }}, slave.environment_variables)
+  end
+  
+  test "should use name as param" do
+    assert_equal 'some_slave', Slave.new(:name => 'some_slave').to_param
+  end
+
+  test "should find slave by name" do
+    Slave.expects(:find_by_name!).with("some_plan")
+    Slave.from_param!("some_plan")
   end
 end

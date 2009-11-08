@@ -222,6 +222,11 @@ class BuildTest < ActiveSupport::TestCase
     assert_equal '10', build.to_param
   end
   
+  test "should find build by position" do
+    Build.expects(:find_by_position!).with("10")
+    Build.from_param!("10")
+  end
+  
   test "should calculate duration" do
     build = Build.new(:started_at => 2.hours.ago, :finished_at => 1.hour.ago)
     assert_equal 3600, build.duration.to_i

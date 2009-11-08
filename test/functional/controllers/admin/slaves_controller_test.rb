@@ -11,7 +11,7 @@ class Admin::SlavesControllerTest < ActionController::TestCase
   test "should show slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'show', :id => slave
+    get 'show', :id => slave.name
     assert_response :success
   end
   
@@ -31,7 +31,7 @@ class Admin::SlavesControllerTest < ActionController::TestCase
   test "should clone slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'new', :clone => slave
+    get 'new', :clone => slave.name
     assert_response :success
   end
   
@@ -54,14 +54,14 @@ class Admin::SlavesControllerTest < ActionController::TestCase
   test "should show edit" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'edit', :id => slave
+    get 'edit', :id => slave.name
     assert_response :success
   end
   
   test "should update slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
-    post 'update', :id => slave, :slave => { :name => 'some_slave', :protocol => 'ssh' }
+    post 'update', :id => slave.name, :slave => { :name => 'some_slave', :protocol => 'ssh' }
     assert_response :redirect
     assert_not_nil flash[:notice]
   end
@@ -69,7 +69,7 @@ class Admin::SlavesControllerTest < ActionController::TestCase
   test "should not update invalid slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
-    post 'update', :id => slave, :slave => { :name => 'some_slave', :protocol => nil }
+    post 'update', :id => slave.name, :slave => { :name => 'some_slave', :protocol => nil }
     assert_response :success
     assert_nil flash[:notice]
   end
@@ -78,7 +78,7 @@ class Admin::SlavesControllerTest < ActionController::TestCase
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
     assert_difference 'Slave.count', -1 do
-      delete 'destroy', :id => slave
+      delete 'destroy', :id => slave.name
       assert_response :redirect
       assert_not_nil flash[:notice]
     end
