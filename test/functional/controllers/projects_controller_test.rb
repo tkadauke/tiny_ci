@@ -13,10 +13,17 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should redirect to plans page on show action" do
+    project = Project.create(:name => 'some_project')
+    
+    get 'show', :id => project.name
+    assert_response :redirect
+  end
+  
   test "should clone project" do
     project = Project.create(:name => 'some_project')
     
-    get 'new', :clone => project
+    get 'new', :clone => project.name
     assert_response :success
   end
   

@@ -11,6 +11,10 @@ class ProjectsController < ApplicationController
     @project = Project.from_param!(params[:id])
   end
   
+  def show
+    redirect_to project_plans_path(Project.from_param!(params[:id]))
+  end
+  
   def create
     @project = Project.new(params[:project])
     if @project.save
