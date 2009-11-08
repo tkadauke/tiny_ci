@@ -7,10 +7,14 @@ RAILS_GEM_VERSION = '2.3.3' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 if ENV['SETUP'] == 'true'
-  # do not run initializers if we're in SETUP mode, except for the ones explicitly required
   class Rails::Initializer
+    # do not run initializers if we're in SETUP mode, except for the ones explicitly required
     def load_application_initializers
       require "#{RAILS_ROOT}/config/initializers/session_store"
+    end
+    
+    # do not eager load classes, because the models depend on active record, which won't be loaded
+    def load_application_classes
     end
   end
   
