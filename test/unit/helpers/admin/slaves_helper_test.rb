@@ -1,4 +1,4 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
-class Admin::SetupHelperTest < ActionView::TestCase
+class Admin::SlavesHelperTest < ActionView::TestCase
 end
