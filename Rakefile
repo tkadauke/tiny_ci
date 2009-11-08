@@ -27,11 +27,13 @@ task :dist do
   sh "rake rails:freeze:gems"
   sh "rake gems:unpack:dependencies"
   
-  dirs = ["app", "config", "db", "lib", "public", "script", "vendor"].map { |dir| "#{dir}/**/*" }
-  files = dirs + ["Rakefile"]
   FileUtils.rm_rf "dist"
   FileUtils.mkdir_p "dist"
-  sh "tar -cf dist/tiny_ci.tar #{Dir.glob(files).join(' ')}"
+  
+  Dir.chdir('..') do
+    files = ["app", "config/*.rb", "config/*/*", "db/*.rb", "db/*/*", "lib", "public", "script", "vendor", "Rakefile"].collect { |name| "tiny_ci/#{name}" }
+    sh "tar -cf tiny_ci/dist/tiny_ci.tar #{files.join(' ')}"
+  end
   sh "gzip dist/tiny_ci.tar"
 end
 
