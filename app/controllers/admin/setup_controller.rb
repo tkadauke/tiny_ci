@@ -3,11 +3,11 @@ class Admin::SetupController < ApplicationController
   before_filter :only_setup, :except => :redirect_me
   
   def index
-    @config = InitialConfig.new
+    @config = TinyCI::Setup::InitialConfig.new
   end
   
   def create
-    @config = InitialConfig.new(params[:config])
+    @config = TinyCI::Setup::InitialConfig.new(params[:config])
     if @config.save
       redirect_to :action => 'restart'
     else
