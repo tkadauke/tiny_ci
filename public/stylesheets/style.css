@@ -85,6 +85,7 @@ padding: 3px 3px 0 3px;
 .suggestion_corner_right {
   background: url(../images/suggestion_corner_right_bottom.jpg) bottom right no-repeat;
   padding: 10px 10px;
+  text-align: center;
 }
 
 #header #right_header {
