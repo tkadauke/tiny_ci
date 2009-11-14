@@ -19,11 +19,11 @@ module ApplicationHelper
   
   def bread_crumb
     breadcrumb = '<a href="/">Home</a>'
-    sofar = '/'
+    sofar = ''
     elements = request.request_uri.split('?').first.split('/')
     parent_model = nil
     for i in 1...elements.size
-      sofar += elements[i] + '/'
+      sofar += '/' + elements[i]
       
       parent_model, link_text = begin
         next_model = if parent_model
@@ -33,7 +33,7 @@ module ApplicationHelper
         end
         [next_model, next_model.to_param]
       rescue Exception => e
-        [parent_model, elements[i].capitalize]
+        [parent_model, elements[i].humanize]
       end
         
       breadcrumb += ' &gt; '

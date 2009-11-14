@@ -1,0 +1,5 @@
+Chained Plans
+
+You can chain plans together by selecting the previous plan on a plan's edit page. The plan will only be built if the build of the previous plan succeeded.
+
+There is a special behavior in chained builds: a plan's build will inherit the revision number of the previous plan's build, iff both plans share the same repository URL. This is useful to e.g. automatically deploy a successfully built revision.

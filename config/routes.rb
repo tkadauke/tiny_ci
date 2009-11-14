@@ -9,6 +9,9 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   
+  map.help_topic '/help_topics/*id', :controller => 'help_topics', :action => 'show'
+  map.help_topics '/help_topics', :controller => 'help_topics', :action => 'index'
+  
   map.connect '/', :controller => '/start', :action => 'index'
 
   # The priority is based upon order of creation: first created -> highest priority.

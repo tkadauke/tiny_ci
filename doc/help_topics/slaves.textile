@@ -1,0 +1,33 @@
+Distributed Builds on Build Slaves
+
+h3. Managing Build Slaves
+
+TinyCI supports building "plans":plan locally as well as remotely over SSH. In the case of SSH, you do not need to install any client software on the remote slave (except of course what is needed to build the plan). To build anything, at least one slave must be defined. This can be the local computer on which TinyCI is running. In this case, choose "localhost" as the host name and the protocol. To manage slaves, click on "Manage slaves":/admin/slaves.
+
+To add a slave to the system, click on "New slave":/admin/slaves/new. For remote slaves, enter the credentials needed to log in. Note that login using host keys is not supported at the moment. Also note that the slave's password will be stored in plain text in the TinyCI database.
+
+h3. Environment Variables
+
+You can define environment variables per slave which are used for all builds on that particular slave (right now, you can define one at a time). Note that case matters in environment variables. Plans may choose to override some or all of the environment variables specified for slaves. To remove an environment variable, clear its "Variable name" field and hit the "Update button".
+
+h3. Capabilities and Requirements
+
+You can specify capabilities and resources that a slave offers. Examples are "ruby", "rails", "gcc" or "8 gb ram", "3 cpus". A plan can only be built on this slave, if the slave fulfills all the the plans requirements.
+
+Capabilites do not have numbers assigned to them, whereas resources have a number assigned. Capabilities are simply checked before the build. If they are not met for a build, the build can never run on that slave. Resources are dynamically checked; if some build already uses a resource, only what is left is considered in the decision if a build can be run on a slave. Hence, a build that can not run now may run later, when another build is finished.
+
+Capabilities and resources must be separated by commas and entered into the field "Slave capabilities". Plans need to repeat the exact spelling, including case, to specify the requirements.
+
+h4. Example: Tie plan "tiny_ci" to slave "titan"
+
+Use "titan" (without a number) as a capability for the slave. Use that name as a requirement for the plan "tiny_ci".
+
+h4. Example: Tie several plans to slave "titan", but run only one at a time
+
+Use "1 titan" as a capability. Use the same (with the number 1) for each plan.
+
+h3. Disable / Delete Builds slaves
+
+If you want to disable a slave temporarily, go to its edit page, and check "Offline" and press "Update". From now on, the slave is not assigned any more builds. Any running builds are finished, however, unless you stop them manually.
+
+If you want to disable a slave permanently, go to its page and click on "Delete". Note that this operation can not be undone. Any builds that ran on this slave will lose that information.

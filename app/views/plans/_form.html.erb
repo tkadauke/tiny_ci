@@ -18,12 +18,13 @@
 
 <p class="form_item">
   <span class="label"><%= f.label :steps, 'Steps' %></span>
+  <span class="desc">Steps necessary to build the plan. <%= help_link 'plan' %></span>
   <%= f.text_area :steps, :rows => 10 %>
 </p>
 
 <p class="form_item">
   <span class="label"><%= f.label :requirements, 'Plan requirements' %></span>
-  <span class="desc">Capabilities a build slave must have to build this plan, separated by commas</span>
+  <span class="desc">Capabilities a build slave must have to build this plan, separated by commas. <%= help_link 'slaves' %></span>
   <%= f.text_area :requirements, :rows => 3 %>
 </p>
 

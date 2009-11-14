@@ -33,6 +33,8 @@ module NavigationHelpers
       admin_slave_path(Slave.find_by_name!($1))
     when /the edit page of slave "([^\"]*)"/
       edit_admin_slave_path(Slave.find_by_name!($1))
+    when /the help page of topic "([^\"]*)"/
+      help_topic_path($1)
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"

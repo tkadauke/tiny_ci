@@ -1,0 +1,11 @@
+Child Plans
+
+Child plans run in parallel (if possible) as soon as their parent plan built successfully. This feature allows to easily parallelize parts of building a project, for example to run unit/functional tests in one child plan, and to run cucumber feature tests in another child plan.
+
+There is a special behavior in child builds: a child plan's build will inherit the revision number of the parent plan's build, iff both plans share the same repository URL. This is useful to e.g. run tests in parallel and ensure that each build uses the same revision.
+
+h3. Converting Plans
+
+You can easily convert a plan into a child of another plan. Just click on "Convert to child plan" on the plan's page. Note that any chained plans (previous plan and next plan) will be removed when you convert a plan to a child.
+
+You can also convert a child plan to a normal plan. Just click on "Convert to standalone plan".

@@ -1,0 +1,9 @@
+Welcome to TinyCI Help
+
+TinyCI is a "Continuous Integration Server":http://en.wikipedia.org/wiki/Continuous_integration for Ruby on Rails projects. It main features are
+
+* Parallel, "Distributed Builds":slaves
+* "Chained Builds":plan/chain
+* "Child Builds":plan/child
+* Organize "Plans":plan in "Projects":project
+* Uses Git as its source control management tool

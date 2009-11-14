@@ -1,0 +1,5 @@
+Projects
+
+Projects are a way to organize "plans":plan. Each plan must be associated to a project.
+
+To create a project, click on "New project":/projects/new.

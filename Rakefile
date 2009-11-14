@@ -31,7 +31,7 @@ task :dist do
   FileUtils.mkdir_p "dist"
   
   Dir.chdir('..') do
-    files = ["app", "config/*.rb", "config/*/*", "db/*.rb", "db/*/*", "lib", "public", "script", "vendor", "Rakefile"].collect { |name| "tiny_ci/#{name}" }
+    files = ["app", "config/*.rb", "config/*/*", "doc", "db/*.rb", "db/*/*", "lib", "public", "script", "vendor", "Rakefile"].collect { |name| "tiny_ci/#{name}" }
     sh "tar -cf tiny_ci/dist/tiny_ci.tar #{files.join(' ')}"
   end
   sh "gzip dist/tiny_ci.tar"

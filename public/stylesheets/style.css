@@ -134,6 +134,9 @@ padding: 3px 3px 0 3px;
   text-decoration: underline;
   /* color: #CCDDEE; */
 }
+#header #menu ul li:last-child {
+  float: right;
+}
 
 /* menu user */
 
@@ -197,20 +200,23 @@ padding: 3px 3px 0 3px;
 }
 
 #body p a,
-ul.asterisk a {
+ul.asterisk a,
+.help-content ul a {
   color: #336699;
   text-decoration: underline;
 }
 #body p a:hover {
 }
 
-#body ul.asterisk {
+#body ul.asterisk,
+.help-content ul {
   padding: 0 20px;
   margin: 0 0 15px 0;
   list-style: none;
   font-size: 1.1em;
 }
-#body ul.asterisk li {
+#body ul.asterisk li,
+.help-content ul li {
   padding: 0 0 5px 15px;
   background: url(../images/ul_asterisk_li.jpg) 1px 3px no-repeat;
 }

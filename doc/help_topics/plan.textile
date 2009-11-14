@@ -1,0 +1,13 @@
+Plans
+
+A plan describes the steps necessary to transform source code to the desired product. This can be from a simple call to "rake", to very complex build scripts. Plans can be "chained":plan/chain and organized as "child plans":plan/child. Plans are organized in "projects":project.
+
+To create a plan, go to its project and click "New plan".
+
+Plans in TinyCI consist of a name, a repository URL and build steps. The build steps are specified in a special Ruby DSL.
+
+h3. Step DSL
+
+- @env environment@ := Set environment variables for this build as specified in the @environment@ hash.
+- @rake [commands], environment@ := Run rake with the specified @commands@ and the @environment@. Both the commands array and the environment are optional.
+- @sh command, [parameters]@ := Run shell command @command@ with @parameters@.
