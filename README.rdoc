@@ -1,0 +1,131 @@
+== TinyCI - Continuous Integration for Ruby on Rails
+
+TinyCI is an opinionated continuous integration server. Although it can build any project in any language, you will get the best results with the least setup if you have the following situation going:
+
+- You are working with Ruby on Rails
+- You use GIT for source control
+- You use Test::Unit for your tests
+
+=== Features
+
+- Easy setup over the user interface
+- Self-contained distribution
+- Local and remote builds
+- Manage build slaves via the user interface
+- Clone slaves to save time configuring stuff
+- Match build requirements to slave capabilities for maximum control which build runs on which slave(s)
+- Build queue, i.e. a build does not necessarily run instantly
+- Run builds manually
+- Run builds as a post receive / post commit hook with git
+- Chained builds, i.e. trigger a build if another one succeded
+- Child builds, i.e. trigger many builds to run in parallel if the parent build succeeded
+- Analyzed build output
+- The build queue, current slave activity and recently finished builds are shown on the dashboard
+- Built-in help
+- Organize Plans (aka Jobs or Tasks in other systems) in Projects, i.e. TinyCI is suitable for multiple teams
+- Clone existing build plans to save time configuring stuff
+- Pages are automatically and instantly refreshed via Juggernaut
+- E-Mail notification on completed builds
+
+=== Missing stuff
+
+- TinyCI does not yet poll GIT for changes
+- No direct support for SCMs other than GIT
+- Output of RSpec or cucumber is not analyzed
+- No authentication / authorization mechanism yet
+- No user interface configuration for e-mail notification yet
+
+=== Why yet another Continous Integration Server?
+
+For work, we need a *free* continuous integration server that manages several projects with multiple build plans, and assigns them in a smart fashion to multiple build slaves. Also, our setup requires one build (migrate database) to trigger multiple builds in parallel (run all kinds of test suites for all our modules), which on success of all the child builds trigger a "merge build", that merges the built branch into our live branch.
+
+None of the CI tools that we know supports this. We tried to build this with Hudson, but since we have no Java guru in our team, we had to do this in our build scripts (that is, our build script triggered other builds via Hudsons' HTTP API and stored the build results in a separate database, so that the final merge build knew if everything was successful). That setup was very hacky and unstable.
+
+This is why TinyCI was born. It supports sequential and parallel build trigges out of the box. Triggered builds also inherit the current revision if both builds use the same repository.
+
+Also, all of the commercial CI tools cost thousands of dollars each year, and to use them with Rails, you first need deselect a lot of check boxes related to building Java projects.
+
+=== Installation
+
+If you use the self-contained distribution, just download the archive and unpack it on your server.
+
+You can also choose to clone the source from github. Then you need to have Rails 2.3.3 installed, as well as all required gems. Install them with
+
+  sudo rake gems:install
+
+=== Supported Browsers
+
+- Safari 2+
+- Firefox 2+
+
+No. Internet Explorer is not supported.
+
+=== Starting / Stopping TinyCI
+
+To start TinyCI, run
+
+  RAILS_ENV=production rake start
+
+To stop TinyCI, run
+
+  rake stop
+
+To restart TinyCI, run
+
+  RAILS_ENV=production rake restart
+
+you get the idea.
+
+=== Architecture / Hacking
+
+When idling, TinyCI consists of three processes:
+
+- The Rails server process for the web interface
+- The scheduler, which spawns build processes and supervises builds
+- A Juggernaut server for dynamic real-time page refreshes
+
+To run TinyCI in development mode, run
+
+  script/tiny_ci
+
+This will run all required processes. The server process will reload all classes on each request, while the scheduler process won't. That means that you need to restart everything (with Ctrl-C) when you make changes that affect the scheduler process.
+
+To contribute, please use the github workflow: clone the project, make your changes (make sure to adapt / add unit, functional and feature tests), commit them and send me a pull request.
+
+For tests, you will need the following gems installed (these are not part of the self-contained distribution, nor are they installed with <code>rake gems:install</code>):
+
+- mocha
+- cucumber
+- webrat
+- rspec
+- rspec-rails
+
+To run the unit/functional tests, run
+
+  rake
+
+To run the feature tests, run
+
+  rake cucumber:all
+
+To build the distribution, run
+
+  rake dist
+
+To clean all files needed that are only needed for distribution, run
+
+  rake distclean
+
+=== Other things
+
+- To setup email notification, fill out the configuration in <code>config/options.yml</code> and restart TinyCI.
+
+=== About
+
+TinyCI was written by Thomas Kadauke.
+
+=== Acknowledgements
+
+The design of TinyCI is a derivative work of the free homeofprojects001 (http://www.openwebdesign.org/viewdesign.phtml?id=5258) design.
+
+The icons used for status information are borrowed from KDE's Oxygen icon set (http://www.oxygen-icons.org).
