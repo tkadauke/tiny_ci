@@ -7,3 +7,5 @@ TinyCI is a "Continuous Integration Server":http://en.wikipedia.org/wiki/Continu
 * "Child Builds":plan/child
 * Organize "Plans":plan in "Projects":project
 * Uses Git as its source control management tool
+
+"About TinyCI":about

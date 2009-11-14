@@ -1,0 +1,9 @@
+About TinyCI
+
+TinyCI was written by Thomas Kadauke.
+
+h3. Acknowledgements
+
+The design of TinyCI is a derivative work of the free "homeofprojects001":http://www.openwebdesign.org/viewdesign.phtml?id=5258 design.
+
+The icons used for status information are borrowed from "KDE's Oxygen icon set":http://www.oxygen-icons.org.
