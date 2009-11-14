@@ -5,12 +5,12 @@ Dir.chdir(app_root)
 # setup if database file does not exist
 unless File.exist?('config/database.yml')
   ENV['SETUP'] = 'true'
-  system "script/server"
+  system "script/server -p 7199"
   ENV['SETUP'] = 'false'
 end
 
 commands = [
-  "script/server",
+  "script/server -p 7199",
   "script/scheduler",
   "juggernaut -c config/juggernaut.yml"
 ]

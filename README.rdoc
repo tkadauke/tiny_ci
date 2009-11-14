@@ -66,6 +66,8 @@ To start TinyCI, run
 
   RAILS_ENV=production rake start
 
+TinyCI will run on port 7199. That is, if you run TinyCI locally, you can access it at http://localhost:7199.
+
 To stop TinyCI, run
 
   rake stop
