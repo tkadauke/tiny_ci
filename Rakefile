@@ -22,27 +22,6 @@ end
 desc "Restart the TinyCI server"
 task :restart => [:stop, :start]
 
-desc "Package TinyCI for distribution"
-task :dist do
-  sh "rake rails:freeze:gems"
-  sh "rake gems:unpack:dependencies"
-  
-  FileUtils.rm_rf "dist"
-  FileUtils.mkdir_p "dist"
-  
-  Dir.chdir('..') do
-    files = ["app", "config/*.rb", "config/*/*", "doc", "db/*.rb", "db/*/*", "lib", "public", "script", "vendor", "Rakefile"].collect { |name| "tiny_ci/#{name}" }
-    sh "tar -cf tiny_ci/dist/tiny_ci.tar #{files.join(' ')}"
-  end
-  sh "gzip dist/tiny_ci.tar"
-end
-
-desc "Clean up distribution files"
-task :distclean => "rails:unfreeze" do
-  sh "rm -rf vendor/gems"
-  sh "rm -rf dist"
-end
-
 namespace :test do
   task :coverage do
     output_dir = "test/coverage"
