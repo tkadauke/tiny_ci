@@ -49,7 +49,8 @@ module TinyCI
           while !empty? && !peek.line.empty?
             backtrace << consume!.line.split(':')
           end
-          @result.test_case(test_name, test_case_name).error!(error_message, backtrace)
+          test_case = @result.test_case(test_name, test_case_name)
+          test_case.error!(error_message, backtrace) if test_case
         end
       end
       
@@ -72,7 +73,8 @@ module TinyCI
             error_message << consume!.line
           end
           
-          @result.test_case(test_name, test_case_name).error!(error_message.join(' '), backtrace)
+          test_case = @result.test_case(test_name, test_case_name)
+          test_case.error!(error_message.join(' '), backtrace) if test_case
         end
       end
     end

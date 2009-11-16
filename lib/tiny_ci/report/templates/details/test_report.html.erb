@@ -39,18 +39,20 @@
                     <% else %>
                       <a href="#"><%= test_case.name %></a>
                       <div style="display: none">
-                        <strong><%= test_case.error_message %></strong>
-                        <table>
-                          <tbody>
-                            <% test_case.backtrace.each do |invocation| %>
-                              <tr>
-                                <td><%= invocation[0] %></td>
-                                <td><%= invocation[1] %></td>
-                                <td><%= invocation[2] %></td>
-                              </tr>
-                            <% end %>
-                          </tbody>
-                        </table>
+                        <strong><%= h test_case.error_message %></strong>
+                        <% if test_case.backtrace %>
+                          <table>
+                            <tbody>
+                              <% test_case.backtrace.each do |invocation| %>
+                                <tr>
+                                  <td><%= invocation[0] %></td>
+                                  <td><%= invocation[1] %></td>
+                                  <td><%= invocation[2] %></td>
+                                </tr>
+                              <% end %>
+                            </tbody>
+                          </table>
+                        <% end %>
                       </div>
                     <% end %>
                   </td>

@@ -43,7 +43,7 @@ module TinyCI
       end
       
       def test_case(test_name, test_case_name)
-        @tests[test_name].test_cases.find { |test_case| test_case.name == test_case_name }
+        @tests[test_name].test_cases.find { |test_case| test_case.name == test_case_name } rescue nil
       end
       
       def summary

@@ -10,7 +10,7 @@ module TinyCI
           
           if line =~ /^\*\* Execute (.*)$/
             task = case $1
-            when 'test:units', 'test:functionals'
+            when 'test', 'test:units', 'test:functionals'
               RakeTestParser.parse(@output)
             else
               RakeTaskParser.parse(@output)
