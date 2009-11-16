@@ -15,7 +15,7 @@
       <% builds.each do |build| %>
         <tr>
           <td><%= link_to build.position, project_plan_build_path(build.project, build.plan, build) %></td>
-          <td><%= link_to build.name, project_plan_path(build.project, build.plan) %></td>
+          <td><%= link_to build.project.name, project_path(build.project) %> / <%= link_to build.name, project_plan_path(build.project, build.plan) %></td>
           <td><%= link_to build.created_at.to_s(:timestamp), project_plan_build_path(build.project, build.plan, build) %></td>
           <td><%= image_tag "icons/small/#{build.status}.png" %> <%= build.status %></td>
           <td><%= link_to image_tag("icons/small/stopped.png") + ' Stop', stop_project_plan_build_path(build.project, build.plan, build), :method => :post unless build.finished? %></td>
@@ -23,8 +23,8 @@
         <% if build.has_children? %>
           <% build.children.each do |child| %>
             <tr>
-              <td></td>
-              <td><%= link_to "#{child.name} ##{child.position}", project_plan_build_path(child.project, child.plan, child) %></td>
+              <td>+ <%= link_to child.position, project_plan_build_path(child.project, child.plan, child) %></td>
+              <td><%= link_to child.project.name, project_path(child.project) %> / <%= link_to child.name, project_plan_path(child.project, child.plan) %></td>
               <td><%= link_to child.created_at.to_s(:timestamp), project_plan_build_path(child.project, child.plan, child) %></td>
               <td><%= image_tag "icons/small/#{child.status}.png" %> <%= child.status %></td>
               <td><%= link_to image_tag("icons/small/stopped.png") + ' Stop', stop_project_plan_build_path(child.project, child.plan, child), :method => :post unless child.finished? %></td>
