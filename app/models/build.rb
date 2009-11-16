@@ -104,7 +104,7 @@ class Build < ActiveRecord::Base
   end
   
   def workspace_path
-    "#{slave.base_path}/#{name}"
+    "#{slave.base_path}/#{project.name}/#{name}"
   end
   
   def build_output

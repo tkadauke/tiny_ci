@@ -188,7 +188,7 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should have plan name in workspace path" do
     build = Build.new
-    build.stubs(:plan).returns(mock(:name => 'some_plan'))
+    build.stubs(:plan).returns(mock(:name => 'some_plan', :project => stub(:name => 'some_project')))
     build.stubs(:slave).returns(mock(:base_path => '/some/base/path'))
     assert build.workspace_path =~ /some_plan/
   end
