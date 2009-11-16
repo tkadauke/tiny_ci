@@ -2,10 +2,18 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class PlanTest < ActiveSupport::TestCase
   test "should validate" do
-    assert ! Plan.new.valid?
-    assert ! Plan.new(:name => 'some_name').valid?
-    assert ! Plan.new(:project_id => 5).valid?
-    assert   Plan.new(:name => 'some_name', :project_id => 5).valid?
+    assert validated_plan.errors.on(:name)
+    assert validated_plan.errors.on(:project_id)
+    assert validated_plan(:name => 'some_name').errors.on(:project_id)
+    assert validated_plan(:project_id => 5).errors.on(:name)
+    assert validated_plan(:name => 'some_name', :project_id => 5).errors.empty?
+  end
+  
+  test "should validate name" do
+    assert ! validated_plan(:name => 'correct_Name-123').errors.on(:name)
+    assert   validated_plan(:name => 'incorrect name').errors.on(:name)
+    assert   validated_plan(:name => 'incorrect.name').errors.on(:name)
+    assert   validated_plan(:name => '$%&@!').errors.on(:name)
   end
   
   test "should clone plan" do
@@ -117,5 +125,12 @@ class PlanTest < ActiveSupport::TestCase
     assert_equal([], Plan.new(:requirements => 'linux').needed_resources.collect)
     assert_equal([['gb ram', 2]], Plan.new(:requirements => 'linux, 2 gb ram').needed_resources.collect)
     assert_equal([['cpus', 4], ['gb ram', 2]], Plan.new(:requirements => 'linux, 2 gb ram, 4 cpus').needed_resources.collect.sort_by {|x|x.first})
+  end
+
+private
+  def validated_plan(attributes = {})
+    plan = Plan.new(attributes)
+    plan.valid?
+    plan
   end
 end
