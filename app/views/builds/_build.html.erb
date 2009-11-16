@@ -24,3 +24,7 @@
 <div class="report" id="report">
   <%= render :partial => 'report' %>
 </div>
+
+<% if @build.finished? %>
+  <p><%= image_tag "icons/small/#{@build.status}.png" %> <%= @build.status %></p>
+<% end %>
