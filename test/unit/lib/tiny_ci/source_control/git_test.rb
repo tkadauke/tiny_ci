@@ -10,10 +10,10 @@ class TinyCI::SourceControl::GitTest < ActiveSupport::TestCase
   end
   
   test "should clone repository" do
-    build = stub(:name => 'some_plan', :repository_url => '/some/url')
+    build = stub(:name => 'some_plan', :repository_url => '/some/url', :workspace_path => '/some/path')
     git = TinyCI::SourceControl::Git.new(build, {})
-    TinyCI::Config.stubs(:base_path)
     git.expects(:exists?).returns(false)
+    git.expects(:mkdir).with("/some")
     git.expects(:run).with("git", "clone /some/url some_plan", anything)
     git.send :clone_or_update
   end
@@ -22,7 +22,9 @@ class TinyCI::SourceControl::GitTest < ActiveSupport::TestCase
     build = stub
     git = TinyCI::SourceControl::Git.new(build, {})
     git.expects(:exists?).returns(true)
-    git.expects(:run).with("git", "pull origin master")
+    git.expects(:run).with("git", "fetch")
+    git.expects(:capture).with("git rev-parse FETCH_HEAD").returns('12345')
+    git.expects(:run).with("git", "checkout -f 12345")
     git.send :clone_or_update
   end
   

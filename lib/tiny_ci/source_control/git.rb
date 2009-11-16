@@ -10,9 +10,13 @@ module TinyCI
     protected
       def clone_or_update
         if exists?('.git')
-          run("git", "pull origin master")
+          run("git", "fetch")
+          revision = capture(%{git rev-parse FETCH_HEAD})
+          run("git", "checkout -f #{revision}")
         else
-          run("git", "clone #{@build.repository_url} #{@build.name}", TinyCI::Config.base_path)
+          dest = File.expand_path(@build.workspace_path + '/..')
+          mkdir(dest)
+          run("git", "clone #{@build.repository_url} #{@build.name}", dest)
         end
       end
       
