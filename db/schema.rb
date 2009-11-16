@@ -9,12 +9,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091106191229) do
+ActiveRecord::Schema.define(:version => 20091116231035) do
 
   create_table "builds", :force => true do |t|
     t.integer  "plan_id"
     t.integer  "position"
-    t.text     "output"
+    t.text     "output",      :limit => 2147483647
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
