@@ -15,6 +15,7 @@ task :dist do
   dest_path = "dist/#{archive_name}"
   
   Dir.glob(patterns, File::FNM_DOTMATCH).each do |file|
+    next if file =~ /\/\.\//
     dir = File.dirname(file)
     dest_dir = "#{dest_path}/#{dir}"
     FileUtils.mkdir_p(dest_dir)
