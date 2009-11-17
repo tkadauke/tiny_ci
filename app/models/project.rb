@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
   validates_format_of :name, :with => /^[a-zA-Z0-9\-_]+$/
   
   def to_param
-    name
+    name_was || name
   end
   
   def self.from_param!(param)

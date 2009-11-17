@@ -61,7 +61,7 @@ class Plan < ActiveRecord::Base
   end
   
   def to_param
-    name
+    name_was || name
   end
   
   def self.from_param!(param)
