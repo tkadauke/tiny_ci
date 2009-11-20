@@ -4,7 +4,7 @@ class BuildObserver < ActiveRecord::Observer
   end
   
   def after_update(build)
-    if build.previous_changes.has_key?('output')
+    if build.previous_changes.has_key?('output') || build.previous_changes.has_key?('status')
       Juggernaut.send_to_channel("Report.update()", "build_#{build.name}_#{build.position}")
     end
     
