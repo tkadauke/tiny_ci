@@ -2,17 +2,20 @@ module TinyCI
   module SourceControl
     class Git < Base
       def update
+        reset
         clone_or_update
         find_or_checkout_revision
         update_submodules
       end
     
     protected
+      def reset
+        run("git", "reset --hard HEAD")
+      end
+      
       def clone_or_update
         if exists?('.git')
-          run("git", "fetch")
-          revision = capture(%{git rev-parse FETCH_HEAD})
-          run("git", "checkout -f #{revision}")
+          run("git", "pull origin master")
         else
           dest = File.expand_path(@build.workspace_path + '/..')
           mkdir(dest)
