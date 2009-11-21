@@ -23,6 +23,7 @@ desc "Restart the TinyCI server"
 task :restart => [:stop, :start]
 
 namespace :test do
+  desc 'Measure test coverage'
   task :coverage do
     output_dir = "test/coverage"
     rm_f "#{output_dir}/*"
@@ -37,6 +38,7 @@ namespace :test do
     sh %{#{rcov} --html #{test_files.join(' ')}} unless test_files.empty?
   end
   
+  desc 'Test all modules'
   task :modules do
     Dir.glob('modules/*/*/init.rb').each do |init_file|
       Dir.chdir File.dirname(init_file) do
