@@ -36,4 +36,12 @@ namespace :test do
     test_files = Dir.glob('test/functional/**/*_test.rb')
     sh %{#{rcov} --html #{test_files.join(' ')}} unless test_files.empty?
   end
+  
+  task :modules do
+    Dir.glob('modules/*/*/init.rb').each do |init_file|
+      Dir.chdir File.dirname(init_file) do
+        sh 'rake test'
+      end
+    end
+  end
 end

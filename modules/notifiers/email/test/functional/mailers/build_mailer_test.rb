@@ -1,7 +1,8 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class BuildMailerTest < ActionMailer::TestCase
   def setup
+    Rails.backtrace_cleaner.remove_silencers!
     @project = Project.create(:name => 'some_project')
     @plan = @project.plans.create(:name => 'some_plan')
   end

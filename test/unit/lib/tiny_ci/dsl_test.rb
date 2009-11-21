@@ -27,18 +27,6 @@ class TinyCI::DSLTest < ActiveSupport::TestCase
     TinyCI::DSL.new(build).update
   end
   
-  test "should run rake task" do
-    build = stub
-    TinyCI::Steps::Builder::Rake.expects(:new).with(build, ['test'], {}).returns(mock(:run!))
-    TinyCI::DSL.new(build).rake 'test'
-  end
-  
-  test "should extract environment variables from rake options" do
-    build = stub
-    TinyCI::Steps::Builder::Rake.expects(:new).with(build, ['test'], { 'some_key' => 'some_value' }).returns(mock(:run!))
-    TinyCI::DSL.new(build).rake 'test', 'some_key' => 'some_value'
-  end
-
   test "should run shell command" do
     shell = mock
     shell.expects(:run).with('ls', ['-l', '-a'], '/some/path', { 'some_key' => 'some_value' })

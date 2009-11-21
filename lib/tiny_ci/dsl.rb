@@ -28,11 +28,6 @@ module TinyCI
       TinyCI::Steps::SourceControl::Update.new(@build, options).run!
     end
     
-    def rake(*tasks)
-      environment = tasks.extract_options!
-      TinyCI::Steps::Builder::Rake.new(@build, tasks, environment).run!
-    end
-    
     def sh(command, *parameters)
       @build.shell.run(command, parameters, @build.workspace_path, @build.environment)
     end
