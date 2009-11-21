@@ -43,12 +43,12 @@
 <dl>
   <% if @plan.status %>
     <dt>Status</dt>
-    <dd><%= image_tag "icons/large/#{@plan.status}.png" %> <%= @plan.status %> <%= link_to 'Latest Build', project_plan_build_path(@project, @plan, @plan.last_finished_build) %></dd>
+    <dd><%= image_tag "icons/large/#{@plan.status}.png" %> <span><%= @plan.status %> <%= link_to 'Latest Build', project_plan_build_path(@project, @plan, @plan.last_finished_build) %></span></dd>
   <% end %>
 
   <% if @plan.weather %>
     <dt>Weather</dt>
-    <dd><%= image_tag "icons/large/weather-#{@plan.weather}.png" %> <%= @plan.weather %> of the last 5 builds were successful.</dd>
+    <dd><%= image_tag "icons/large/weather-#{@plan.weather}.png" %> <span><%= @plan.weather %> of the last 5 builds were successful.</span></dd>
   <% end %>
 
   <dt>Description</dt>
@@ -58,7 +58,25 @@
   <dd><pre><%= @plan.steps %></pre></dd>
 
   <dt>Requirements</dt>
-  <dd><%= @plan.requirements %></dd>
+  <dd><%= @plan.requirements %>&nbsp;</dd>
+  
+  <dt>Commit Hook</dt>
+  <dd>
+    <table>
+      <tr>
+        <th>URL</th>
+        <td><%= text_field_tag nil, project_plan_builds_url(@project, @plan), :size => 80 %></td>
+      </tr>
+      <tr>
+        <th>wget</th>
+        <td><%= text_field_tag nil, %{wget --post-data="" --output-file=/dev/null #{project_plan_builds_url(@project, @plan)}}, :size => 80 %></td>
+      </tr>
+      <tr>
+        <th>curl</th>
+        <td><%= text_field_tag nil, %{curl --data "" --output /dev/null --silent #{project_plan_builds_url(@project, @plan)}}, :size => 80 %></td>
+      </tr>
+    </table>
+  </dd>
 </dl>
 
 <% if @plan.standalone? %>
