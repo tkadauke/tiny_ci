@@ -1,12 +1,12 @@
+plugin architecture
+configuration over UI
 login area
   - ldap
   - personal builds
   - personal slaves
   - roles
 experimental plans
-configuration over UI
 per-project/per-plan notification config
-plugin architecture
 command line client
 
 statistics
