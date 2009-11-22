@@ -1,9 +1,9 @@
 plugin architecture
 login area
+  - per-user configuration of notifications
   - ldap
   - personal builds
   - personal slaves
-  - roles
 experimental plans
 per-project/per-plan notification config
 command line client
