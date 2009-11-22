@@ -1,5 +1,8 @@
 class PlansController < ApplicationController
   before_filter :find_project
+  before_filter :can_create_plans!, :only => [ :new, :create ]
+  before_filter :can_edit_plans!, :only => [ :edit, :update ]
+  before_filter :can_destroy_plans!, :only => [ :destroy ]
   
   def index
     @report = params[:report] || 'list'

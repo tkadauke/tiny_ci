@@ -10,4 +10,6 @@
   <%= render :partial => @report, :locals => { :plans => @plans } %>
 </div>
 
-<p><%= link_to 'New Plan', new_project_plan_path(@project) %></p>
+<% if current_user.can_create_plans? %>
+  <p><%= link_to 'New Plan', new_project_plan_path(@project) %></p>
+<% end %>

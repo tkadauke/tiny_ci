@@ -9,4 +9,13 @@ class UserTest < ActiveSupport::TestCase
     User.expects(:find_by_login!).with('alice')
     User.from_param!('alice')
   end
+  
+  test "should return false when asked if initial admin" do
+    assert ! User.new.initial_admin?
+  end
+  
+  test "should convert to user" do
+    user = User.new
+    assert_equal user, user.to_user
+  end
 end

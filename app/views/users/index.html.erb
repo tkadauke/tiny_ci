@@ -2,7 +2,10 @@
 
 <% if @users.empty? %>
   <p>There are no user accounts yet.</p>
-  <p><%= link_to 'New Account', new_user_path %></p>
+  
+  <% if current_user.can_create_accounts? %>
+    <p><%= link_to 'Create first administrator account', new_user_path %></p>
+  <% end %>
 <% else %>
   <table class="list">
     <thead>
@@ -15,11 +18,13 @@
       <% @users.each do |user| %>
         <tr>
           <td><%= link_to user.login, user_path(user) %></td>
-          <td><%= link_to 'Edit', edit_user_path(user) %></td>
+          <td><%= link_to 'Edit', edit_user_path(user) if current_user.can_edit_account?(user) %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
 
-  <p><%= link_to 'New Account', new_user_path %></p>
+  <% if current_user.can_create_accounts? %>
+    <p><%= link_to 'New Account', new_user_path %></p>
+  <% end %>
 <% end %>

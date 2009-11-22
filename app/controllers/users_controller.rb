@@ -13,10 +13,12 @@ class UsersController < ApplicationController
   
   def edit
     @user = User.from_param!(params[:id])
+    can_edit_account!(@user)
   end
   
   def create
     @user = User.new(params[:user])
+    @user.role = 'admin' if current_user.initial_admin?
     if @user.save
       flash[:notice] = "Successfully created account"
       redirect_to users_path
@@ -27,9 +29,13 @@ class UsersController < ApplicationController
   
   def update
     @user = User.from_param!(params[:id])
-    if @user.update_attributes(params[:user])
-      flash[:notice] = "Successfully updated #{@user.login}'s profile"
-      redirect_to user_path(@user)
+    can_edit_account!(@user) do
+      @user.role = params[:user][:role] if can_assign_roles?
+      
+      if @user.update_attributes(params[:user])
+        flash[:notice] = "Successfully updated #{@user.login}'s profile"
+        redirect_to user_path(@user)
+      end
     end
   end
 end

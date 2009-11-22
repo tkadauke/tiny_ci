@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   def setup
-    @user = User.create!(:login => 'alice', :password => 'foobar', :password_confirmation => 'foobar', :email => 'alice@example.com')
+    @user = create_user(:login => 'alice')
   end
   
   test "should show user list" do
@@ -15,15 +15,39 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "should show edit page" do
+  test "should show own edit page" do
+    login_with @user
     get :edit, :id => @user.login
     assert_response :success
   end
   
-  test "should update profile" do
+  test "should show other users edit page for admin" do
+    admin = create_admin
+    login_with admin
+    get :edit, :id => @user.login
+    assert_response :success
+  end
+  
+  test "should update own profile" do
+    login_with @user
+    
     post :update, :id => @user.login, :user => { :email => 'alice2@example.com' }
     assert_response :redirect
     assert_equal 'alice2@example.com', User.find_by_login!('alice').email
+  end
+  
+  test "should update profile for admin" do
+    admin = create_admin
+    login_with admin
+
+    post :update, :id => @user.login, :user => { :email => 'alice2@example.com' }
+    assert_response :redirect
+    assert_equal 'alice2@example.com', User.find_by_login!('alice').email
+  end
+  
+  test "should not update profile for unauthorized user" do
+    post :update, :id => @user.login, :user => { :email => 'alice2@example.com' }
+    assert_access_denied
   end
   
   test "should show new" do

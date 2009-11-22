@@ -1,4 +1,6 @@
 class Admin::ConfigurationController < ApplicationController
+  before_filter :can_configure_system_variables!
+  
   def index
     @config = TinyCI::Config.instance
   end

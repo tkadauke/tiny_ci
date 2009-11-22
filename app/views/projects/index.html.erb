@@ -19,4 +19,6 @@
   </tbody>
 </table>
 
-<p><%= link_to 'New Project', new_project_path %></p>
+<% if current_user.can_create_projects? %>
+  <p><%= link_to 'New Project', new_project_path %></p>
+<% end %>

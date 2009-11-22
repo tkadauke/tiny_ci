@@ -1,4 +1,6 @@
 class Admin::SlavesController < ApplicationController
+  before_filter :can_configure_slaves!
+  
   def index
     @slaves = Slave.all
   end

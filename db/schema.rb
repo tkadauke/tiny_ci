@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091122161332) do
+ActiveRecord::Schema.define(:version => 20091122172744) do
 
   create_table "builds", :force => true do |t|
     t.integer  "plan_id"
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(:version => 20091122161332) do
     t.string   "perishable_token",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "role"
   end
 
 end

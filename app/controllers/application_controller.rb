@@ -12,8 +12,28 @@ class ApplicationController < ActionController::Base
   
   helper_method :setup?
   helper_method :current_user_session, :current_user, :logged_in?
-
+  
 protected
+  def method_missing(method, *args)
+    if method.to_s =~ /^can_.*\?$/
+      if current_user.send(method, *args)
+        yield if block_given?
+        true
+      else
+        false
+      end
+    elsif method.to_s =~ /^can_.*\!$/
+      if current_user.send(method.to_s.gsub(/\!$/, '?'), *args)
+        yield if block_given?
+      else
+        flash[:error] = 'You can not do that'
+        redirect_to root_path
+      end
+    else
+      super
+    end
+  end
+
   def setup
     redirect_to '/admin/setup' if setup?
   end
@@ -29,10 +49,10 @@ protected
 
   def current_user
     return @current_user if defined?(@current_user)
-    @current_user = current_user_session && current_user_session.user
+    @current_user = (current_user_session && current_user_session.user) || Guest.new
   end
   
   def logged_in?
-    !current_user.nil?
+    current_user.is_a? User
   end
 end

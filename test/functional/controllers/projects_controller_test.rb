@@ -13,6 +13,13 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should not show new to unauthorized user" do
+    create_user
+    
+    get 'new'
+    assert_access_denied
+  end
+  
   test "should redirect to plans page on show action" do
     project = Project.create(:name => 'some_project')
     
@@ -34,6 +41,15 @@ class ProjectsControllerTest < ActionController::TestCase
       assert_not_nil flash[:notice]
     end
   end
+  
+  test "should not create project for unauthorized user" do
+    create_user
+    
+    assert_no_difference 'Project.count' do
+      post 'create', :project => { :name => 'some_project' }
+      assert_access_denied
+    end
+  end
 
   test "should not create invalid project" do
     assert_no_difference 'Project.count' do
@@ -50,12 +66,28 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should not show edit to unauthorized user" do
+    create_user
+    project = Project.create(:name => 'some_project')
+    
+    get 'edit', :id => project.name
+    assert_access_denied
+  end
+  
   test "should update project" do
     project = Project.create(:name => 'some_project')
 
     post 'update', :id => project.name, :project => { :name => 'some_project' }
     assert_response :redirect
     assert_not_nil flash[:notice]
+  end
+
+  test "should not update project for unauthorized user" do
+    create_user
+    project = Project.create(:name => 'some_project')
+
+    post 'update', :id => project.name, :project => { :name => 'some_project' }
+    assert_access_denied
   end
 
   test "should not update invalid project" do

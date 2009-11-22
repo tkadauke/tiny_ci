@@ -1,4 +1,7 @@
 class ProjectsController < ApplicationController
+  before_filter :can_create_projects!, :only => [ :new, :create ]
+  before_filter :can_edit_projects!, :only => [ :edit, :update ]
+  
   def index
     @projects = Project.all
   end
