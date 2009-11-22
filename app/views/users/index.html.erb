@@ -1,0 +1,18 @@
+<h1>Listing Users</h1>
+
+<table class="list">
+  <thead>
+    <tr>
+      <th>Login name</th>
+      <th>Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.login, user_path(user) %></td>
+        <td><%= link_to 'Edit', edit_user_path(user) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

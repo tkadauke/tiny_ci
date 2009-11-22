@@ -1,4 +1,8 @@
 class UsersController < ApplicationController
+  def index
+    @users = User.all
+  end
+  
   def show
     @user = User.from_param!(params[:id])
   end

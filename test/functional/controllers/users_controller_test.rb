@@ -5,6 +5,11 @@ class UsersControllerTest < ActionController::TestCase
     @user = User.create!(:login => 'alice', :password => 'foobar', :password_confirmation => 'foobar', :email => 'alice@example.com')
   end
   
+  test "should show user list" do
+    get :index
+    assert_response :success
+  end
+  
   test "should show profile" do
     get :show, :id => @user.login
     assert_response :success
