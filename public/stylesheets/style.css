@@ -200,13 +200,11 @@ padding: 3px 3px 0 3px;
   padding: 0;
 }
 
-#body p a,
-ul.asterisk a,
-.help-content ul a {
+#body a {
   color: #336699;
   text-decoration: underline;
 }
-#body p a:hover {
+#body a:hover {
 }
 
 #body ul.asterisk,

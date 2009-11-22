@@ -3,3 +3,6 @@ h3 { font-size: 1.3em; margin-bottom: 0.5em; }
 h4 { font-size: 1.1em; margin-bottom: 0.5em; }
 td, th { padding: 0.25em; }
 pre { overflow-x: auto; overflow-y: hidden; font-size: 1.3em; }
+body * { vertical-align: middle; }
+body a { vertical-align: baseline; }
+p { line-height: 1.3; }
