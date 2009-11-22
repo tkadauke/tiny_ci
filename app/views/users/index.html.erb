@@ -1,20 +1,25 @@
 <h1>Listing Users</h1>
 
-<table class="list">
-  <thead>
-    <tr>
-      <th>Login name</th>
-      <th>Options</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
+<% if @users.empty? %>
+  <p>There are no user accounts yet.</p>
+  <p><%= link_to 'New Account', new_user_path %></p>
+<% else %>
+  <table class="list">
+    <thead>
       <tr>
-        <td><%= link_to user.login, user_path(user) %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
+        <th>Login name</th>
+        <th>Options</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= link_to user.login, user_path(user) %></td>
+          <td><%= link_to 'Edit', edit_user_path(user) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<p><%= link_to 'New Account', new_user_path %></p>
+  <p><%= link_to 'New Account', new_user_path %></p>
+<% end %>
