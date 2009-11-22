@@ -1,18 +1,20 @@
 require File.dirname(__FILE__) + '/../../../test_helper'
 
 class TinyCI::Notifier::BaseTest < ActiveSupport::TestCase
-  class TestNotifer < TinyCI::Notifier::Base
+  class TestNotifier < TinyCI::Notifier::Base
   end
   
   test "should deliver success" do
     build = stub(:good? => true, :bad? => false)
-    TestNotifer.any_instance.expects(:success).with(build)
+    TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
+    TestNotifier.any_instance.expects(:success).with(build)
     TinyCI::Notifier::Base.notify(build)
   end
   
   test "should deliver failure" do
     build = stub(:good? => false, :bad? => true)
-    TestNotifer.any_instance.expects(:failure).with(build)
+    TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
+    TestNotifier.any_instance.expects(:failure).with(build)
     TinyCI::Notifier::Base.notify(build)
   end
   
