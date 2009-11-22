@@ -1,5 +1,7 @@
 <h2><%= @user.login %>'s Profile</h2>
 
 <ul class="action-list">
-  <li><%= link_to 'Edit profile', edit_user_path(@user) %></li>
+  <% if current_user.can_edit_account?(@user) %>
+    <li><%= link_to 'Edit profile', edit_user_path(@user) %></li>
+  <% end %>
 </ul>

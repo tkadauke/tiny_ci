@@ -9,7 +9,7 @@
     <%= f.text_field :email %>
   </p>
   
-  <% if current_user.can_assign_roles? %>
+  <% if current_user.can_assign_roles? && @user != current_user %>
     <p class="form_item">
       <span class="label"><%= f.label :role, 'Role' %></span>
       <span class="desc">The user's role. Set to "user" for normal user accounts.</span>
