@@ -12,7 +12,7 @@ You can define environment variables per slave which are used for all builds on 
 
 h3. Capabilities and Requirements
 
-You can specify capabilities and resources that a slave offers. Examples are "ruby", "rails", "gcc" or "8 gb ram", "3 cpus". A plan can only be built on this slave, if the slave fulfills all the the plans requirements.
+You can specify capabilities and resources that a slave offers. Examples are "ruby", "rails", "gcc" or "8 gb ram", "3 cpus". A plan can only be built on this slave, if the slave fulfills all of the plan's requirements.
 
 Capabilites do not have numbers assigned to them, whereas resources have a number assigned. Capabilities are simply checked before the build. If they are not met for a build, the build can never run on that slave. Resources are dynamically checked; if some build already uses a resource, only what is left is considered in the decision if a build can be run on a slave. Hence, a build that can not run now may run later, when another build is finished.
 
