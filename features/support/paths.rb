@@ -39,6 +39,8 @@ module NavigationHelpers
       help_topic_path($1)
     when /the login page/
       login_path
+    when /([^\']*)'s profile page/
+      user_path(User.find_by_login!($1))
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"

@@ -1,3 +1,7 @@
+Given /^a user "([^\"]*)"$/ do |login|
+  User.create!(:login => login, :password => 'password', :password_confirmation => 'password', :email => "#{login}@example.com")
+end
+
 Given /^a user "([^\"]*)" with password "([^\"]*)"$/ do |login, password|
   User.create!(:login => login, :password => password, :password_confirmation => password, :email => "#{login}@example.com")
 end
