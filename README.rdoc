@@ -26,6 +26,7 @@ TinyCI is an opinionated continuous integration server. Although it can build an
 - Clone existing build plans to save time configuring stuff
 - Pages are automatically and instantly refreshed via Juggernaut
 - E-Mail notification on completed builds
+- Growl notification on completed builds
 
 === Missing stuff
 
@@ -123,10 +124,6 @@ To build the distribution, run
 To clean all files needed that are only needed for distribution, run
 
   rake distclean
-
-=== Other things
-
-- To setup email notification, fill out the configuration in <code>config/options.yml</code> and restart TinyCI.
 
 === About
 
