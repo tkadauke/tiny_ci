@@ -11,12 +11,11 @@
       CI_SERVER: TinyCI
 - site_root:
     name: 'Base URL'
-    description: "The URL under which TinyCI runs."
+    description: "The URL under which TinyCI runs. This is used for URLs sent in E-Mails."
     type: String
     default: localhost:7199
 - sender_address:
     name: 'Sender Address'
-    description: "The URL under which TinyCI runs. This is used for URLs sent in E-Mails."
     type: String
     default: tiny_ci@example.com
 - recipient_address:
@@ -34,6 +33,7 @@
     default: 25
 - email_domain:
     name: 'SMTP Domain'
+    description: "If you need to specify a HELO domain, you can do it here."
     type: String
     default: "localhost"
 - email_user_name:
