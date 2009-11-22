@@ -14,15 +14,11 @@
     description: "The URL under which TinyCI runs. This is used for URLs sent in E-Mails."
     type: String
     default: localhost:7199
-- sender_address:
-    name: 'Sender Address'
+
+- email_sender_address:
+    name: 'E-Mail Sender Address'
     type: String
     default: tiny_ci@example.com
-- recipient_address:
-    name: 'Recipient Address'
-    type: String
-    default: developers@example.com
-
 - email_address:
     name: 'SMTP Server'
     type: String

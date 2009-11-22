@@ -1,14 +1,14 @@
 class BuildMailer < ActionMailer::Base
-  def success(build)
+  def success(recipient, build)
     setup
-    subject "Build %s succeeded" % build.name
-    set_header(build)
+    subject "[TinyCI] Build %s / %s succeeded" % [build.project.name, build.name]
+    set_header(recipient, build)
   end
   
-  def failure(build)
+  def failure(recipient, build)
     setup
-    subject "Build %s failed" % build.name
-    set_header(build)
+    subject "[TinyCI] Build %s / %s failed" % [build.project.name, build.name]
+    set_header(recipient, build)
   end
   
 private
@@ -23,9 +23,9 @@ private
     }
   end
   
-  def set_header(build)
-    recipients TinyCI::Config.recipient_address
-    from TinyCI::Config.sender_address
+  def set_header(recipient, build)
+    recipients recipient.email
+    from TinyCI::Config.email_sender_address
     body :build => build
   end
 end

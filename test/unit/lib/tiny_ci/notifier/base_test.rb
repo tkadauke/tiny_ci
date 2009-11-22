@@ -4,6 +4,10 @@ class TinyCI::Notifier::BaseTest < ActiveSupport::TestCase
   class TestNotifier < TinyCI::Notifier::Base
   end
   
+  def setup
+    User.stubs(:all).returns([stub])
+  end
+  
   test "should deliver success" do
     build = stub(:good? => true, :bad? => false)
     TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
@@ -20,11 +24,11 @@ class TinyCI::Notifier::BaseTest < ActiveSupport::TestCase
   
   test "should require subclass for success or failure" do
     assert_raise NotImplementedError do
-      TinyCI::Notifier::Base.new.success(stub)
+      TinyCI::Notifier::Base.new(stub).success(stub)
     end
     
     assert_raise NotImplementedError do
-      TinyCI::Notifier::Base.new.failure(stub)
+      TinyCI::Notifier::Base.new(stub).failure(stub)
     end
   end
 end

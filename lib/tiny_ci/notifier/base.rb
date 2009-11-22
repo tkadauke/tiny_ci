@@ -3,22 +3,30 @@ module TinyCI
     class Base
       def self.notify(build)
         if build.good?
-          success(build)
+          recipients.each { |recipient| success(recipient, build) }
         elsif build.bad?
-          failure(build)
+          recipients.each { |recipient| failure(recipient, build) }
         end
       end
       
-      def self.success(build)
+      def self.success(recipient, build)
         subclasses.each do |klass|
-          klass.constantize.new.success(build)
+          klass.constantize.new(recipient).success(build)
         end
       end
       
-      def self.failure(build)
+      def self.failure(recipient, build)
         subclasses.each do |klass|
-          klass.constantize.new.failure(build)
+          klass.constantize.new(recipient).failure(build)
         end
+      end
+      
+      def self.recipients
+        User.all
+      end
+      
+      def initialize(recipient)
+        @recipient = recipient
       end
       
       def success(build)
