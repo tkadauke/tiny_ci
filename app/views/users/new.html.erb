@@ -1,0 +1,30 @@
+<h2>Create new account</h2>
+
+<% form_for @user do |f| %>
+  <%= f.error_messages %>
+
+  <p class="form_item">
+    <span class="label"><%= f.label :login, 'Login Name' %></span>
+    <span class="desc">The nick name used for logins.</span>
+    <%= f.text_field :login %>
+  </p>
+  
+  <p class="form_item">
+    <span class="label"><%= f.label :email, 'E-Mail Address' %></span>
+    <span class="desc">The email address is used for notifications.</span>
+    <%= f.text_field :email %>
+  </p>
+  
+  <p class="form_item">
+    <span class="label"><%= f.label :password, 'Password' %></span>
+    <%= f.password_field :password %>
+  </p>
+  
+  <p class="form_item">
+    <span class="label"><%= f.label :password_confirmation, 'Password Confirmation' %></span>
+    <span class="desc">Please repeat the password exactly as above.</span>
+    <%= f.password_field :password_confirmation %>
+  </p>
+  
+  <%= f.submit 'Update' %>
+<% end %>

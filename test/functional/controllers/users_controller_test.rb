@@ -25,4 +25,25 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_equal 'alice2@example.com', User.find_by_login!('alice').email
   end
+  
+  test "should show new" do
+    get :new
+    assert_response :success
+  end
+  
+  test "should create user" do
+    assert_difference 'User.count' do
+      post :create, :user => { :login => 'bob', :password => 'foobar', :password_confirmation => 'foobar', :email => 'bob@example.com' }
+      assert_response :redirect
+      assert_not_nil flash[:notice]
+    end
+  end
+  
+  test "should not create invalid user" do
+    assert_no_difference 'User.count' do
+      post :create, :user => { :login => 'bob' }
+      assert_response :success
+      assert_nil flash[:notice]
+    end
+  end
 end
