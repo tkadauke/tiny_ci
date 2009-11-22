@@ -6,7 +6,11 @@
       <% if option.description %>
         <span class="desc"><%= option.description %></span>
       <% end %>
-      <%= f.text_field option.key %>
+      <% if option.values %>
+        <%= f.select option.key, option.values %>
+      <% else %>
+        <%= f.text_field option.key %>
+      <% end %>
     </p>
   <% end %>
   

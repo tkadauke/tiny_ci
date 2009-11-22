@@ -1,11 +1,11 @@
 module TinyCI
   class Config
     class Option
-      attr_reader :key, :name, :description, :type, :default
+      attr_reader :key, :name, :description, :type, :default, :values
       
       def initialize(key, hash)
         @key = key
-        ['name', 'description', 'type', 'default'].each do |var|
+        ['name', 'description', 'type', 'default', 'values'].each do |var|
           instance_variable_set(:"@#{var}", hash[var])
         end
       end

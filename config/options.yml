@@ -46,9 +46,13 @@
     default: "password"
 - email_authentication:
     name: 'SMTP Authentication Type'
-    description: "If your mail server requires authentication, you need to specify the authentication type here. Allowed values are plain, login and cram_md5."
+    description: "If your mail server requires authentication, you need to specify the authentication type here."
     type: String
     default: login
+    values:
+      - plain
+      - login
+      - cram_md5
 
 - growl_host:
     name: 'Growl Host Name'
