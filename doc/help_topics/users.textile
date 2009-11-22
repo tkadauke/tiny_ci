@@ -1,0 +1,8 @@
+Users and Authentication / Authorization
+
+It is possible to run TinyCI in two different operation modes:
+
+# Without any user at all. Then any visitor has all rights necessary to fully operate TinyCI.
+# With users. Then only administrators can add / edit projects and plans as well as configure TinyCI.
+
+To enable users, simply create an account. With the first account, the "no user operation mode" is automatically disabled. The first account is automatically an administrator account.

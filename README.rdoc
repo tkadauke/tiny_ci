@@ -30,13 +30,13 @@ TinyCI is extensible via plugins, so you can add your favorite builder / source 
 - E-Mail notification on completed builds
 - Growl notification on completed builds
 - Plugin architecture for extensibility
+- Optional Authentication / Authorization mechanism
 
 === Missing stuff
 
 - TinyCI does not yet poll GIT for changes
 - No direct support for SCMs other than GIT
 - Output of RSpec or cucumber is not analyzed
-- No authentication / authorization mechanism yet
 
 === Why yet another Continous Integration Server?
 
