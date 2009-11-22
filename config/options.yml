@@ -1,0 +1,55 @@
+- base_path:
+    name: 'Base Path'
+    description: "The default path under which builds are checked out. This can be overridden per slave."
+    type: String
+    default: <%= ENV['HOME'] %>/tiny_ci
+- environment:
+    name: 'Environment Variables'
+    description: "Default Environment variables for all builds."
+    type: Hash
+    default:
+      CI_SERVER: TinyCI
+- site_root:
+    name: 'Base URL'
+    description: "The URL under which TinyCI runs."
+    type: String
+    default: localhost:7199
+- sender_address:
+    name: 'Sender Address'
+    description: "The URL under which TinyCI runs. This is used for URLs sent in E-Mails."
+    type: String
+    default: tiny_ci@example.com
+- recipient_address:
+    name: 'Recipient Address'
+    type: String
+    default: developers@example.com
+
+- email_domain:
+    name: 'SMTP Domain'
+    type: String
+    default: "localhost"
+- email_address:
+    name: 'Email Address'
+    type: String
+    default: "example.com"
+- email_port:
+    name: 'SMTP Port'
+    type: Integer
+    default: 25
+- email_user_name:
+    name: 'SMTP User Name'
+    type: String
+    default: "tiny_ci@imedo.de"
+- email_password:
+    name: 'SMTP Password'
+    type: String
+    default: "password"
+- email_authentication:
+    name: 'SMTP Authentication Type'
+    type: String
+    default: login
+
+- growl_host:
+    name: 'Growl Host Name'
+    type: String
+    default: "localhost"

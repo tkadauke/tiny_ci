@@ -33,6 +33,8 @@ module NavigationHelpers
       admin_slave_path(Slave.find_by_name!($1))
     when /the edit page of slave "([^\"]*)"/
       edit_admin_slave_path(Slave.find_by_name!($1))
+    when /the configuration page/
+      '/admin/configuration'
     when /the help page of topic "([^\"]*)"/
       help_topic_path($1)
     else

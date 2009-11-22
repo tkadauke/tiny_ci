@@ -30,4 +30,10 @@ class TinyCI::Util::ExecutorTest < ActiveSupport::TestCase
     
     TestExecutor.new(@build).capture('/some/command')
   end
+  
+  test "should make directory" do
+    @shell.expects(:mkdir).with('/some/directory')
+    
+    TestExecutor.new(@build).mkdir('/some/directory')
+  end
 end
