@@ -62,4 +62,6 @@ else
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
     # config.i18n.default_locale = :de
   end
+  
+  require File.dirname(__FILE__) + '/../modules/load_modules'
 end
