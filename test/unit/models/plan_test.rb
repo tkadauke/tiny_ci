@@ -49,8 +49,15 @@ class PlanTest < ActiveSupport::TestCase
   
   test "should create build" do
     plan = Plan.new
-    plan.builds.expects(:create).with(:status => 'pending', :parameters => {})
+    plan.builds.expects(:create).with(:status => 'pending')
     plan.build!
+  end
+  
+  test "should create build with starter" do
+    user = stub
+    plan = Plan.new
+    plan.builds.expects(:create).with(:status => 'pending', :starter => user)
+    plan.build!(:starter => user)
   end
   
   test "should build children" do

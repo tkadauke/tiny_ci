@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091122123201) do
+ActiveRecord::Schema.define(:version => 20091122161332) do
 
   create_table "builds", :force => true do |t|
     t.integer  "plan_id"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20091122123201) do
     t.string   "revision"
     t.datetime "started_at"
     t.datetime "finished_at"
+    t.integer  "starter_id"
   end
 
   create_table "config_options", :force => true do |t|

@@ -8,7 +8,12 @@
   <dd><%= @build.revision.blank? ? 'unknown' : @build.revision %></dd>
 
   <dt>Duration</dt>
-  <dd><%= duration(@build.duration) %></dd>
+  <dd><%= duration(@build.duration) %>&nbsp;</dd>
+  
+  <% if @build.starter %>
+    <dt>Started by</dt>
+    <dd><%= link_to @build.starter.login, user_path(@build.starter) %> (Requested manually)</dd>
+  <% end %>
 </dl>
 
 <% if @build.running? || @build.pending? %>

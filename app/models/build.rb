@@ -10,6 +10,7 @@ class Build < ActiveRecord::Base
 
   belongs_to :plan
   belongs_to :slave
+  belongs_to :starter, :class_name => 'User'
   acts_as_list :scope => :plan_id
   acts_as_tree
   

@@ -38,8 +38,8 @@ class Plan < ActiveRecord::Base
     !children.empty?
   end
   
-  def build!(parameters = {})
-    builds.create(:status => 'pending', :parameters => parameters)
+  def build!(attributes = {})
+    builds.create(attributes.merge(:status => 'pending'))
   end
   
   def build_children!(build)

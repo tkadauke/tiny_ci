@@ -31,11 +31,17 @@ Feature: Manage plans
     Given a project "some_project"
     And a plan "some_plan" in project "some_project"
     And I am on the page of plan "some_plan" in project "some_project"
-    When I follow "New Child Plan"
-    And I fill in "name" with "child_plan"
-    And I press "Create"
+    When I press "Build now"
     Then I should see "some_plan"
-    And I should see "child_plan"
+    And I should see "Building plan some_plan"
+
+  Scenario: Build a plan manually as logged in user
+    Given a project "some_project"
+    And a plan "some_plan" in project "some_project"
+    And I am a logged in user "alice"
+    And I am on the page of plan "some_plan" in project "some_project"
+    When I press "Build now"
+    Then I should see "alice"
 
   Scenario: Delete a plan
     Given a project "some_project"
