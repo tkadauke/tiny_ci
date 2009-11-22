@@ -60,23 +60,25 @@
   <dt>Requirements</dt>
   <dd><%= @plan.requirements %>&nbsp;</dd>
   
-  <dt>Commit Hook</dt>
-  <dd>
-    <table>
-      <tr>
-        <th>URL</th>
-        <td><%= text_field_tag nil, project_plan_builds_url(@project, @plan), :size => 80 %></td>
-      </tr>
-      <tr>
-        <th>wget</th>
-        <td><%= text_field_tag nil, %{wget --post-data="" --output-file=/dev/null #{project_plan_builds_url(@project, @plan)}}, :size => 80 %></td>
-      </tr>
-      <tr>
-        <th>curl</th>
-        <td><%= text_field_tag nil, %{curl --data "" --output /dev/null --silent #{project_plan_builds_url(@project, @plan)}}, :size => 80 %></td>
-      </tr>
-    </table>
-  </dd>
+  <% if @plan.standalone? %>
+    <dt>Commit Hook</dt>
+    <dd>
+      <table>
+        <tr>
+          <th>URL</th>
+          <td><%= text_field_tag nil, project_plan_builds_url(@project, @plan), :size => 80 %></td>
+        </tr>
+        <tr>
+          <th>wget</th>
+          <td><%= text_field_tag nil, %{wget --post-data="" --output-file=/dev/null #{project_plan_builds_url(@project, @plan)}}, :size => 80 %></td>
+        </tr>
+        <tr>
+          <th>curl</th>
+          <td><%= text_field_tag nil, %{curl --data "" --output /dev/null --silent #{project_plan_builds_url(@project, @plan)}}, :size => 80 %></td>
+        </tr>
+      </table>
+    </dd>
+  <% end %>
 </dl>
 
 <% if @plan.standalone? %>
