@@ -19,7 +19,7 @@ private
       :port => TinyCI::Config.email_port,
       :user_name => TinyCI::Config.email_user_name,
       :password => TinyCI::Config.email_password,
-      :authentication => TinyCI::Config.email_authentication
+      :authentication => TinyCI::Config.email_authentication.to_sym
     }
   end
   

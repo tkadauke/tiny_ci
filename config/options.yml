@@ -24,18 +24,18 @@
     type: String
     default: developers@example.com
 
-- email_domain:
-    name: 'SMTP Domain'
-    type: String
-    default: "localhost"
 - email_address:
-    name: 'Email Address'
+    name: 'SMTP Server'
     type: String
     default: "example.com"
 - email_port:
     name: 'SMTP Port'
     type: Integer
     default: 25
+- email_domain:
+    name: 'SMTP Domain'
+    type: String
+    default: "localhost"
 - email_user_name:
     name: 'SMTP User Name'
     type: String
@@ -46,6 +46,7 @@
     default: "password"
 - email_authentication:
     name: 'SMTP Authentication Type'
+    description: "If your mail server requires authentication, you need to specify the authentication type here. Allowed values are plain, login and cram_md5."
     type: String
     default: login
 
