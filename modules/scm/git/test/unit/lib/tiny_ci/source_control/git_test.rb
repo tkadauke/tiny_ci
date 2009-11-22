@@ -3,7 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../test_helper')
 class TinyCI::SourceControl::GitTest < ActiveSupport::TestCase
   test "should do the update workflow" do
     git = TinyCI::SourceControl::Git.new(stub, {})
-    git.expects(:reset)
     git.expects(:clone_or_update)
     git.expects(:find_or_checkout_revision)
     git.expects(:update_submodules)
@@ -23,6 +22,7 @@ class TinyCI::SourceControl::GitTest < ActiveSupport::TestCase
     build = stub
     git = TinyCI::SourceControl::Git.new(build, {})
     git.expects(:exists?).returns(true)
+    git.expects(:run).with("git", "reset --hard HEAD")
     git.expects(:run).with("git", "pull origin master")
     git.send :clone_or_update
   end
