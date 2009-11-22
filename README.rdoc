@@ -6,9 +6,11 @@ TinyCI is an opinionated continuous integration server. Although it can build an
 - You use GIT for source control
 - You use Test::Unit for your tests
 
+TinyCI is extensible via plugins, so you can add your favorite builder / source control management tool / test suite easily.
+
 === Features
 
-- Easy setup over the user interface
+- Easy setup and configuration over the user interface
 - Self-contained distribution
 - Local and remote builds
 - Manage build slaves via the user interface
@@ -27,6 +29,7 @@ TinyCI is an opinionated continuous integration server. Although it can build an
 - Pages are automatically and instantly refreshed via Juggernaut
 - E-Mail notification on completed builds
 - Growl notification on completed builds
+- Plugin architecture for extensibility
 
 === Missing stuff
 
@@ -34,7 +37,6 @@ TinyCI is an opinionated continuous integration server. Although it can build an
 - No direct support for SCMs other than GIT
 - Output of RSpec or cucumber is not analyzed
 - No authentication / authorization mechanism yet
-- No user interface configuration for e-mail notification yet
 
 === Why yet another Continous Integration Server?
 
@@ -93,6 +95,8 @@ When idling, TinyCI consists of three processes:
 - The scheduler, which spawns build processes and supervises builds
 - A Juggernaut server for dynamic real-time page refreshes
 
+TinyCI has a plugin architecture. For now, there are plugins for builders, notifiers and source control management systems. Already implemented are the rake builder, email and growl notification as well as GIT source control management. These plugins are found in the <code>modules</code> directory.
+
 To run TinyCI in development mode, run
 
   script/tiny_ci
@@ -112,6 +116,10 @@ For tests, you will need the following gems installed (these are not part of the
 To run the unit/functional tests, run
 
   rake
+
+To run the tests for all modules, run
+
+  rake test:modules
 
 To run the feature tests, run
 
