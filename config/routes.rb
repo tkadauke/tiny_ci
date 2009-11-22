@@ -9,10 +9,14 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   
+  map.login '/login', :controller => 'user_sessions', :action => 'new', :conditions => { :method => :get }
+  map.connect '/login', :controller => 'user_sessions', :action => 'create', :conditions => { :method => :post }
+  map.logout '/logout', :controller => 'user_sessions', :action => 'destroy', :conditions => { :method => :delete }
+  
   map.help_topic '/help_topics/*id', :controller => 'help_topics', :action => 'show'
   map.help_topics '/help_topics', :controller => 'help_topics', :action => 'index'
   
-  map.connect '/', :controller => '/start', :action => 'index'
+  map.root :controller => '/start', :action => 'index'
 
   # The priority is based upon order of creation: first created -> highest priority.
 

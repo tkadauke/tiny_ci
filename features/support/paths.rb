@@ -37,6 +37,8 @@ module NavigationHelpers
       '/admin/configuration'
     when /the help page of topic "([^\"]*)"/
       help_topic_path($1)
+    when /the login page/
+      login_path
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"

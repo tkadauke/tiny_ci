@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class StartControllerTest < ActionController::TestCase
   test "should get index on empty database" do

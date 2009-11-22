@@ -11,7 +11,8 @@ class ApplicationController < ActionController::Base
   before_filter :setup
   
   helper_method :setup?
-  
+  helper_method :current_user_session, :current_user, :logged_in?
+
 protected
   def setup
     redirect_to '/admin/setup' if setup?
@@ -19,5 +20,19 @@ protected
   
   def setup?
     ENV['SETUP'] == 'true'
+  end
+
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+  end
+
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.user
+  end
+  
+  def logged_in?
+    !current_user.nil?
   end
 end

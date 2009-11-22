@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class HelpTopicsControllerTest < ActionController::TestCase
   test "should show index page by default" do

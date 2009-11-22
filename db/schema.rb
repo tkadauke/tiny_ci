@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091121223404) do
+ActiveRecord::Schema.define(:version => 20091122123201) do
 
   create_table "builds", :force => true do |t|
     t.integer  "plan_id"
@@ -70,6 +70,18 @@ ActiveRecord::Schema.define(:version => 20091121223404) do
     t.text     "environment_variables"
     t.boolean  "offline"
     t.text     "capabilities"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "login",               :null => false
+    t.string   "email",               :null => false
+    t.string   "crypted_password",    :null => false
+    t.string   "password_salt",       :null => false
+    t.string   "persistence_token",   :null => false
+    t.string   "single_access_token", :null => false
+    t.string   "perishable_token",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

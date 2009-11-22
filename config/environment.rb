@@ -37,6 +37,7 @@ else
     config.gem 'juggernaut'
     config.gem 'net-ssh', :lib => "net/ssh"
     config.gem 'RedCloth'
+    config.gem 'authlogic'
   
     # config.gem "bj"
     # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
