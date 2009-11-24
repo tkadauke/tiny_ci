@@ -1,5 +1,7 @@
 module TinyCI
   class DSL
+    attr_reader :pwd
+    
     def self.evaluate(build)
       dsl = new(build)
       dsl.instance_eval do
@@ -13,6 +15,22 @@ module TinyCI
     
     def initialize(build)
       @build = build
+      @pwd = @build.workspace_path
+    end
+    
+    def cd(path)
+      old_pwd = @pwd
+      
+      if path =~ /^\//
+        @pwd = File.expand_path(File.join(@build.workspace_path, path))
+      else
+        @pwd = File.expand_path(File.join(@pwd, path))
+      end
+      
+      if block_given?
+        yield
+        @pwd = old_pwd
+      end
     end
     
     def env(hash)
@@ -29,7 +47,7 @@ module TinyCI
     end
     
     def sh(command, *parameters)
-      @build.shell.run(command, parameters, @build.workspace_path, @build.environment)
+      @build.shell.run(command, parameters, @pwd, @build.environment)
     end
   end
 end
