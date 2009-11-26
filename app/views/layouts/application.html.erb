@@ -31,20 +31,22 @@
                 </div>
               </div>
             </div>
-            <div id="right_header">
-              <% if logged_in? %>
-                <ul class="action-list">
-                  <li>Welcome, <%= current_user.login %>!</li>
-                  <li><%= link_to 'Logout', logout_path, :method => :delete %></li>
-                </ul>
-              <% else %>
-                <ul class="action-list">
-                  <li>Welcome, Guest!</li>
-                  <li><%= link_to 'Login', login_path %></li>
-                  <li><%= link_to 'Signup', new_user_path %></li>
-                </ul>
-              <% end %>
-            </div>
+            <% unless setup? %>
+              <div id="right_header">
+                <% if logged_in? %>
+                  <ul class="action-list">
+                    <li>Welcome, <%= current_user.login %>!</li>
+                    <li><%= link_to 'Logout', logout_path, :method => :delete %></li>
+                  </ul>
+                <% else %>
+                  <ul class="action-list">
+                    <li>Welcome, Guest!</li>
+                    <li><%= link_to 'Login', login_path %></li>
+                    <li><%= link_to 'Signup', new_user_path %></li>
+                  </ul>
+                <% end %>
+              </div>
+            <% end %>
             <div class="clearer"></div>
           </div>
           <!-- topheader end -->
