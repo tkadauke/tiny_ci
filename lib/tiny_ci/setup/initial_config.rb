@@ -62,7 +62,7 @@ module TinyCI
       end
   
       def setup_database
-        system "rake db:create:all db:migrate"
+        system "rake db:create:all db:migrate SETUP=false"
       end
     end
   end
