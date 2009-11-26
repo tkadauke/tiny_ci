@@ -58,7 +58,7 @@ to setup the bundled gems.
 
 You can also choose to clone the source from github. Then you need to have Rails 2.3.3 installed, as well as all required gems. Install them with
 
-  sudo rake gems:install
+  sudo rake setup
 
 If you clone from the source, you do not need to run the setup task.
 
