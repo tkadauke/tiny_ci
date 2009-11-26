@@ -77,7 +77,7 @@ class TinyCI::Setup::InitialConfigTest < ActiveSupport::TestCase
     config.stubs(:try_connection).returns(true)
     config.stubs(:write_config)
     
-    config.expects(:system).with('rake db:create:all db:migrate')
+    config.expects(:system).with('rake db:create:all db:migrate SETUP=false')
     
     assert config.save
   end
