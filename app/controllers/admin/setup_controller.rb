@@ -1,4 +1,5 @@
 class Admin::SetupController < ApplicationController
+  layout 'plain'
   skip_before_filter :setup
   before_filter :only_setup, :except => :redirect_me
   
