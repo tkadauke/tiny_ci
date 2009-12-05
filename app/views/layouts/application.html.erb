@@ -36,6 +36,7 @@
               <% if logged_in? %>
                 <ul class="action-list">
                   <li>Welcome, <%= current_user.login %>!</li>
+                  <li><%= link_to 'Settings', settings_path %></li>
                   <li><%= link_to 'Logout', logout_path, :method => :delete %></li>
                 </ul>
               <% else %>

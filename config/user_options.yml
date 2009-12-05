@@ -1,0 +1,4 @@
+- growl_host:
+    name: 'Growl Host'
+    description: "The host name / IP Address of your local machine for Growl notifications."
+    type: String

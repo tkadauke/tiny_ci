@@ -1,0 +1,4 @@
+<% form_for :config, :url => admin_configuration_path do |f| %>
+  <%= render :partial => "/config_options/form", :locals => { :config => @config, :f => f } %>
+  <%= f.submit 'Update' %>
+<% end %>

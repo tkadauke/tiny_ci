@@ -1,28 +1,39 @@
 module TinyCI
   module Notifier
     class Base
-      def self.notify(build)
-        if build.good?
-          recipients.each { |recipient| success(recipient, build) }
-        elsif build.bad?
-          recipients.each { |recipient| failure(recipient, build) }
+      class << self
+        def notify(build)
+          if build.good?
+            recipients.each { |recipient| success(recipient, build) }
+          elsif build.bad?
+            recipients.each { |recipient| failure(recipient, build) }
+          end
         end
-      end
       
-      def self.success(recipient, build)
-        subclasses.each do |klass|
-          klass.constantize.new(recipient).success(build)
+        def success(recipient, build)
+          subclasses.each do |klass|
+            log_exceptions { klass.constantize.new(recipient).success(build) }
+          end
         end
-      end
       
-      def self.failure(recipient, build)
-        subclasses.each do |klass|
-          klass.constantize.new(recipient).failure(build)
+        def failure(recipient, build)
+          subclasses.each do |klass|
+            log_exceptions { klass.constantize.new(recipient).failure(build) }
+          end
         end
-      end
       
-      def self.recipients
-        User.all
+        def recipients
+          User.all
+        end
+        
+      private
+        def log_exceptions(&block)
+          begin
+            yield
+          rescue Exception => e
+            RAILS_DEFAULT_LOGGER.info(e.message)
+          end
+        end
       end
       
       def initialize(recipient)

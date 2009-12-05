@@ -28,7 +28,7 @@ class TinyCI::ConfigTest < ActiveSupport::TestCase
   end
   
   test "should get option from database" do
-    ConfigOption.expects(:find_by_key).returns(stub(:key => 'hello', :value => 'universe'.to_yaml))
+    ConfigOption.expects(:find_by_user_id_and_key).returns(stub(:key => 'hello', :value => 'universe'.to_yaml))
     File.expects(:read).returns([{ 'hello' => { 'type' => 'String', 'default' => 'world' } }].to_yaml)
     assert_equal 'universe', TinyCI::Config.instance.get('hello')
   end
@@ -36,7 +36,7 @@ class TinyCI::ConfigTest < ActiveSupport::TestCase
   test "should set option" do
     option = stub(:key => 'hello', :value => 'universe'.to_yaml)
     option.expects(:update_attribute).with(:value, 'galaxy'.to_yaml)
-    ConfigOption.expects(:find_or_create_by_key).returns(option)
+    ConfigOption.expects(:find_or_create_by_user_id_and_key).returns(option)
     File.expects(:read).returns([{ 'hello' => { 'type' => 'String', 'default' => 'world' } }].to_yaml)
     
     TinyCI::Config.instance.set('hello', 'galaxy')
@@ -48,7 +48,7 @@ class TinyCI::ConfigTest < ActiveSupport::TestCase
   end
   
   test "should type cast to integer when reading" do
-    ConfigOption.expects(:find_by_key).returns(stub(:key => 'hello', :value => '15'.to_yaml))
+    ConfigOption.expects(:find_by_user_id_and_key).returns(stub(:key => 'hello', :value => '15'.to_yaml))
     File.expects(:read).returns([{ 'hello' => { 'type' => 'Integer' } }].to_yaml)
     assert_equal 15, TinyCI::Config.hello
   end
@@ -56,14 +56,14 @@ class TinyCI::ConfigTest < ActiveSupport::TestCase
   test "should type cast to integer when writing" do
     option = stub(:key => 'hello')
     option.expects(:update_attribute).with(:value, 42.to_yaml)
-    ConfigOption.expects(:find_or_create_by_key).returns(option)
+    ConfigOption.expects(:find_or_create_by_user_id_and_key).returns(option)
     File.expects(:read).returns([{ 'hello' => { 'type' => 'Integer', 'default' => 15 } }].to_yaml)
     
     TinyCI::Config.instance.set('hello', 42)
   end
   
   test "should type cast to hash" do
-    ConfigOption.expects(:find_by_key).returns(stub(:key => 'hello', :value => { 'foo' => 'bar' }.to_yaml))
+    ConfigOption.expects(:find_by_user_id_and_key).returns(stub(:key => 'hello', :value => { 'foo' => 'bar' }.to_yaml))
     File.expects(:read).returns([{ 'hello' => { 'type' => 'Hash' } }].to_yaml)
     assert_equal({ 'foo' => 'bar' }, TinyCI::Config.hello)
   end

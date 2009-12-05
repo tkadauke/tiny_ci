@@ -18,4 +18,10 @@ class UserTest < ActiveSupport::TestCase
     user = User.new
     assert_equal user, user.to_user
   end
+  
+  test "should return config object" do
+    user = User.new
+    User::Configuration.expects(:new).with(user)
+    user.config
+  end
 end

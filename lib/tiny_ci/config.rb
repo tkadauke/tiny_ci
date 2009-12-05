@@ -1,89 +1,14 @@
 module TinyCI
-  class Config
-    class Option
-      attr_reader :key, :name, :description, :type, :default, :values
-      
-      def initialize(key, hash)
-        @key = key
-        ['name', 'description', 'type', 'default', 'values'].each do |var|
-          instance_variable_set(:"@#{var}", hash[var])
-        end
-      end
-    end
-    
+  class Config < TinyCI::BaseConfig
     include Singleton
     
-    attr_reader :config
-    
-    def config
-      @config ||= YAML.load(ERB.new(File.read("#{RAILS_ROOT}/config/options.yml")).result)
+    def initialize
+      @user_id = nil
     end
     
-    def reload!
-      @config = nil
-    end
-    
-    def options
-      keys.collect do |key|
-        option(key)
-      end
-    end
-    
-    def option(key)
-      Option.new(key, find_option(key))
-    end
-    
-    def keys
-      config.collect { |opt| opt.keys.first }
-    end
-    
-    def get(key)
-      option = option(key)
-      db_option = ConfigOption.find_by_key(key)
-      if db_option
-        type_cast(YAML.load(db_option.value), option.type)
-      else
-        option.default
-      end
-    end
-    
-    def set(key, value)
-      option = option(key)
-      db_option = ConfigOption.find_or_create_by_key(key.to_s)
-      db_option.update_attribute(:value, type_cast(value, option.type).to_yaml)
-    end
-    
-    def update_attributes(attributes = {})
-      attributes.each do |key, value|
-        set(key, value)
-      end
-      true
-    end
-    
-    def method_missing(method)
-      if find_option(method.to_s)
-        get(method.to_s)
-      else
-        super
-      end
-    end
-
     class << self
       def method_missing(method)
         instance.send(method)
-      end
-    end
-    
-  private
-    def find_option(key)
-      config.find { |opt| opt.keys.first == key }.values.first rescue nil
-    end
-    
-    def type_cast(value, type)
-      case type
-      when 'String' then value
-      when 'Integer' then value.to_i
-      when 'Hash' then value
       end
     end
   end

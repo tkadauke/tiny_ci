@@ -49,8 +49,3 @@
       - plain
       - login
       - cram_md5
-
-- growl_host:
-    name: 'Growl Host Name'
-    type: String
-    default: "localhost"

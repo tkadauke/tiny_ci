@@ -1,14 +1,14 @@
-class Admin::ConfigurationController < ApplicationController
+class Admin::ConfigurationsController < ApplicationController
   before_filter :can_configure_system_variables!
   
-  def index
+  def show
     @config = TinyCI::Config.instance
   end
   
-  def update
+  def create
     @config = TinyCI::Config.instance
     @config.update_attributes(params[:config])
     flash[:notice] = 'Successfully updated configuration'
-    redirect_to :action => 'index'
+    redirect_to admin_configuration_path
   end
 end

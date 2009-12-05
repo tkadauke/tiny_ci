@@ -26,4 +26,8 @@ class User < ActiveRecord::Base
   def to_user
     self
   end
+  
+  def config
+    @config ||= User::Configuration.new(self)
+  end
 end

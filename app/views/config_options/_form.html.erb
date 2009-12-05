@@ -1,0 +1,14 @@
+<% config.options.each do |option| %>
+  <% next if option.type == 'Hash' %>
+  <p class="form_item">
+    <span class="label"><%= f.label option.key, option.name %></span>
+    <% if option.description %>
+      <span class="desc"><%= option.description %></span>
+    <% end %>
+    <% if option.values %>
+      <%= f.select option.key, option.values %>
+    <% else %>
+      <%= f.text_field option.key %>
+    <% end %>
+  </p>
+<% end %>
