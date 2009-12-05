@@ -12,4 +12,12 @@ class HelpTopicsControllerTest < ActionController::TestCase
     assert_response :success
     assert_select 'h2', 'Test Page'
   end
+  
+  test "should render 404 page when help topic does not exist" do
+    assert_nothing_raised do
+      get 'show', :id => 'asdf'
+      assert_response :not_found
+      assert_template '404'
+    end
+  end
 end

@@ -1,4 +1,6 @@
 class HelpTopicsController < ApplicationController
+  rescue_from Errno::ENOENT, :with => :not_found
+  
   def index
     show
     render :action => 'show'

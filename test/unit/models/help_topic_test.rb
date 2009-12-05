@@ -27,8 +27,8 @@ class HelpTopicTest < ActiveSupport::TestCase
     assert_equal "index", topic.to_param
   end
   
-  test "should raise ARNF if topic is not found" do
-    assert_raise ActiveRecord::RecordNotFound do
+  test "should raise exception if topic is not found" do
+    assert_raise Errno::ENOENT do
       File.expects(:read).raises(Errno::ENOENT)
       HelpTopic.from_param!("doesnt_exist")
     end

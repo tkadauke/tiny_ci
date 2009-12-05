@@ -60,4 +60,8 @@ protected
     status = interpret_status(status_code)
     render :template => "/errors/#{status[0,3]}.html.erb", :status => status, :layout => 'plain.html.erb'
   end
+  
+  def not_found
+    render_optional_error_file(404)
+  end
 end

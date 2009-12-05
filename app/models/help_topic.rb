@@ -7,8 +7,6 @@ class HelpTopic
     result = new(param.blank? ? "index" : [param].flatten.join('/'))
     result.load
     result
-  rescue Errno::ENOENT
-    raise ActiveRecord::RecordNotFound
   end
   
   def title
