@@ -13,3 +13,9 @@ statistics
 frontend optimizations
 custom reports
 trends
+
+test statistics
+visual step workflow
+manage build queue
+slave/plan matrix
+max number of builds per slave
