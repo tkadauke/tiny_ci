@@ -8,7 +8,7 @@ task :dist do
   FileUtils.rm_rf "dist"
   FileUtils.mkdir_p "dist"
   
-  files = ["app", "config/*.rb", "config/*/*", "config/options.yml", "doc", "db/*.rb", "db/*/*", "lib", "modules", "public", "script", "vendor", "Rakefile"]
+  files = ["app", "config/*.rb", "config/*/*", "config/background.yml", "config/options.yml", "config/user_options.yml", "doc", "db/*.rb", "db/*/*", "lib", "modules", "public", "script", "vendor", "Rakefile"]
   patterns = files.collect { |f| File.directory?(f) ? "#{f}/**/*" : f }
   archive_name = "tiny_ci-#{TINY_CI_VERSION}"
   
