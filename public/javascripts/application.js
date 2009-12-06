@@ -1,6 +1,7 @@
 $(document).observe('dom:loaded', function() {
   if ($('report'))
     Report.attach();
+  focusFirstField();
 });
 
 var Report = {
@@ -36,4 +37,10 @@ var Queue = {
   update: function() {
     new Ajax.Updater('queue', document.location.href, { method: 'get' })
   }
+}
+
+function focusFirstField() {
+  var field = $$('input[type="text"]').first();
+  if (field)
+    field.focus();
 }
