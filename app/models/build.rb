@@ -48,7 +48,7 @@ class Build < ActiveRecord::Base
     good? || bad?
   end
   
-  [:running, :pending, :waiting, :success, :error, :failure, :canceled, :stopped].each do |status_name|
+  [:running, :pending, :waiting, :success, :error, :failure, :canceled, :stopping, :stopped].each do |status_name|
     define_method "#{status_name}?" do
       self.status == status_name.to_s
     end
@@ -77,7 +77,6 @@ class Build < ActiveRecord::Base
       update_attributes :status => 'success', :finished_at => Time.now
     end
   rescue SignalException => e
-    update_attributes :status => 'stopped', :finished_at => Time.now
   rescue TinyCI::Shell::CommandExecutionFailed => e
     update_attributes :status => 'failure', :finished_at => Time.now
   rescue Exception => e
@@ -88,6 +87,7 @@ class Build < ActiveRecord::Base
   end
   
   def stop!
+    update_attributes :status => 'stopping'
     TinyCI::Scheduler::Client.stop(self)
   end
   

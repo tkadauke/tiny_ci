@@ -76,5 +76,15 @@ class BuildsControllerTest < ActionController::TestCase
   
     post 'stop', :project_id => @project.name, :plan_id => plan.name, :id => build.position
     assert_response :redirect
+    assert build.reload.stopping?
+  end
+
+  test "should stop build over xhr" do
+    plan = @project.plans.create(:name => 'some_plan')
+    build = plan.builds.create(:status => 'running')
+  
+    xhr :post, 'stop', :project_id => @project.name, :plan_id => plan.name, :id => build.position
+    assert_response :success
+    assert build.reload.stopping?
   end
 end

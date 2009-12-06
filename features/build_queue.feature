@@ -20,5 +20,6 @@ Feature: Build Queue
     And a plan "some_plan" in project "some_project"
     And a pending build of plan "some_plan" in project "some_project"
     When I am on the dashboard
-    And I follow "Stop"
+    And I follow remote link "Stop"
     Then I should see "some_plan"
+    And I should see "stopping"

@@ -61,6 +61,7 @@ module TinyCI
         pid = processes[build.id]
         if pid
           Process.kill("TERM", pid)
+          build.update_attributes :status => 'stopped', :finished_at => Time.now
         else
           build.update_attributes :status => 'canceled', :finished_at => Time.now
         end
@@ -68,10 +69,11 @@ module TinyCI
 
       def finished(build_id)
         build = Build.find(build_id)
-
-        plan = Plan.find(build.plan_id)
-        if build.waiting? && plan.has_children?
-          plan.build_children!(build)
+        if build.waiting?
+          plan = Plan.find(build.plan_id)
+          if plan.has_children?
+            plan.build_children!(build)
+          end
         end
       end
 
@@ -83,7 +85,7 @@ module TinyCI
       def process_finished(pid)
         build_id = processes.invert[pid]
         processes.delete(build_id)
-        finished(build_id)
+        finished(build_id) if build_id
       end
     end
   end

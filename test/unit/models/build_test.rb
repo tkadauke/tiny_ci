@@ -91,14 +91,15 @@ class BuildTest < ActiveSupport::TestCase
     build.build!
   end
   
-  test "should set status to stopped when build process is killed" do
+  test "should ignore exception when build process is killed" do
     build = Build.new
     build.stubs(:slave => stub(:protocol => 'localhost'))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate).raises(SignalException.new('TERM'))
     
-    build.expects(:update_attributes).with(has_entry(:status => 'stopped'))
-    build.build!
+    assert_nothing_raised do
+      build.build!
+    end
   end
   
   test "should set status to error on internal error" do

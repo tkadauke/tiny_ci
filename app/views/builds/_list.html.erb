@@ -18,7 +18,7 @@
           <td><%= link_to build.project.name, project_path(build.project) %> / <%= link_to build.name, project_plan_path(build.project, build.plan) %></td>
           <td><%= link_to build.created_at.to_s(:timestamp), project_plan_build_path(build.project, build.plan, build) %></td>
           <td><%= image_tag "icons/small/#{build.status}.png" %> <%= build.status %></td>
-          <td><%= link_to_remote image_tag("icons/small/stopped.png") + ' Stop', :url => stop_project_plan_build_path(build.project, build.plan, build), :method => :post unless build.finished? %></td>
+          <td><%= stop_link build.project, build.plan, build unless build.finished? %></td>
         </tr>
         <% if build.has_children? %>
           <% build.children.each do |child| %>
@@ -27,7 +27,7 @@
               <td><%= link_to child.project.name, project_path(child.project) %> / <%= link_to child.name, project_plan_path(child.project, child.plan) %></td>
               <td><%= link_to child.created_at.to_s(:timestamp), project_plan_build_path(child.project, child.plan, child) %></td>
               <td><%= image_tag "icons/small/#{child.status}.png" %> <%= child.status %></td>
-              <td><%= link_to_remote image_tag("icons/small/stopped.png") + ' Stop', :url => stop_project_plan_build_path(child.project, child.plan, child), :method => :post unless child.finished? %></td>
+              <td><%= stop_link child.project, child.plan, child unless child.finished? %></td>
             </tr>
           <% end %>
         <% end %>
