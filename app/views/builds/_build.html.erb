@@ -17,7 +17,7 @@
 </dl>
 
 <% if @build.running? || @build.pending? %>
-  <p><%= link_to image_tag("icons/small/stopped.png") + ' Stop', stop_project_plan_build_path(@project, @plan, @build), :method => :post %></p>
+  <p><%= link_to_remote image_tag("icons/small/stopped.png") + ' Stop', :url => stop_project_plan_build_path(@project, @plan, @build), :method => :post %></p>
 <% end %>
 
 <ul class="action-list">

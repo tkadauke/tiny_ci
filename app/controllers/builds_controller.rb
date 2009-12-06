@@ -23,7 +23,11 @@ class BuildsController < ApplicationController
   def stop
     @build = @plan.builds.from_param!(params[:id])
     @build.stop!
-    redirect_to project_plan_builds_path(@project, @plan)
+    if request.xhr?
+      render :nothing => true
+    else
+      redirect_to project_plan_builds_path(@project, @plan)
+    end
   end
 
 protected

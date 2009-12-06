@@ -37,6 +37,13 @@ class TinyCI::Scheduler::RunnerTest < ActiveSupport::TestCase
     TinyCI::Scheduler::Runner.instance.stubs(:processes).returns({ 7 => 1234 })
     Process.expects(:kill).with('TERM', 1234)
     build = stub(:id => 7)
+    
+    TinyCI::Scheduler::Runner.instance.stop(build)
+  end
+  
+  test "should cancel build" do
+    TinyCI::Scheduler::Runner.instance.stubs(:processes).returns({ 7 => nil })
+    build = stub(:id => 7)
     build.expects(:update_attributes).with(has_entry(:status => 'canceled'))
     
     TinyCI::Scheduler::Runner.instance.stop(build)
