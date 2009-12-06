@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/environment'
+require 'drb'
+
+DRb.start_service "druby://localhost:2251", TinyCI::BackgroundQueue.instance
+
+TinyCI::BackgroundQueue.run

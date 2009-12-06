@@ -12,14 +12,14 @@ class TinyCI::Notifier::BaseTest < ActiveSupport::TestCase
     build = stub(:good? => true, :bad? => false)
     TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
     TestNotifier.any_instance.expects(:success).with(build)
-    TinyCI::Notifier::Base.notify(build)
+    TinyCI::Notifier::Base.notify_without_background(build)
   end
   
   test "should deliver failure" do
     build = stub(:good? => false, :bad? => true)
     TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
     TestNotifier.any_instance.expects(:failure).with(build)
-    TinyCI::Notifier::Base.notify(build)
+    TinyCI::Notifier::Base.notify_without_background(build)
   end
   
   test "should require subclass for success or failure" do
@@ -38,6 +38,6 @@ class TinyCI::Notifier::BaseTest < ActiveSupport::TestCase
     build = stub(:good? => true, :bad? => false)
     TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
     TestNotifier.any_instance.expects(:success).with(build).raises(StandardError.new('abc'))
-    TinyCI::Notifier::Base.notify(build)
+    TinyCI::Notifier::Base.notify_without_background(build)
   end
 end

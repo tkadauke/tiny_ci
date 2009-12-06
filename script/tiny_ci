@@ -12,6 +12,7 @@ end
 commands = [
   "script/server -p 7199",
   "script/scheduler",
+  "script/background",
   "juggernaut -c config/juggernaut.yml"
 ]
 

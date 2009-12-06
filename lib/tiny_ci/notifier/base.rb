@@ -9,6 +9,7 @@ module TinyCI
             recipients.each { |recipient| failure(recipient, build) }
           end
         end
+        background_method :notify
       
         def success(recipient, build)
           subclasses.each do |klass|
