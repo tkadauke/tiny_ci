@@ -1,0 +1,15 @@
+<a href="#">Deploy</a>
+<div>
+  <dl>
+    <dt>Deploy tool</dt>
+    <dd><%= report.deploy_tool %>&nbsp;</dd>
+    <dt>Targets</dt>
+    <dd><%= report.targets %>&nbsp;</dd>
+  </dl>
+
+  <h2>Tasks</h2>
+
+  <ul class="tasks">
+    <%= report.tasks.collect { |task| render_report task, :details }.reject { |html| html.strip.blank? }.collect { |html| %{<li>#{html}</li>} }.join("\n") %>
+  </ul>
+</div>

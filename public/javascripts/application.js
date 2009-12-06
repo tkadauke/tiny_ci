@@ -11,7 +11,7 @@ var Report = {
   },
   
   attach: function() {
-    $('report').getElementsBySelector('a').each(function(link) {
+    $('report').getElementsBySelector('li > a').each(function(link) {
       link.observe('click', function(event) {
         Effect.toggle(link.up().down('div'), 'blind', { duration: 0.3 });
         event.stop();

@@ -1,7 +1,5 @@
-$:.unshift "#{File.dirname(__FILE__)}/lib"
-
-require 'tiny_ci/dsl'
-require 'tiny_ci/steps/builder/rake'
-require 'tiny_ci/output_parser/rake_parser'
-require 'tiny_ci/output_parser/rake_test_parser'
-require 'tiny_ci/output_parser/rake_task_parser'
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/dsl')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/steps/builder/rake')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/output_parser/rake_parser')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/output_parser/rake_test_parser')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/output_parser/rake_task_parser')

@@ -1,0 +1,5 @@
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/dsl')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/steps/deployer/capistrano')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/output_parser/capistrano_parser')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/output_parser/capistrano_task_parser')
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/output_parser/capistrano_command_parser')

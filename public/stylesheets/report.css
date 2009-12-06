@@ -1,7 +1,7 @@
 .report { margin-bottom: 1em; }
 .report ul li { list-style: none; background-image: url("/images/dotted.gif"); background-repeat: repeat-y; padding: 2px 0 2px 20px; text-indent: -19px; background-position: 9px 0; }
 .report ul li > * { text-indent: 0px; }
-.report ul li a { background-image: url("/images/bullete.gif"); background-position: left; background-repeat: no-repeat; padding: 2px 0 2px 20px; line-height: 20px; }
+.report ul li > a { background-image: url("/images/bullete.gif"); background-position: left; background-repeat: no-repeat; padding: 2px 0 2px 20px; line-height: 20px; }
 .report ul li:last-child { background-repeat: no-repeat; }
 
 dl { border: 1px solid gray; margin: 1em 0; padding: 1em; }

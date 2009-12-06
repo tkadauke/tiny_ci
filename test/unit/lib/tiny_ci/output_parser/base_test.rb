@@ -32,4 +32,9 @@ class TinyCI::OutputParser::BaseTest < ActiveSupport::TestCase
       parser.parse!
     end
   end
+  
+  test "should return output parser for command" do
+    assert_equal TinyCI::OutputParser::RakeParser, TinyCI::OutputParser.parser_for('rake')
+    assert_equal TinyCI::OutputParser::CapistranoParser, TinyCI::OutputParser.parser_for('cap')
+  end
 end

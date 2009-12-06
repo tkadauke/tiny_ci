@@ -1,0 +1,8 @@
+<a href="#">Task <%= report.name %></a>
+<div>
+  <% unless report.commands.empty? %>
+    <ul class="tasks">
+      <%= report.commands.collect { |command| render_report command, :details }.reject { |html| html.strip.blank? }.collect { |html| %{<li>#{html}</li>} }.join("\n") %>
+    </ul>
+  <% end %>
+</div>

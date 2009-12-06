@@ -15,6 +15,7 @@
 @import url('report.css');
 @import url('plans.css');
 @import url('flash.css');
+@import url('tabs.css');
 
 body {
   padding: 0;

@@ -1,3 +1,1 @@
-$:.unshift "#{File.dirname(__FILE__)}/lib"
-
-require 'tiny_ci/source_control/git'
+require File.expand_path(File.dirname(__FILE__) + '/lib/tiny_ci/source_control/git')

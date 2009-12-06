@@ -1,0 +1,19 @@
+<a href="#">Command <%= report.command %></a>
+<div>
+  <% unless report.servers.empty? %>
+    <div class="tabs">
+      <p>Command output:
+        <% report.servers.each do |server| %>
+          <%= link_to_function server, "$$('#tabcontent-#{report.object_id} pre').each(function(e) { e.hide() }); $('tab-#{report.object_id}-#{server.gsub('.', '-')}').show()" %>
+        <% end %>
+      </p>
+      <div id="tabcontent-<%= report.object_id %>">
+        <% report.servers.each_with_index do |server, i| %>
+          <pre id="tab-<%= report.object_id %>-<%= server.gsub('.', '-') %>" <%= 'style="display: none"' unless i == 0 %>>
+            <%= report.output[server].lines.collect { |l| l.string }.join("\n") %>
+          </pre>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -5,7 +5,12 @@
     <%= render :partial => 'raw_output', :locals => { :output => output } %>
   <% else %>
     <ul>
-      <li><%= render_report TinyCI::OutputParser::RakeParser.parse(output), @report %></li>
+      <% output.split_by_command.each do |part| %>
+        <% parser = TinyCI::OutputParser.parser_for(part.peek.command) %>
+        <% if parser %>
+          <li><%= render_report parser.parse(part), @report %></li>
+        <% end %>
+      <% end %>
     </ul>
   <% end %>
 <% else %>
