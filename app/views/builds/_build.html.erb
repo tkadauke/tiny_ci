@@ -32,4 +32,6 @@
 
 <% if @build.finished? %>
   <p><%= image_tag "icons/small/#{@build.status}.png" %> <%= @build.status %></p>
+<% elsif @build.running? %>
+  <%= image_tag('spinner.gif') %>
 <% end %>
