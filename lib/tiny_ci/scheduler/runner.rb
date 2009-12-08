@@ -72,6 +72,7 @@ module TinyCI
         if build.waiting?
           plan = Plan.find(build.plan_id)
           if plan.has_children?
+            sleep 0.5
             plan.build_children!(build)
           end
         end
