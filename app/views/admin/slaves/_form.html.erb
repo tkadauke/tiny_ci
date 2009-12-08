@@ -60,3 +60,9 @@
   <span class="desc">Separated by commas. <%= help_link 'slaves' %></span>
   <%= f.text_area :capabilities, :rows => 3 %>
 </p>
+
+<p class="form_item">
+  <span class="label"><%= f.label :max_builds, 'Maximum builds' %></span>
+  <span class="desc">Maximum number of parallel builds on this slave (0 = unlimited)</span>
+  <%= f.text_field :max_builds %>
+</p>

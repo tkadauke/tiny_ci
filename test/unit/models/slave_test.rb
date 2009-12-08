@@ -63,6 +63,26 @@ class SlaveTest < ActiveSupport::TestCase
     Slave.expects(:least_busy).returns(mock(:find => [slave]))
     assert_nil Slave.find_free_slave_for(build)
   end
+  
+  test "should find slave if max number of builds is not exceeded" do
+    slave = Slave.new(:max_builds => 2)
+    plan = Plan.new
+    
+    pending_build = Build.new(:plan => plan)
+    slave.stubs(:running_builds).returns(mock(:count => 1, :each => nil))
+    
+    assert slave.can_build_now?(pending_build)
+  end
+
+  test "should not find slave if every slave's max number of builds is exceeded" do
+    slave = Slave.new(:max_builds => 2)
+    plan = Plan.new
+    
+    pending_build = Build.new(:plan => plan)
+    slave.stubs(:running_builds).returns(mock(:count => 2))
+    
+    assert ! slave.can_build_now?(pending_build)
+  end
 
   test "should find least busy slave for build even if another build is running" do
     slave = Slave.new(:capabilities => '2 gb ram, linux, windows')

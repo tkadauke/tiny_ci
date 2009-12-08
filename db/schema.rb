@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091205191526) do
+ActiveRecord::Schema.define(:version => 20091208225311) do
 
   create_table "builds", :force => true do |t|
     t.integer  "plan_id"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(:version => 20091205191526) do
     t.text     "environment_variables"
     t.boolean  "offline"
     t.text     "capabilities"
+    t.integer  "max_builds",            :default => 0
   end
 
   create_table "users", :force => true do |t|

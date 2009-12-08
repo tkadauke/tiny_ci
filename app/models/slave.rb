@@ -38,7 +38,7 @@ class Slave < ActiveRecord::Base
   end
   
   def self.find_free_slave_for(build)
-    least_busy.find(:all).find { |slave| slave.can_build?(build) }
+    least_busy.find(:all).find { |slave| slave.can_build_now?(build) }
   end
   
   def all_resources
@@ -53,11 +53,20 @@ class Slave < ActiveRecord::Base
     res
   end
   
-  def can_build?(build)
+  def can_build_now?(build)
+    return false if maximum_running_builds_reached?
+    return false unless can_ever_build?(build)
+    
+    free_resources.includes?(build.needed_resources)
+  end
+  
+  def can_ever_build?(build)
+    return false unless all_resources.includes?(build.needed_resources)
+    
     req = unnumbered_resources(build.requirements)
     cap = unnumbered_resources(self.capabilities)
     
-    free_resources.includes?(build.needed_resources) && req - cap == []
+    req - cap == []
   end
   
   def to_param
@@ -75,5 +84,9 @@ protected
   
   def unnumbered_resources(res)
     (res || "").split(',').map(&:strip).select { |x| x.to_i == 0 }.map(&:downcase)
+  end
+  
+  def maximum_running_builds_reached?
+    self.max_builds > 0 && self.running_builds.count >= self.max_builds
   end
 end
