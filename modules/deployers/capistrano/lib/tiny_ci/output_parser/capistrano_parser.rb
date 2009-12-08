@@ -8,7 +8,7 @@ module TinyCI
         while !empty?
           line = consume!.line
           
-          if line =~ /^  \* executing `(.*?)'$/
+          if line =~ /^\s*\* executing `(.*?)'$/
             task = CapistranoTaskParser.parse(@output)
             @result.tasks << task
             task.name = $1

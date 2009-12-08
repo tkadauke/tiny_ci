@@ -7,12 +7,12 @@ module TinyCI
         while !empty?
           line = peek.line
           
-          if line =~ /^  \* executing \"(.*)\"$/
+          if line =~ /^\s*\* executing \"(.*)\"$/
             consume!
             command = CapistranoCommandParser.parse(@output)
             @result.commands << command
             command.command = $1
-          elsif line =~ /^  \* executing `(.*?)'$/
+          elsif line =~ /^\s*\* executing `(.*?)'$/
             return
           else
             consume!
