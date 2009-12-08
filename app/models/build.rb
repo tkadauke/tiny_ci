@@ -24,6 +24,11 @@ class Build < ActiveRecord::Base
   
   after_update :update_stats_if_neccessary
   
+  def cleanup_for_background
+    @shell = nil
+    @source_control = nil
+  end
+  
   def duration
     finished_at && started_at ? (finished_at - started_at) : nil
   end
