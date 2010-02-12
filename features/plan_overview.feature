@@ -1,4 +1,4 @@
-Feature: Manage plans
+Feature: Plan overview
   In order to get a quick overview about a plan
   a user
   wants to see plan statistics
