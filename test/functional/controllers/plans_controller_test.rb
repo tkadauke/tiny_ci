@@ -19,6 +19,20 @@ class PlansControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should render full index page" do
+    plan = @project.plans.create(:name => 'some_plan')
+    
+    get 'full_index'
+    assert_response :success
+  end
+  
+  test "should update full index page" do
+    plan = @project.plans.create(:name => 'some_plan')
+    
+    xhr :get, 'full_index'
+    assert_response :success
+  end
+
   test "should show plan" do
     plan = @project.plans.create(:name => 'some_plan')
     

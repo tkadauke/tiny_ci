@@ -4,6 +4,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.resource :configuration
   end
 
+  map.all_plans '/plans', :controller => 'plans', :action => 'full_index'
   map.resources :projects do |projects|
     projects.resources :plans, :member => { :child => :get } do |plans|
       plans.resources :builds, :member => { :stop => :post }

@@ -15,7 +15,7 @@
       <tr>
         <td><%= image_tag "icons/small/#{plan.status}.png" if plan.status %></td>
         <td><%= image_tag "icons/small/weather-#{plan.weather}.png", :title => "%d of the last 5 builds were successful" % plan.weather if plan.weather %></td>
-        <td><%= link_to plan.name, project_plan_path(@project, plan) %></td>
+        <td><%= link_to plan.project.name, project_path(plan.project) %> / <%= link_to plan.name, project_plan_path(plan.project, plan) %></td>
         <td><%= truncate plan.description, :length => 40 %></td>
         <td><%= plan.last_build_time ? duration(plan.last_build_time) : 'unknown' %></td>
         <td><%= plan.last_succeeded_at ? "%s ago" % time_ago_in_words(plan.last_succeeded_at) : 'unknown' %></td>

@@ -10,6 +10,8 @@ module NavigationHelpers
     
     when /the dashboard/
       '/'
+    when /all plans page/
+      all_plans_path
     when /the new project page/
       new_project_path
     when /the edit project "([^\"]*)" page/

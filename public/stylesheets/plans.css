@@ -2,3 +2,5 @@
 .plan-overview li div.status { width: 40px; float: left; }
 .plan-overview li div.details { margin-left: 40px; }
 .plan-overview li div.details a { font-size: 1.2em; }
+
+span.secondary { font-size: 0.8em; }

@@ -1,0 +1,11 @@
+<h1>Listing All Plans</h1>
+
+<ul class="action-list">
+  <li><%= link_to 'Details', all_plans_path(:report => 'list') %></li>
+  <li><%= link_to 'Overview', all_plans_path(:report => 'overview') %></li>
+</ul>
+
+<%= auto_update 'plans' %>
+<div id="plans">
+  <%= render :partial => @report, :locals => { :plans => @plans } %>
+</div>

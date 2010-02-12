@@ -1,5 +1,5 @@
 class PlansController < ApplicationController
-  before_filter :find_project
+  before_filter :find_project, :except => 'full_index'
   before_filter :can_create_plans!, :only => [ :new, :create ]
   before_filter :can_edit_plans!, :only => [ :edit, :update ]
   before_filter :can_destroy_plans!, :only => [ :destroy ]
@@ -7,6 +7,12 @@ class PlansController < ApplicationController
   def index
     @report = params[:report] || 'list'
     @plans = @project.root_plans
+    render :partial => @report, :locals => { :plans => @plans } if request.xhr?
+  end
+  
+  def full_index
+    @report = params[:report] || 'list'
+    @plans = Plan.all :include => :project, :order => 'projects.name asc, plans.name asc'
     render :partial => @report, :locals => { :plans => @plans } if request.xhr?
   end
   

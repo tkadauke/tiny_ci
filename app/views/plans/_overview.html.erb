@@ -5,7 +5,8 @@
         <%= image_tag "icons/large/#{plan.status}.png" if plan.status %>
       </div>
       <div class="details">
-        <%= link_to plan.name, project_plan_path(@project, plan) %>
+        <%= link_to plan.name, project_plan_path(plan.project, plan) %><br/>
+        <span class="secondary">(<%= link_to plan.project.name, project_path(plan.project) %>)</span>
       </div>
     </li>
   <% end %>
