@@ -320,3 +320,17 @@ de:
       user_name: Benutzername
       login: Login
       remember_me: Von diesem Rechner aus automatisch anmelden
+  breadcrumb:
+    home: Start
+    projects: Projekte
+    plans: Plans
+    builds: Builds
+    edit: Bearbeiten
+    new: Neu
+    users: Benutzer
+    admin: Administation
+    slaves: Build-Rechner
+    configuration: Konfiguration
+    help_topics: Hilfe
+    child: In Kind-Plan umwandeln
+    login: Login

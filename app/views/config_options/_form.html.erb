@@ -1,8 +1,15 @@
 <% config.options.each do |option| %>
   <% next if option.type == 'Hash' %>
   <p class="form_item">
-    <span class="label"><%= f.label option.key, option.name %></span>
-    <% if option.description %>
+    <% if option.name.is_a?(Hash) %>
+      <span class="label"><%= f.label option.key, option.name[I18n.locale.to_s] %></span>
+    <% else %>
+      <span class="label"><%= f.label option.key, option.name %></span>
+    <% end %>
+    
+    <% if option.description.is_a?(Hash) %>
+      <span class="desc"><%= option.description[I18n.locale.to_s] %></span>
+    <% elsif option.description %>
       <span class="desc"><%= option.description %></span>
     <% end %>
     <% if option.values %>

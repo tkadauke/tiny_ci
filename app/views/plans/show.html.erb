@@ -97,4 +97,4 @@
   <p><%= link_to t('.back_to_parent_plan', :parent => @plan.parent.name), project_plan_path(@project, @plan.parent) %></p>
 <% end %>
 
-<p><%= t('.back_to_project', :link => link_to(@project.name, project_plans_path(@project)) %></p>
+<p><%= t('.back_to_project', :link => link_to(@project.name, project_plans_path(@project))) %></p>

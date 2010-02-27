@@ -18,7 +18,7 @@ module ApplicationHelper
   end
   
   def bread_crumb
-    breadcrumb = '<a href="/">Home</a>'
+    breadcrumb = %{<a href="/">#{I18n.t('breadcrumb.home')}</a>}
     sofar = ''
     elements = request.request_uri.split('?').first.split('/')
     parent_model = nil
@@ -33,7 +33,7 @@ module ApplicationHelper
         end
         [next_model, next_model.to_param]
       rescue Exception => e
-        [parent_model, elements[i].humanize]
+        [parent_model, I18n.t("breadcrumb.#{elements[i]}")]
       end
         
       breadcrumb += ' &gt; '

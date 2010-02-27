@@ -320,3 +320,17 @@ en:
       user_name: User name
       login: Login
       remember_me: Remember me
+  breadcrumb:
+    home: Home
+    projects: Projects
+    plans: Plans
+    builds: Builds
+    edit: Edit
+    new: New
+    users: Users
+    admin: Admin
+    slaves: Slaves
+    configuration: Configuration
+    help_topics: Help
+    child: Convert to Child
+    login: Login

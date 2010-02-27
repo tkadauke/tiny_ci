@@ -1,56 +1,90 @@
 - language:
-    name: 'Language'
-    description: "The language to be used by TinyCI."
+    name:
+      en: "Language"
+      de: "Sprache"
+    description:
+      en: "The language to be used by TinyCI."
+      de: "Die Sprache, die von TinyCI benutzt wird."
     type: String
     default: <%= YAML.load(File.read("#{RAILS_ROOT}/config/language.yml"))['language'] rescue 'en' %>
     values:
       - en
       - de
 - base_path:
-    name: 'Base Path'
-    description: "The default path under which builds are checked out. This can be overridden per slave."
+    name:
+      en: 'Base Path'
+      de: 'Basis-Pfad'
+    description:
+      en: "The default path under which builds are checked out. This can be overridden per slave."
+      de: "Der Standard-Pfad unter dem Code auf Build-Rechnern gespeichert wird. Diese Einstellung kann pro Build-Rechner angepasst werden."
     type: String
     default: <%= ENV['HOME'] %>/tiny_ci
 - environment:
-    name: 'Environment Variables'
-    description: "Default Environment variables for all builds."
+    name:
+      en: 'Environment Variables'
+      de: 'Umgebungsvariablen'
+    description:
+      en: "Default Environment variables for all builds."
+      de: "Standard Umgebungsvariablen für alle Builds."
     type: Hash
     default:
       CI_SERVER: TinyCI
 - site_root:
-    name: 'Base URL'
-    description: "The URL under which TinyCI runs. This is used for URLs sent in E-Mails."
+    name:
+      en: 'Base URL'
+      de: 'Basis-URL'
+    description:
+      en: "The URL under which TinyCI runs. This is used for URLs sent in E-Mails."
+      de: "Die URL unter der TinyCI zu erreichen ist. Das ist die URL die in E-Mails verwendet wird."
     type: String
     default: localhost:7199
 
 - email_sender_address:
-    name: 'E-Mail Sender Address'
+    name:
+      en: 'E-Mail Sender Address'
+      de: 'E-Mail-Absenderadresse'
     type: String
     default: tiny_ci@example.com
 - email_address:
-    name: 'SMTP Server'
+    name:
+      en: 'SMTP Server'
+      de: 'SMTP-Server'
     type: String
     default: "example.com"
 - email_port:
-    name: 'SMTP Port'
+    name:
+      en: 'SMTP Port'
+      de: 'SMTP-Port'
     type: Integer
     default: 25
 - email_domain:
-    name: 'SMTP Domain'
-    description: "If you need to specify a HELO domain, you can do it here."
+    name:
+      en: 'SMTP Domain'
+      de: 'SMTP-Domain'
+    description:
+      en: "If you need to specify a HELO domain, you can do it here."
+      de: "Falls Sie eine HELO-Domain angeben müssen, können Sie das hier tun."
     type: String
     default: "localhost"
 - email_user_name:
-    name: 'SMTP User Name'
+    name:
+      en: 'SMTP User Name'
+      de: 'SMTP-Benutzername'
     type: String
     default: "tiny_ci@imedo.de"
 - email_password:
-    name: 'SMTP Password'
+    name:
+      en: 'SMTP Password'
+      de: 'SMTP-Passwort'
     type: String
     default: "password"
 - email_authentication:
-    name: 'SMTP Authentication Type'
-    description: "If your mail server requires authentication, you need to specify the authentication type here."
+    name:
+      en: 'SMTP Authentication Type'
+      de: 'SMTP-Authentifizierungsart'
+    description:
+      en: "If your mail server requires authentication, you need to specify the authentication type here."
+      de: "Falls Ihr Mail-Server Authentifizierung benötigt, spezifizieren Sie hier die Art der Authentifizierung."
     type: String
     default: login
     values:
