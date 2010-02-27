@@ -290,6 +290,7 @@ en:
     report:
       no_output_yet: No output (yet)
   layouts:
+    all_plans: All Plans
     configuration: Configuration
     quick_links: Quick links
     report_link_text: Report it!

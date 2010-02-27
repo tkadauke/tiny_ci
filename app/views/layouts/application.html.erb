@@ -56,6 +56,7 @@
             <div id="menu">
               <ul>
                 <li><a href="/" class="first"><%= t('layouts.home') %></a></li>
+                <li><a href="/plans"><%= t('layouts.all_plans') %></a></li>
                 <li><a href="/projects"><%= t('layouts.projects') %></a></li>
                 <li><a href="/users"><%= t('layouts.users') %></a></li>
                 <% if current_user.can_configure_slaves? %>

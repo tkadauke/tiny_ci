@@ -290,6 +290,7 @@ de:
     report:
       no_output_yet: Keine Ausgabe (bisher)
   layouts:
+    all_plans: Alle Plans
     configuration: Konfiguration
     quick_links: Schnellzugriff
     report_link_text: Melden Sie ihn!
