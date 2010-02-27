@@ -1,6 +1,6 @@
-<h1>New Project</h1>
+<h1><%= t('.new_project') %></h1>
 
 <% form_for @project do |f| %>
   <%= render :partial => "form", :locals => { :f => f } %>
-  <%= f.submit 'Create' %>
+  <%= f.submit t('.create') %>
 <% end %>

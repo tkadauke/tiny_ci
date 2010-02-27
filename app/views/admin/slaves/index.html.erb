@@ -1,22 +1,22 @@
-<h1>Listing Slaves</h1>
+<h1><%= t('.listing_slaves') %></h1>
 
 <% if @slaves.empty? %>
-  <p>There are no slaves configured yet.</p>
+  <p><%= t('.there_are_no_slaves_configured_yet') %></p>
   
-  <p><%= link_to 'Add the first slave', new_admin_slave_path %> <strong>or</strong></p>
+  <p><%= link_to t('.add_the_first_slave'), new_admin_slave_path %> <strong><%= t('.or') %></strong></p>
   <% form_for [:admin, Slave.new] do |f| %>
     <%= f.hidden_field :name, :value => 'localhost' %>
     <%= f.hidden_field :protocol, :value => 'localhost' %>
-    <%= f.submit 'Use localhost as the first slave' %>
+    <%= f.submit t('.use_localhost_as_the_first_slave') %>
   <% end %>
 <% else %>
   <table class="list">
     <thead>
       <tr>
-        <th>Status</th>
-        <th>Protocol</th>
-        <th>Name</th>
-        <th>Hostname</th>
+        <th><%= t('.status') %></th>
+        <th><%= t('.protocol') %></th>
+        <th><%= t('.name') %></th>
+        <th><%= t('.hostname') %></th>
       </tr>
     </thead>
     <tbody>
@@ -24,9 +24,9 @@
         <tr>
           <td>
             <% if slave.offline %>
-              <%= image_tag 'icons/small/offline.png' %> Offline
+              <%= image_tag 'icons/small/offline.png' %> <%= t('.offline') %>
             <% else %>
-              <%= image_tag 'icons/small/online.png' %> Online
+              <%= image_tag 'icons/small/online.png' %> <%= t('.online') %>
             <% end %>
           </td>
           <td><%= slave.protocol %></td>
@@ -37,5 +37,5 @@
     </tbody>
   </table>
 
-  <p><%= link_to 'New Slave', new_admin_slave_path %></p>
+  <p><%= link_to t('.new_slave'), new_admin_slave_path %></p>
 <% end %>

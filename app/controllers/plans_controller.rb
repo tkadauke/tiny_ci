@@ -41,7 +41,7 @@ class PlansController < ApplicationController
   def create
     @plan = @project.plans.build(params[:plan])
     if @plan.save
-      flash[:notice] = "Successfully created plan"
+      flash[:notice] = t('flash.notice.created_plan')
       redirect_to project_plan_path(@project, @plan)
     else
       render :action => 'new'
@@ -51,7 +51,7 @@ class PlansController < ApplicationController
   def update
     @plan = @project.plans.from_param!(params[:id])
     if @plan.update_attributes(params[:plan])
-      flash[:notice] = "Successfully updated plan"
+      flash[:notice] = t('flash.notice.updated_plan')
       redirect_to project_plan_path(@project, @plan)
     else
       render :action => 'edit'

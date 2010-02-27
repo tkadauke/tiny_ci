@@ -1,6 +1,6 @@
-<h1>Edit Slave <%= @slave.name %></h1>
+<h1><%= t('.edit_slave', :name => @slave.name) %></h1>
 
 <% form_for [:admin, @slave] do |f| %>
   <%= render :partial => "form", :locals => { :f => f } %>
-  <%= f.submit 'Update' %>
+  <%= f.submit t('.update') %>
 <% end %>

@@ -26,7 +26,7 @@ protected
       if current_user.send(method.to_s.gsub(/\!$/, '?'), *args)
         yield if block_given?
       else
-        flash[:error] = 'You can not do that'
+        flash[:error] = t('flash.error.access_denied')
         redirect_to root_path
       end
     else
@@ -59,7 +59,7 @@ protected
   def require_user
     unless logged_in?
       store_location
-      flash[:notice] = "You must be logged in to access this page"
+      flash[:notice] = t('flash.notice.login_required')
       redirect_to login_url
       return false
     end

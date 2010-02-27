@@ -1,13 +1,13 @@
 class BuildMailer < ActionMailer::Base
   def success(recipient, build)
     setup
-    subject "[TinyCI] Build %s / %s succeeded" % [build.project.name, build.name]
+    subject I18n.t('build_mailer.subject.success', :project => build.project.name, :plan => build.name)
     set_header(recipient, build)
   end
   
   def failure(recipient, build)
     setup
-    subject "[TinyCI] Build %s / %s failed" % [build.project.name, build.name]
+    subject I18n.t('build_mailer.subject.failure', :project => build.project.name, :plan => build.name)
     set_header(recipient, build)
   end
   

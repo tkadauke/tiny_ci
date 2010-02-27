@@ -3,7 +3,7 @@ module TinyCI
     class GrowlNotifier < Base
       def success(build)
         if growl_available?
-          connection.notify "TinyCI Notification", "Success", "Build #{build.project.name} / #{build.name} (##{build.position}) finished successfully!"
+          connection.notify "TinyCI Notification", I18n.t('growl_notifier.subject.success'), I18n.t('growl_notifier.text.success', :project => build.project.name, :plan => build.name, :build => build.position)
         end
       rescue SocketError
         raise "Could not connect to Growl on #{host}"
@@ -11,7 +11,7 @@ module TinyCI
     
       def failure(build)
         if growl_available?
-          connection.notify "TinyCI Notification", "Failure", "Build #{build.project.name} / #{build.name} (##{build.position}) failed (status #{build.status})!"
+          connection.notify "TinyCI Notification", I18n.t('growl_notifier.subject.failure'), I18n.t('growl_notifier.text.failure', :project => build.project.name, :plan => build.name, :build => build.position, :status => build.status)
         end
       rescue SocketError
         raise "Could not connect to Growl on #{host}"

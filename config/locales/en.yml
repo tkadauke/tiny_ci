@@ -1,5 +1,322 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
+---
 en:
-  hello: "Hello world"
+  configurations:
+    show:
+      update: Update
+  growl_notifier:
+    text:
+      success: Build {{project}} / {{plan}} ({{build}}) finished successfully!
+      failure: Build {{project}} / {{plan}} ({{build}}) failed (status {{status}})!
+    subject:
+      success: Success
+      failure: Failure
+  plans:
+    new:
+      new_plan: New Plan
+      create: Create
+    list:
+      name: Name
+      time_ago: "{{time}} ago"
+      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
+      last_success: Last Success
+      last_failure: Last Failure
+      description: Description
+      last_build_time: Last Build time
+      unknown: unknown
+    edit:
+      edit_plan_name: Edit Plan {{name}}
+      update: Update
+    child:
+      select_parent_plan_for_plan: Select parent plan for {{plan}}
+      select_parent_plan: Select Parent Plan
+      update: Update
+    full_index:
+      details: Details
+      overview: Overview
+      listing_all_plans: Listing All Plans
+    index:
+      new_plan: New Plan
+      details: Details
+      overview: Overview
+      listing_plans: Listing Plans
+    show:
+      status: Status
+      steps: Steps
+      commit_hook: Commit Hook
+      new_child_plan: New Child Plan
+      delete: Delete
+      latest_build: Latest Build
+      plan_details: Plan details
+      plan_name: Plan {{name}}
+      edit: Edit
+      url: URL
+      convert_to_standalone_plan: Convert to Standalone Plan
+      convert_to_child_plan: Convert to Child Plan
+      description: Description
+      back_to_project: Back to project {{link}}
+      clone: Clone
+      back_to_parent_plan: Back to parent plan {{parent}}
+      child_of_parent_plan: (child of {{parent_plan}})
+      build_chain: Build chain
+      children: Children
+      weather: Weather
+      requirements: Requirements
+      builds: Builds
+      build_now: Build now
+      move_to_another_parent: Move to another Parent
+      confirm_delete: Do you really want to delete this plan and all its children and builds? This operation can not be undone.
+    form:
+      name: Name
+      steps: Steps
+      repository_url: Repository URL
+      description: Description
+      previous_plan: Previous Plan
+      plan_requirements_description: Capabilities a build slave must have to build this plan, separated by commas.
+      name_description: The plan's name will appear in the URL. Changes to the name will change all URLs for this plan. Only characters, numbers, underscores and dashes are allowed in the name.
+      steps_description: Steps necessary to build the plan.
+      run_this_plan_after: Run this plan after
+      plan_requirements: Plan requirements
+  admin:
+    configurations:
+      show:
+        update: Update
+    slaves:
+      new:
+        new_slave: New Slave
+        create: Create
+      edit:
+        edit_slave: Edit Slave {{name}}
+        update: Update
+      show:
+        capabilities: Capabilities
+        delete: Delete
+        "no": "No"
+        host_name: Host name
+        protocol: Protocol
+        delete_confirmation: Do you really want to delete this slave? This operation can not be undone.
+        busy: Busy?
+        edit: Edit
+        "yes": "Yes"
+        offline: Offline
+        clone: Clone
+        slave_name: Slave {{name}}
+        slaves_overview: Slaves Overview
+      index:
+        status: Status
+        name: Name
+        online: Online
+        protocol: Protocol
+        new_slave: New Slave
+        or: or
+        listing_slaves: Listing Slaves
+        use_localhost_as_the_first_slave: Use localhost as the first slave
+        add_the_first_slave: Add the first slave
+        there_are_no_slaves_configured_yet: There are no slaves configured yet.
+        offline: Offline
+        hostname: Hostname
+      form:
+        name: Name
+        protocol: Protocol
+        host_name: Host Name
+        maximum_builds: Maximum builds
+        value: Value
+        offline: Offline
+        variable_name: Variable name
+        max_builds_description: Maximum number of parallel builds on this slave (0 = unlimited)
+        base_path: Base Path
+        slave_capabilities: Slave capabilities
+        capabilities_description: Separated by commas.
+        user_name: User Name
+        password: Password
+        base_path_description: Leave blank to use the default of {{default_path}}
+    setup:
+      index:
+        database_configuration: Database configuration
+        db_error: "Could not connect to the database. The following error message was received:"
+        database_host: Database Host
+        password_description: This password will be saved as plain text in {{path}}.
+        database_username: Database Username
+        database_name: Database Name
+        database_name_description: You can leave this as is if this database already exists or if your database user has enough privileges to create a database. Otherwise, please create a database now and enter its name here.
+        welcome_to_tinyci: Welcome to TinyCI
+        database_password: Database Password
+        save_and_restart: Save and restart
+  errors:
+    "404":
+      title: The page you were looking for doesn't exist.
+      error_message: You may have mistyped the address or the page may have moved.
+    "422":
+      title: The change you wanted was rejected.
+      error_message: Maybe you tried to change something you didn't have access to.
+    "500":
+      title: We're sorry, but something went wrong.
+      error_message: We've been notified about this issue and we'll take a look at it shortly.
+  projects:
+    new:
+      new_project: New Project
+      create: Create
+    edit:
+      update: Update
+      edit_project_name: Edit Project {{name}}
+    index:
+      name: Name
+      options: Options
+      edit: Edit
+      new_project: New Project
+      description: Description
+      listing_projects: Listing Projects
+    form:
+      name: Name
+      description: Description
+      name_description: The project's name will appear in the URL. Changes to the name will change all URLs for this project. Only characters, numbers, underscores and dashes are allowed in the name.
+  start:
+    slave_status:
+      slave_is_offline: Slave is offline.
+      configure_slave: Configure
+      no_slaves_configured: No slaves configured.
+      configure_slaves_now: Configure them now
+    queue:
+      build_queue: Build queue
+      slave_status: Slave status
+      recently_finished_builds: Recently finished builds
+    index:
+      manage_build_slaves: Manage build slaves
+      sign_up: Sign up
+      quick_links: Quick links
+      create_accounts: Create accounts
+      create_admin_account: Create first administrator account
+      create_a_project: Create a project
+  users:
+    new:
+      create_new_account: Create new account
+      password_confirmation: Password Confirmation
+      create_account: Create account
+      login_name: Login Name
+      the_email_address_is_used_for_notifications: The email address is used for notifications.
+      password: Password
+      the_nick_name_used_for_logins: The nick name used for logins.
+      please_repeat_the_password_exactly_as_above: Please repeat the password exactly as above.
+      email_address: E-Mail Address
+    edit:
+      edit_users_profile: Edit {{login}}'s Profile
+      update: Update
+      the_users_role: The user's role. Set to "user" for normal user accounts.
+      the_email_address_is_used_for_notifications: The email address is used for notifications.
+      email_address: E-Mail Address
+    index:
+      there_are_no_user_accounts_yet: There are no user accounts yet.
+      options: Options
+      listing_users: Listing Users
+      edit: Edit
+      new_account: New Account
+      login_name: Login name
+      create_first_administrator_account: Create first administrator account
+    show:
+      users_profile: "{{login}}'s Profile"
+      edit_profile: Edit profile
+  report:
+    status: Status
+    test_case: Test Case
+    command: Command {{name}}
+    tests: Tests
+    total_time: Total time
+    test_run: Test Run {{name}}
+    details: Details
+    build_tool: Build tool
+    build: Build
+    errors: Errors
+    task: Task {{name}}
+    deploy_tool: Deploy tool
+    summary: Summary
+    targets: Targets
+    deploy: Deploy
+    tasks: Tasks
+    duration: Duration
+    failures: Failures
+    assertions: Assertions
+    command_output: "Command output:"
+  navigation:
+    help: Help
+  flash:
+    error:
+      access_denied: You can not do that
+      connect_to_database: Could not connect to the database
+    notice:
+      updated_configuration: Successfully updated configuration
+      updated_slave: Successfully updated slave
+      logged_in: Successfully logged in
+      updated_project: Successfully updated project
+      created_slave: Successfully created slave
+      created_plan: Successfully created plan
+      created_account: Successfully created account
+      updated_profile: Successfully updated {{user}}'s profile
+      updated_plan: Successfully updated plan
+      created_project: Successfully created project
+      building_plan: Building plan {{name}}
+      deleted_slave: Successfully deleted slave
+      login_required: You must be logged in to access this page
+      logged_out: Successfully logged out
+  builds:
+    completed:
+      status: Status
+      timestamp: Timestamp
+      name: Name
+      number: Number
+      no_builds: No builds
+      duration: Duration
+    list:
+      name: Name
+      timestamp: Timestamp
+      status: Status
+      number: Number
+      no_builds: No builds
+    build:
+      status: Status
+      on_slave: on slave {{slave_name}}
+      details: Details
+      raw_output: Raw output
+      started_by: Started by
+      build_output_of_plan: "Build output of {{plan}} #{{position}}"
+      requested_manually: (Requested manually)
+      revision: Revision
+      gist: Gist
+      duration: Duration
+      unknown: unknown
+    index:
+      builds_of_plan: Builds of Plan {{plan_link}}
+      back_to_plan: Back to Plan
+    show:
+      back_to_builds: Back to Builds
+    report:
+      no_output_yet: No output (yet)
+  layouts:
+    configuration: Configuration
+    quick_links: Quick links
+    report_link_text: Report it!
+    help: Help
+    close_flash: Close
+    logout: Logout
+    guest_greeter: Welcome, Guest!
+    projects: Projects
+    you_are_here: "You are here: {{bread_crumb}}"
+    github_project_page: Github project page
+    signup: Signup
+    slaves: Slaves
+    subtitle: Continuous Integration for Ruby on Rails
+    user_greeter: Welcome, {{user}}!
+    settings: Settings
+    setup: Setup
+    users: Users
+    home: Home
+    login: Login
+    report_bugs: Found a bug? {{report_link}}
+  build_mailer:
+    subject:
+      success: "[TinyCI] Build {{project}} / {{plan}} succeeded"
+      failure: "[TinyCI] Build {{project}} / {{plan}} failed"
+  user_sessions:
+    new:
+      password: Password
+      user_name: User name
+      login: Login
+      remember_me: Remember me

@@ -1,26 +1,26 @@
-<h1>Slave <%= @slave.name %></h1>
+<h1><%= t('.slave_name', :name => @slave.name) %></h1>
 
 <ul class="action-list">
-  <li><%= link_to 'Edit', edit_admin_slave_path(@slave) %></li>
-  <li><%= link_to 'Clone', new_admin_slave_path(:clone => @slave) %></li>
-  <li><%= link_to 'Delete', admin_slave_path(@slave), :method => :delete, :confirm => 'Do you really want to delete this slave? This operation can not be undone.' %></li>
+  <li><%= link_to t('.edit'), edit_admin_slave_path(@slave) %></li>
+  <li><%= link_to t('.clone'), new_admin_slave_path(:clone => @slave) %></li>
+  <li><%= link_to t('.delete'), admin_slave_path(@slave), :method => :delete, :confirm => t('.delete_confirmation') %></li>
 </ul>
 
 <dl>
-  <dt>Offline</dt>
-  <dd><%= @slave.offline ? 'Yes' : 'No' %></dd>
+  <dt><%= t('.offline') %></dt>
+  <dd><%= @slave.offline ? t('.yes') : t('.no') %></dd>
 
-  <dt>Protocol</dt>
+  <dt><%= t('.protocol') %></dt>
   <dd><%= @slave.protocol %></dd>
 
-  <dt>Host name</dt>
+  <dt><%= t('.host_name') %></dt>
   <dd><%= @slave.hostname %>&nbsp;</dd>
 
-  <dt>Busy?</dt>
+  <dt><%= t('.busy') %></dt>
   <dd><%= @slave.busy?.inspect %>&nbsp;</dd>
 
-  <dt>Capabilities</dt>
+  <dt><%= t('.capabilities') %></dt>
   <dd><%= @slave.capabilities %>&nbsp;</dd>
 </dl>
 
-<p><%= link_to 'Slaves Overview', admin_slaves_path %></p>
+<p><%= link_to t('.slaves_overview'), admin_slaves_path %></p>

@@ -1,18 +1,18 @@
-<h1>Build output <%= link_to @plan.name, project_plan_path(@project, @plan) %> #<%= @build.position %> <%= 'on slave %s' % @build.slave.name if @build.slave %></h1>
+<h1><%= t('.build_output_of_plan', :plan => link_to(@plan.name, project_plan_path(@project, @plan)), :position => @build.position) %> <%= t('.on_slave', :slave_name => @build.slave.name) if @build.slave %></h1>
 
 <dl>
-  <dt>Status</dt>
+  <dt><%= t('.status') %></dt>
   <dd><%= image_tag "icons/large/#{@build.status}.png" %> <%= @build.status %></dd>
 
-  <dt>Revision</dt>
-  <dd><%= @build.revision.blank? ? 'unknown' : @build.revision %></dd>
+  <dt><%= t('.revision') %></dt>
+  <dd><%= @build.revision.blank? ? t('.unknown') : @build.revision %></dd>
 
-  <dt>Duration</dt>
+  <dt><%= t('.duration') %></dt>
   <dd><%= duration(@build.duration) %>&nbsp;</dd>
   
   <% if @build.starter %>
-    <dt>Started by</dt>
-    <dd><%= link_to @build.starter.login, user_path(@build.starter) %> (Requested manually)</dd>
+    <dt><%= t('.started_by') %></dt>
+    <dd><%= link_to @build.starter.login, user_path(@build.starter) %> <%= t('.requested_manually') %></dd>
   <% end %>
 </dl>
 
@@ -21,9 +21,9 @@
 <% end %>
 
 <ul class="action-list">
-  <li><%= link_to 'Raw output', project_plan_build_path(@project, @plan, @build, :report => 'raw') %></li>
-  <li><%= link_to 'Gist', project_plan_build_path(@project, @plan, @build, :report => 'gist') %></li>
-  <li><%= link_to 'Details', project_plan_build_path(@project, @plan, @build, :report => 'details') %></li>
+  <li><%= link_to t('.raw_output'), project_plan_build_path(@project, @plan, @build, :report => 'raw') %></li>
+  <li><%= link_to t('.gist'), project_plan_build_path(@project, @plan, @build, :report => 'gist') %></li>
+  <li><%= link_to t('.details'), project_plan_build_path(@project, @plan, @build, :report => 'details') %></li>
 </ul>
 
 <div class="report" id="report">

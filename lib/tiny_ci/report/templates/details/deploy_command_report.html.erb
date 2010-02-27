@@ -1,8 +1,8 @@
-<a href="#">Command <%= report.command %></a>
+<a href="#"><%= t('report.command', :name => report.command) %></a>
 <div>
   <% unless report.servers.empty? %>
     <div class="tabs">
-      <p>Command output:
+      <p><%= t('report.command_output') %>
         <% report.servers.each do |server| %>
           <%= link_to_function server, "$$('#tabcontent-#{report.object_id} pre').each(function(e) { e.hide() }); $('tab-#{report.object_id}-#{server.gsub('.', '-')}').show()" %>
         <% end %>

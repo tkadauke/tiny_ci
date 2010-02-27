@@ -2,38 +2,38 @@
 <%= f.hidden_field :parent_id %>
 
 <p class="form_item">
-  <span class="label"><%= f.label :name, 'Name' %></span>
-  <span class="desc">The plan's name will appear in the URL. Changes to the name will change all URLs for this plan. Only characters, numbers, underscores and dashes are allowed in the name.</span>
+  <span class="label"><%= f.label :name, t('.name') %></span>
+  <span class="desc"><%= t('.name_description') %></span>
   <%= f.text_field :name %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :description, 'Description' %></span>
+  <span class="label"><%= f.label :description, t('.description') %></span>
   <%= f.text_area :description, :rows => 5 %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :repository_url, 'Repository URL' %></span>
+  <span class="label"><%= f.label :repository_url, t('.repository_url') %></span>
   <%= f.text_field :repository_url %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :steps, 'Steps' %></span>
-  <span class="desc">Steps necessary to build the plan. <%= help_link 'plan' %></span>
+  <span class="label"><%= f.label :steps, t('.steps') %></span>
+  <span class="desc"><%= t('.steps_description') %> <%= help_link 'plan' %></span>
   <%= f.text_area :steps, :rows => 10 %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :requirements, 'Plan requirements' %></span>
-  <span class="desc">Capabilities a build slave must have to build this plan, separated by commas. <%= help_link 'slaves' %></span>
+  <span class="label"><%= f.label :requirements, t('.plan_requirements') %></span>
+  <span class="desc"><%= t('.plan_requirements_description') %> <%= help_link 'slaves' %></span>
   <%= f.text_area :requirements, :rows => 3 %>
 </p>
 
 <% unless @plan.parent %>
-  <h2>Run this plan after</h2>
+  <h2><%= t('.run_this_plan_after') %></h2>
 
   <p class="form_item">
-    <span class="label"><%= f.label :previous_plan_id, 'Previous Plan' %></span>
+    <span class="label"><%= f.label :previous_plan_id, t('.previous_plan') %></span>
     <%= f.select :previous_plan_id, @project.root_plans.reject { |p| p == @plan }.collect { |p| [p.name, p.id] }, :include_blank => true %>
   </p>
 <% end %>

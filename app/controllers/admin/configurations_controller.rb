@@ -8,7 +8,7 @@ class Admin::ConfigurationsController < ApplicationController
   def create
     @config = TinyCI::Config.instance
     @config.update_attributes(params[:config])
-    flash[:notice] = 'Successfully updated configuration'
+    flash[:notice] = t('flash.notice.updated_configuration')
     redirect_to admin_configuration_path
   end
 end

@@ -1,21 +1,21 @@
-<h2>Edit <%= @user.login %>'s Profile</h2>
+<h2><%= t('.edit_users_profile', :login => @user.login) %></h2>
 
 <% form_for @user do |f| %>
   <%= f.error_messages %>
 
   <p class="form_item">
-    <span class="label"><%= f.label :email, 'E-Mail Address' %></span>
-    <span class="desc">The email address is used for notifications.</span>
+    <span class="label"><%= f.label :email, t('.email_address') %></span>
+    <span class="desc"><%= t('.the_email_address_is_used_for_notifications') %></span>
     <%= f.text_field :email %>
   </p>
   
   <% if current_user.can_assign_roles? && @user != current_user %>
     <p class="form_item">
       <span class="label"><%= f.label :role, 'Role' %></span>
-      <span class="desc">The user's role. Set to "user" for normal user accounts.</span>
+      <span class="desc"><%= t('.the_users_role') %></span>
       <%= f.select :role, ['user', 'admin'] %>
     </p>
   <% end %>
   
-  <%= f.submit 'Update' %>
+  <%= f.submit t('.update') %>
 <% end %>

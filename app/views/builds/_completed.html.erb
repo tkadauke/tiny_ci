@@ -1,14 +1,14 @@
 <% if builds.empty? %>
-  <p>No builds</p>
+  <p><%= t('.no_builds') %></p>
 <% else %>
   <table class="list">
     <thead>
       <tr>
-        <th>Number</th>
-        <th>Name</th>
-        <th>Timestamp</th>
-        <th>Status</th>
-        <th>Duration</th>
+        <th><%= t('.number') %></th>
+        <th><%= t('.name') %></th>
+        <th><%= t('.timestamp') %></th>
+        <th><%= t('.status') %></th>
+        <th><%= t('.duration') %></th>
       </tr>
     </thead>
     <tbody>

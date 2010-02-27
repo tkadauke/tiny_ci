@@ -7,7 +7,7 @@ class ConfigurationsController < ApplicationController
   
   def create
     current_user.config.update_attributes(params[:config])
-    flash[:notice] = "Successfully updated your configuration"
+    flash[:notice] = t('flash.notice.updated_configuration')
     redirect_to settings_path
   end
 end

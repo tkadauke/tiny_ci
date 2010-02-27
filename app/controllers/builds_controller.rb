@@ -16,7 +16,7 @@ class BuildsController < ApplicationController
   
   def create
     @build = @plan.build!(:starter => current_user.to_user, :parameters => params.except(:controller, :action, :plan_id))
-    flash[:notice] = "Building plan #{@plan.name}"
+    flash[:notice] = t('flash.notice.building_plan', :name => @plan.name)
     redirect_to project_plan_build_path(@project, @plan, @build)
   end
   

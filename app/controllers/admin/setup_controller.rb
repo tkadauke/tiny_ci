@@ -12,7 +12,7 @@ class Admin::SetupController < ApplicationController
     if @config.save
       redirect_to :action => 'restart'
     else
-      flash[:error] = 'Could not connect to the database'
+      flash[:error] = t('flash.error.connect_to_database')
       render :action => 'index'
     end
   end

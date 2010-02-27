@@ -1,33 +1,33 @@
-<h1>Plan <%= @plan.name %> <%= '(child of %s)' % link_to(@plan.parent.name, project_plan_path(@project, @plan.parent)) if @plan.parent %></h1>
+<h1><%= t('.plan_name', :name => @plan.name) %> <%= t('.child_of_parent_plan', :parent_plan => link_to(@plan.parent.name, project_plan_path(@project, @plan.parent))) if @plan.parent %></h1>
 
 <ul class="action-list">
   <% if current_user.can_edit_plan?(@plan) %>
-    <li><%= link_to 'Edit', edit_project_plan_path(@project, @plan) %></li>
+    <li><%= link_to t('.edit'), edit_project_plan_path(@project, @plan) %></li>
   <% end %>
-  <li><%= link_to 'Builds', project_plan_builds_path(@project, @plan) %></li>
+  <li><%= link_to t('.builds'), project_plan_builds_path(@project, @plan) %></li>
   <% if current_user.can_create_plans? %>
-    <li><%= link_to 'Clone', new_project_plan_path(@project, :clone => @plan) %></li>
+    <li><%= link_to t('.clone'), new_project_plan_path(@project, :clone => @plan) %></li>
   <% end %>
   <% if @plan.parent %>
     <% if current_user.can_edit_plan?(@plan) %>
-      <li><%= link_to 'Move to another Parent', child_project_plan_path(@project) %></li>
-      <li><%= link_to 'Convert to Standalone Plan', project_plan_path(@project, :plan => { :parent_id => nil }), :method => :put %></li>
+      <li><%= link_to t('.move_to_another_parent'), child_project_plan_path(@project) %></li>
+      <li><%= link_to t('.convert_to_standalone_plan'), project_plan_path(@project, :plan => { :parent_id => nil }), :method => :put %></li>
     <% end %>
   <% else %>
     <% if current_user.can_create_plans? %>
-      <li><%= link_to 'New Child Plan', new_project_plan_path(@project, :parent => @plan) %></li>
+      <li><%= link_to t('.new_child_plan'), new_project_plan_path(@project, :parent => @plan) %></li>
     <% end %>
     <% if !@plan.has_children? && current_user.can_edit_plan?(@plan) %>
-      <li><%= link_to 'Convert to Child Plan', child_project_plan_path(@project) %></li>
+      <li><%= link_to t('.convert_to_child_plan'), child_project_plan_path(@project) %></li>
     <% end %>
   <% end %>
   <% if current_user.can_destroy_plan?(@plan) %>
-    <li><%= link_to 'Delete', project_plan_path(@project), :method => :delete, :confirm => 'Do you really want to delete this plan and all its children and builds? This operation can not be undone.' %></li>
+    <li><%= link_to t('.delete'), project_plan_path(@project), :method => :delete, :confirm => t('.confirm_delete') %></li>
   <% end %>
 </ul>
 
 <% if @plan.previous || @plan.next %>
-  <h2>Build chain</h2>
+  <h2><%= t('.build_chain') %></h2>
   
   <table>
     <tr>
@@ -43,39 +43,39 @@
 <% end %>
 
 <% if @plan.has_children? %>
-  <h2>Children</h2>
+  <h2><%= t('.children') %></h2>
   
   <%= render :partial => "list", :locals => { :plans => @plan.children } %>
 <% end %>
 
-<h2>Plan details</h2>
+<h2><%= t('.plan_details') %></h2>
 
 <dl>
   <% if @plan.status %>
-    <dt>Status</dt>
-    <dd><%= image_tag "icons/large/#{@plan.status}.png" %> <span><%= @plan.status %> <%= link_to 'Latest Build', project_plan_build_path(@project, @plan, @plan.last_finished_build) %></span></dd>
+    <dt><%= t('.status') %></dt>
+    <dd><%= image_tag "icons/large/#{@plan.status}.png" %> <span><%= @plan.status %> <%= link_to t('.latest_build'), project_plan_build_path(@project, @plan, @plan.last_finished_build) %></span></dd>
   <% end %>
 
   <% if @plan.weather %>
-    <dt>Weather</dt>
+    <dt><%= t('.weather') %></dt>
     <dd><%= image_tag "icons/large/weather-#{@plan.weather}.png" %> <span><%= @plan.weather %> of the last 5 builds were successful.</span></dd>
   <% end %>
 
-  <dt>Description</dt>
+  <dt><%= t('.description') %></dt>
   <dd><%= simple_format @plan.description %></dd>
 
-  <dt>Steps</dt>
+  <dt><%= t('.steps') %></dt>
   <dd><pre><%= @plan.steps %></pre></dd>
 
-  <dt>Requirements</dt>
+  <dt><%= t('.requirements') %></dt>
   <dd><%= @plan.requirements %>&nbsp;</dd>
   
   <% if @plan.standalone? %>
-    <dt>Commit Hook</dt>
+    <dt><%= t('.commit_hook') %></dt>
     <dd>
       <table>
         <tr>
-          <th>URL</th>
+          <th><%= t('.url') %></th>
           <td><%= text_field_tag nil, project_plan_builds_url(@project, @plan), :size => 80 %></td>
         </tr>
         <tr>
@@ -92,9 +92,9 @@
 </dl>
 
 <% if @plan.standalone? %>
-  <%= button_to 'Build now', project_plan_builds_path(@project, @plan) %>
+  <%= button_to t('.build_now'), project_plan_builds_path(@project, @plan) %>
 <% else %>
-  <p><%= link_to 'Back to parent plan %s' % @plan.parent.name, project_plan_path(@project, @plan.parent) %></p>
+  <p><%= link_to t('.back_to_parent_plan', :parent => @plan.parent.name), project_plan_path(@project, @plan.parent) %></p>
 <% end %>
 
-<p>Back to project <%= link_to @project.name, project_plans_path(@project) %></p>
+<p><%= t('.back_to_project', :link => link_to(@project.name, project_plans_path(@project)) %></p>

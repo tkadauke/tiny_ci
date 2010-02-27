@@ -1,12 +1,12 @@
 <% if @slaves.blank? %>
-  <p>No slaves configured. <%= link_to 'Configure them now', admin_slaves_path %>.</p>
+  <p><%= t('.no_slaves_configured') %> <%= link_to t('.configure_slaves_now'), admin_slaves_path %>.</p>
 <% else %>
   <ul>
     <% @slaves.each do |slave| %>
       <li>
         <p><strong><%= slave.name %></strong></p>
         <% if slave.offline? %>
-          <p>Slave is offline. <%= link_to 'Configure', edit_admin_slave_path(slave) %></p>
+          <p><%= t('.slave_is_offline') %> <%= link_to t('.configure_slave'), edit_admin_slave_path(slave) %></p>
         <% else %>
           <ul>
             <%= render :partial => "/builds/list", :locals => { :builds => slave.running_builds } %>

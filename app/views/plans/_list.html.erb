@@ -3,23 +3,23 @@
     <tr>
       <th></th>
       <th></th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Last Build time</th>
-      <th>Last Success</th>
-      <th>Last Failure</th>
+      <th><%= t('.name') %></th>
+      <th><%= t('.description') %></th>
+      <th><%= t('.last_build_time') %></th>
+      <th><%= t('.last_success') %></th>
+      <th><%= t('.last_failure') %></th>
     </tr>
   </thead>
   <tbody>
     <% plans.each do |plan| %>
       <tr>
         <td><%= image_tag "icons/small/#{plan.status}.png" if plan.status %></td>
-        <td><%= image_tag "icons/small/weather-#{plan.weather}.png", :title => "%d of the last 5 builds were successful" % plan.weather if plan.weather %></td>
+        <td><%= image_tag "icons/small/weather-#{plan.weather}.png", :title => t('.count_of_the_last_5_builds_were_successful', :count => plan.weather) if plan.weather %></td>
         <td><%= link_to plan.project.name, project_path(plan.project) %> / <%= link_to plan.name, project_plan_path(plan.project, plan) %></td>
         <td><%= truncate plan.description, :length => 40 %></td>
-        <td><%= plan.last_build_time ? duration(plan.last_build_time) : 'unknown' %></td>
-        <td><%= plan.last_succeeded_at ? "%s ago" % time_ago_in_words(plan.last_succeeded_at) : 'unknown' %></td>
-        <td><%= plan.last_failed_at ? "%s ago" % time_ago_in_words(plan.last_failed_at) : 'unknown' %></td>
+        <td><%= plan.last_build_time ? duration(plan.last_build_time) : t('.unknown') %></td>
+        <td><%= plan.last_succeeded_at ? t('.time_ago', :time => time_ago_in_words(plan.last_succeeded_at)) : t('.unknown') %></td>
+        <td><%= plan.last_failed_at ? t('.time_ago', :time => time_ago_in_words(plan.last_failed_at)) : t('.unknown') %></td>
       </tr>
     <% end %>
   </tbody>

@@ -1,13 +1,13 @@
-<a href="#">Deploy</a>
+<a href="#"><%= t('report.deploy') %></a>
 <div>
   <dl>
-    <dt>Deploy tool</dt>
+    <dt><%= t('report.deploy_tool') %></dt>
     <dd><%= report.deploy_tool %>&nbsp;</dd>
-    <dt>Targets</dt>
+    <dt><%= t('report.targets') %></dt>
     <dd><%= report.targets %>&nbsp;</dd>
   </dl>
 
-  <h2>Tasks</h2>
+  <h2><%= t('report.tasks') %></h2>
 
   <ul class="tasks">
     <%= report.tasks.collect { |task| render_report task, :details }.reject { |html| html.strip.blank? }.collect { |html| %{<li>#{html}</li>} }.join("\n") %>

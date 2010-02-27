@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     @user.role = 'admin' if current_user.initial_admin?
     if @user.save
-      flash[:notice] = "Successfully created account"
+      flash[:notice] = t('flash.notice.created_account')
       redirect_to users_path
     else
       render :action => 'new'
@@ -33,7 +33,7 @@ class UsersController < ApplicationController
       @user.role = params[:user][:role] if can_assign_roles?
       
       if @user.update_attributes(params[:user])
-        flash[:notice] = "Successfully updated #{@user.login}'s profile"
+        flash[:notice] = t('flash.notice.updated_profile', :user => @user.login)
         redirect_to user_path(@user)
       end
     end

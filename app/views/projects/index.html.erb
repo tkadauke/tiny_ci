@@ -1,11 +1,11 @@
-<h1>Listing Projects</h1>
+<h1><%= t('.listing_projects') %></h1>
 
 <table class="list">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Options</th>
+      <th><%= t('.name') %></th>
+      <th><%= t('.description') %></th>
+      <th><%= t('.options') %></th>
     </tr>
   </thead>
   <tbody>
@@ -13,12 +13,12 @@
       <tr>
         <td><%= link_to project.name, project_plans_path(project) %></td>
         <td><%= truncate project.description, :length => 40 %></td>
-        <td><%= link_to 'Edit', edit_project_path(project) %></td>
+        <td><%= link_to t('.edit'), edit_project_path(project) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <% if current_user.can_create_projects? %>
-  <p><%= link_to 'New Project', new_project_path %></p>
+  <p><%= link_to t('.new_project'), new_project_path %></p>
 <% end %>

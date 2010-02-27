@@ -1,8 +1,8 @@
-<h1>Listing Plans</h1>
+<h1><%= t('.listing_plans') %></h1>
 
 <ul class="action-list">
-  <li><%= link_to 'Details', project_plans_path(@project, :report => 'list') %></li>
-  <li><%= link_to 'Overview', project_plans_path(@project, :report => 'overview') %></li>
+  <li><%= link_to t('.details'), project_plans_path(@project, :report => 'list') %></li>
+  <li><%= link_to t('.overview'), project_plans_path(@project, :report => 'overview') %></li>
 </ul>
 
 <%= auto_update 'plans' %>
@@ -11,5 +11,5 @@
 </div>
 
 <% if current_user.can_create_plans? %>
-  <p><%= link_to 'New Plan', new_project_plan_path(@project) %></p>
+  <p><%= link_to t('.new_plan'), new_project_plan_path(@project) %></p>
 <% end %>

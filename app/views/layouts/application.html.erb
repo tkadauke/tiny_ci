@@ -23,27 +23,27 @@
           <div id="top_header">
             <div id="logo">
               <h1><a href="/">TinyCI</a></h1>
-              <p>Continuous Integration for Ruby on Rails</p>
+              <p><%= t('layouts.subtitle') %></p>
             </div>
             <div id="center_header">
               <div id="suggestion">
                 <div class="suggestion_corner_right">
-                  <span>Found a bug? <a href="http://github.com/tkadauke/tiny_ci/issues">Report it!</a></span>
+                  <span><%= t('layouts.report_bugs', :report_link => link_to(t('layouts.report_link_text'), "http://github.com/tkadauke/tiny_ci/issues")) %></span>
                 </div>
               </div>
             </div>
             <div id="right_header">
               <% if logged_in? %>
                 <ul class="action-list">
-                  <li>Welcome, <%= current_user.login %>!</li>
-                  <li><%= link_to 'Settings', settings_path %></li>
-                  <li><%= link_to 'Logout', logout_path, :method => :delete %></li>
+                  <li><%= t('layouts.user_greeter', :user => current_user.login) %></li>
+                  <li><%= link_to t('layouts.settings'), settings_path %></li>
+                  <li><%= link_to t('layouts.logout'), logout_path, :method => :delete %></li>
                 </ul>
               <% else %>
                 <ul class="action-list">
-                  <li>Welcome, Guest!</li>
-                  <li><%= link_to 'Login', login_path %></li>
-                  <li><%= link_to 'Signup', new_user_path %></li>
+                  <li><%= t('layouts.guest_greeter') %></li>
+                  <li><%= link_to t('layouts.login'), login_path %></li>
+                  <li><%= link_to t('layouts.signup'), new_user_path %></li>
                 </ul>
               <% end %>
             </div>
@@ -55,16 +55,16 @@
           <div id="menu_container">
             <div id="menu">
               <ul>
-                <li><a href="/" class="first">Home</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/users">Users</a></li>
+                <li><a href="/" class="first"><%= t('layouts.home') %></a></li>
+                <li><a href="/projects"><%= t('layouts.projects') %></a></li>
+                <li><a href="/users"><%= t('layouts.users') %></a></li>
                 <% if current_user.can_configure_slaves? %>
-                  <li><a href="/admin/slaves">Slaves</a></li>
+                  <li><a href="/admin/slaves"><%= t('layouts.slaves') %></a></li>
                 <% end %>
                 <% if current_user.can_configure_system_variables? %>
-                  <li><a href="/admin/configuration">Configuration</a></li>
+                  <li><a href="/admin/configuration"><%= t('layouts.configuration') %></a></li>
                 <% end %>
-                <li><a href="/help_topics">Help</a></li>
+                <li><a href="/help_topics"><%= t('layouts.help') %></a></li>
               </ul>
             </div>
             <div class="clearer"></div>
@@ -80,15 +80,15 @@
         <% if flash[:error] %>
           <div id="flash" class="error">
             <%= flash[:error] %>
-            <%= link_to_function 'Close', "$('flash').fade()" %>
+            <%= link_to_function t('layouts.close_flash'), "$('flash').fade()" %>
           </div>
         <% elsif flash[:notice] %>
           <div id="flash" class="notice">
             <%= flash[:notice] %>
-            <%= link_to_function 'Close', "$('flash').fade()" %>
+            <%= link_to_function t('layouts.close_flash'), "$('flash').fade()" %>
           </div>
         <% end %>
-        <p>You are here: <%= bread_crumb %></p>
+        <p><%= t('layouts.you_are_here', :bread_crumb => bread_crumb) %></p>
         <%= yield %>
       <div class="clearer"></div>
 
@@ -104,9 +104,9 @@
         <div id="footer">
         <div class="footer_corner_right">
           <div class="left">
-          <a href="/">Home</a> | 
-          <a href="/projects">Projects</a> |
-          <a href="/users">Users</a>
+          <a href="/"><%= t('layouts.home') %></a> | 
+          <a href="/projects"><%= t('layouts.projects') %></a> |
+          <a href="/users"><%= t('layouts.users') %></a>
           </div>
           <div class="clearer"></div>
         </div>
@@ -121,9 +121,9 @@
 
     <div class="bottom_space">
       <div id="ads_page_end">
-        <h1>Quick links</h1>
+        <h1><%= t('layouts.quick_links') %></h1>
         <div id="links">
-          <a href="http://github.com/tkadauke/tiny_ci">Github project page</a>
+          <a href="http://github.com/tkadauke/tiny_ci"><%= t('layouts.github_project_page') %></a>
         </div>
       </div>
     </div>

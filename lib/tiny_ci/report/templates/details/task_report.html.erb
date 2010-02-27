@@ -1,4 +1,4 @@
-<a href="#">Task <%= report.name %></a>
+<a href="#"><%= t('report.task', :name => report.name) %></a>
 <div>
   <%= render :partial => 'raw_output', :locals => { :output => report.raw_output } unless report.raw_output.blank? %>
 </div>

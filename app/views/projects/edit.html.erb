@@ -1,6 +1,6 @@
-<h1>Edit Project <%= @project.name %></h1>
+<h1><%= t('.edit_project_name', :name => @project.name) %></h1>
 
 <% form_for @project do |f| %>
   <%= render :partial => "form", :locals => { :f => f } %>
-  <%= f.submit 'Update' %>
+  <%= f.submit t('.update') %>
 <% end %>

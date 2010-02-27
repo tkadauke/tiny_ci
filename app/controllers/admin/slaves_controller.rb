@@ -24,7 +24,7 @@ class Admin::SlavesController < ApplicationController
   def create
     @slave = Slave.new(params[:slave])
     if @slave.save
-      flash[:notice] = "Successfully created slave"
+      flash[:notice] = t('flash.notice.created_slave')
       redirect_to admin_slave_path(@slave)
     else
       render :action => 'new'
@@ -34,7 +34,7 @@ class Admin::SlavesController < ApplicationController
   def update
     @slave = Slave.from_param!(params[:id])
     if @slave.update_attributes(params[:slave])
-      flash[:notice] = "Successfully updated slave"
+      flash[:notice] = t('flash.notice.updated_slave')
       redirect_to admin_slave_path(@slave)
     else
       render :action => 'edit'
@@ -44,7 +44,7 @@ class Admin::SlavesController < ApplicationController
   def destroy
     @slave = Slave.from_param!(params[:id])
     @slave.destroy
-    flash[:notice] = "Successfully deleted slave"
+    flash[:notice] = t('flash.notice.deleted_slave')
     redirect_to admin_slaves_path
   end
 end

@@ -1,4 +1,4 @@
-<a href="#">Task <%= report.name %></a>
+<a href="#"><%= t('report.task', :name => report.name) %></a>
 <div>
   <% unless report.commands.empty? %>
     <ul class="tasks">

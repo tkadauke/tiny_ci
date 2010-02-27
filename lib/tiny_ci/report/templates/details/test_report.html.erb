@@ -1,21 +1,21 @@
-<a href="#">Test Run <%= report.name %></a>
+<a href="#"><%= t('report.test_run', :name => report.name) %></a>
 <div>
-  <h3>Summary</h3>
+  <h3><%= t('report.summary') %></h3>
 
   <dl>
-    <dt>Total time</dt>
+    <dt><%= t('report.total_time') %></dt>
     <dd><%= report.summary.total_time %>&nbsp;</dd>
-    <dt>Tests</dt>
+    <dt><%= t('report.tests') %></dt>
     <dd><%= report.summary.tests %>&nbsp;</dd>
-    <dt>Assertions</dt>
+    <dt><%= t('report.assertions') %></dt>
     <dd><%= report.summary.assertions %>&nbsp;</dd>
-    <dt>Failures</dt>
+    <dt><%= t('report.failures') %></dt>
     <dd><%= report.summary.failures %>&nbsp;</dd>
-    <dt>Errors</dt>
+    <dt><%= t('report.errors') %></dt>
     <dd><%= report.summary.errors %>&nbsp;</dd>
   </dl>
 
-  <h3>Details</h3>
+  <h3><%= t('report.details') %></h3>
 
   <ul class="test-report">
     <% report.tests.sort_by { |name, test| name }.each do |name, test| %>
@@ -25,9 +25,9 @@
           <table>
             <thead>
               <tr>
-                <th class="name">Test Case</th>
-                <th class="duration">Duration</th>
-                <th class="status">Status</th>
+                <th class="name"><%= t('report.test_case') %></th>
+                <th class="duration"><%= t('report.duration') %></th>
+                <th class="status"><%= t('report.status') %></th>
               </tr>
             </thead>
             <tbody>

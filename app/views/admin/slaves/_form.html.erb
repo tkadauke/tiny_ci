@@ -1,37 +1,37 @@
 <%= f.error_messages %>
 
 <p class="form_item">
-  <%= f.check_box :offline %> <%= f.label :offline, 'Offline' %>
+  <%= f.check_box :offline %> <%= f.label :offline, t('.offline') %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :name, 'Name' %></span>
+  <span class="label"><%= f.label :name, t('.name') %></span>
   <%= f.text_field :name %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :protocol, 'Protocol' %></span>
+  <span class="label"><%= f.label :protocol, t('.protocol') %></span>
   <%= f.select :protocol, ['localhost', 'ssh'] %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :hostname, 'Host Name' %></span>
+  <span class="label"><%= f.label :hostname, t('.host_name') %></span>
   <%= f.text_field :hostname %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :username, 'User Name' %></span>
+  <span class="label"><%= f.label :username, t('.user_name') %></span>
   <%= f.text_field :username %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :password, 'Password' %></span>
+  <span class="label"><%= f.label :password, t('.password') %></span>
   <%= f.text_field :password %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :base_path, 'Base Path' %></span>
-  <span class="desc">Leave blank to use the default of <%= @slave.default_base_path %></span>
+  <span class="label"><%= f.label :base_path, t('.base_path') %></span>
+  <span class="desc"><%= t('.base_path_description', :default_path => @slave.default_base_path) %></span>
   <%= f.text_field :base_path, :value => @slave.base_path(:skip_default) %>
 </p>
 
@@ -40,8 +40,8 @@
   <table>
     <thead>
       <tr>
-        <th>Variable name</th>
-        <th>Value</th>
+        <th><%= t('.variable_name') %></th>
+        <th><%= t('.value') %></th>
       </tr>
     </thead>
     <tbody>
@@ -56,13 +56,13 @@
 </div>
 
 <p class="form_item">
-  <span class="label"><%= f.label :capabilities, 'Slave capabilities' %></span>
-  <span class="desc">Separated by commas. <%= help_link 'slaves' %></span>
+  <span class="label"><%= f.label :capabilities, t('.slave_capabilities') %></span>
+  <span class="desc"><%= t('.capabilities_description') %> <%= help_link 'slaves' %></span>
   <%= f.text_area :capabilities, :rows => 3 %>
 </p>
 
 <p class="form_item">
-  <span class="label"><%= f.label :max_builds, 'Maximum builds' %></span>
-  <span class="desc">Maximum number of parallel builds on this slave (0 = unlimited)</span>
+  <span class="label"><%= f.label :max_builds, t('.maximum_builds') %></span>
+  <span class="desc"><%= t('.max_builds_description') %></span>
   <%= f.text_field :max_builds %>
 </p>

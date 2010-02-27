@@ -4,6 +4,6 @@ module HelpTopicsHelper
   end
   
   def help_link(topic_name)
-    link_to 'Help', help_topic_path(topic_name)
+    link_to t('navigation.help'), help_topic_path(topic_name)
   end
 end

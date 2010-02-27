@@ -1,6 +1,6 @@
-<h1>New Slave</h1>
+<h1><%= t('.new_slave') %></h1>
 
 <% form_for [:admin, @slave] do |f| %>
   <%= render :partial => "form", :locals => { :f => f } %>
-  <%= f.submit 'Create' %>
+  <%= f.submit t('.create') %>
 <% end %>

@@ -1,11 +1,11 @@
-<h2>Build queue</h2>
+<h2><%= t('.build_queue') %></h2>
 
 <%= render :partial => "/builds/list", :locals => { :builds => Build.pending } %>
 
-<h2>Slave status</h2>
+<h2><%= t('.slave_status') %></h2>
 
 <%= render :partial => "slave_status" %>
 
-<h2>Recently finished builds</h2>
+<h2><%= t('.recently_finished_builds') %></h2>
 
 <%= render :partial => "/builds/completed", :locals => { :builds => @recent_builds } %>

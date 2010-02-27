@@ -1,17 +1,17 @@
 <%= juggernaut :channels => ["queue"] %>
 
-<h2>Quick links</h2>
+<h2><%= t('.quick_links') %></h2>
 
 <ul class="asterisk">
   <% if current_user.initial_admin? %>
-    <li><%= link_to 'Create first administrator account', new_user_path %></li>
+    <li><%= link_to t('.create_admin_account'), new_user_path %></li>
   <% elsif logged_in? && current_user.can_create_accounts? %>
-    <li><%= link_to 'Create accounts', new_user_path %></li>
+    <li><%= link_to t('.create_accounts'), new_user_path %></li>
   <% else %>
-    <li><%= link_to 'Sign up', new_user_path %></li>
+    <li><%= link_to t('.sign_up'), new_user_path %></li>
   <% end %>
-  <li><%= link_to 'Create a project', new_project_path %></li>
-  <li><%= link_to 'Manage build slaves', admin_slaves_path %></li>
+  <li><%= link_to t('.create_a_project'), new_project_path %></li>
+  <li><%= link_to t('.manage_build_slaves'), admin_slaves_path %></li>
 </ul>
 
 <%= auto_update 'queue' %>

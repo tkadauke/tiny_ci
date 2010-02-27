@@ -1,8 +1,8 @@
-<h1>Listing All Plans</h1>
+<h1><%= t('.listing_all_plans') %></h1>
 
 <ul class="action-list">
-  <li><%= link_to 'Details', all_plans_path(:report => 'list') %></li>
-  <li><%= link_to 'Overview', all_plans_path(:report => 'overview') %></li>
+  <li><%= link_to t('.details'), all_plans_path(:report => 'list') %></li>
+  <li><%= link_to t('.overview'), all_plans_path(:report => 'overview') %></li>
 </ul>
 
 <%= auto_update 'plans' %>

@@ -1,6 +1,6 @@
-<h1>New Plan</h1>
+<h1><%= t('.new_plan') %></h1>
 
 <% form_for [@project, @plan] do |f| %>
   <%= render :partial => "form", :locals => { :f => f } %>
-  <%= f.submit 'Create' %>
+  <%= f.submit t('.create') %>
 <% end %>
