@@ -10,6 +10,7 @@ TinyCI is extensible via plugins, so you can add your favorite builder / source 
 
 === Features
 
+- Available in two languages: English and German
 - Easy setup and configuration over the user interface
 - Self-contained distribution
 - Local and remote builds
@@ -31,6 +32,8 @@ TinyCI is extensible via plugins, so you can add your favorite builder / source 
 - Growl notification on completed builds
 - Plugin architecture for extensibility
 - Optional Authentication / Authorization mechanism
+- Support for rake-based builds
+- Support for capistrano-based deployment
 
 === Missing stuff
 
