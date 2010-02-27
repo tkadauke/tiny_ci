@@ -1,0 +1,322 @@
+---
+de:
+  configurations:
+    show:
+      update: Speichern
+  growl_notifier:
+    text:
+      success: Build {{project}} / {{plan}} ({{build}}) erfolgreich beendet!
+      failure: Build {{project}} / {{plan}} ({{build}}) fehlgeschlagen (Status {{status}})!
+    subject:
+      success: Erfolg
+      failure: Fehler
+  plans:
+    new:
+      new_plan: Neuer Plan
+      create: Erstellen
+    list:
+      name: Name
+      time_ago: "vor {{time}}"
+      count_of_the_last_5_builds_were_successful: "{{count}} der letzten 5 Builds waren erfolgreich"
+      last_success: Letzter Erfolg
+      last_failure: Letzter Fehlschlag
+      description: Beschreibung
+      last_build_time: Letzte Buildzeit
+      unknown: unbekannt
+    edit:
+      edit_plan_name: Bearbeite Plan {{name}}
+      update: Speichern
+    child:
+      select_parent_plan_for_plan: Übergeorneten Plan für {{plan}} auswählen
+      select_parent_plan: Übergeorneten Plan auswählen
+      update: Speichern
+    full_index:
+      details: Details
+      overview: Überblick
+      listing_all_plans: Alle Plans
+    index:
+      new_plan: Neuer Plan
+      details: Details
+      overview: Überblick
+      listing_plans: Plans
+    show:
+      status: Status
+      steps: Schritte
+      commit_hook: Commit-Hook
+      new_child_plan: Neuer Kind-Plan
+      delete: Löschen
+      latest_build: Neuester Build
+      plan_details: Plan-Details
+      plan_name: Plan {{name}}
+      edit: Bearbeiten
+      url: URL
+      convert_to_standalone_plan: In eigenständigen Plan umwandeln
+      convert_to_child_plan: In Kind-Plan umwandeln
+      description: Beschreibung
+      back_to_project: Zurück zu Projekt {{link}}
+      clone: Klonen
+      back_to_parent_plan: Zurück zum übergeordneten Plan {{parent}}
+      child_of_parent_plan: (Kind von {{parent_plan}})
+      build_chain: Build-Kette
+      children: Kinder
+      weather: Wetter
+      requirements: Anforderungen
+      builds: Builds
+      build_now: Jetzt bauen
+      move_to_another_parent: Einem anderen Plan unterordnen
+      confirm_delete: Wollen Sie wirklich diesen Plan sowie alle dessen Kinder und Build löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.
+    form:
+      name: Name
+      steps: Schritte
+      repository_url: Repository-URL
+      description: Beschreibung
+      previous_plan: Vorheriger Plan
+      plan_requirements_description: Fähigkeiten, die ein Build-Rechner haben muss, um diesen Plan zu bauen, durch Kommas getrennt.
+      name_description: Der Name des Plans wird in der URL erscheinen. Durch Änderung des Namens werden alle bisherigen URLs ungültig. Nur Buchstaben, Zahlen, Unterstriche und Bindestriche sind im Namen erlaubt.
+      steps_description: Nötige Schritte um den Plan zu bauen.
+      run_this_plan_after: Diesen Plan bauen nach
+      plan_requirements: Anforderungen des Plans
+  admin:
+    configurations:
+      show:
+        update: Speichern
+    slaves:
+      new:
+        new_slave: Neuer Build-Rechner
+        create: Erstellen
+      edit:
+        edit_slave: Build-Rechner {{name}} bearbeiten
+        update: Speichern
+      show:
+        capabilities: Fähigkeiten
+        delete: Löschen
+        "no": "Nein"
+        host_name: Hostname
+        protocol: Protokoll
+        delete_confirmation: Wollen Sie diesen Build-Rechner wirklich entfernen? Dieser Vorgang kann nicht rückgängig gemacht werden.
+        busy: Beschäftigt?
+        edit: Bearbeiten
+        "yes": "Ja"
+        offline: Offline
+        clone: Klonen
+        slave_name: Build-Rechner {{name}}
+        slaves_overview: Überblick über Build-Rechner
+      index:
+        status: Status
+        name: Name
+        online: Online
+        protocol: Protokoll
+        new_slave: Neuer Build-Rechner
+        or: oder
+        listing_slaves: Alle Build-Rechner
+        use_localhost_as_the_first_slave: Lokalen Rechner als ersten Build-Rechner verwenden
+        add_the_first_slave: Ersten Build-Rechner hinzufügen
+        there_are_no_slaves_configured_yet: Bisher sind keine Build-Rechner konfiguriert.
+        offline: Offline
+        hostname: Hostname
+      form:
+        name: Name
+        protocol: Protocol
+        host_name: Hostname
+        maximum_builds: Maximale Anzahl Builds
+        value: Wert
+        offline: Offline
+        variable_name: Variablenname
+        max_builds_description: Maximale Anzahl paralleler Builds auf diesem Rechner (0 = unbegrenzt)
+        base_path: Basis-Pfad
+        slave_capabilities: Fähigkeiten des Rechners
+        capabilities_description: Durch Kommas getrennt.
+        user_name: Username
+        password: Passwort
+        base_path_description: Freilassen, um den Standardpfad {{default_path}} zu verwenden
+    setup:
+      index:
+        database_configuration: Datenbank-Konfiguration
+        db_error: "Konnte keine Verbindung zur Datenbank aufbauen. Folgende Fehlermeldung wurde geliefert:"
+        database_host: Datenbank-Host
+        password_description: Dieses Passwort wird unverschlüsselt in {{path}} gespeichert.
+        database_username: Datenbank-Benutzername
+        database_name: Datenbank-Name
+        database_name_description: Sie können dieses Feld so lassen falls die Datenbank bereits besteht, oder falls Ihr Datenbank-Benutzer genug Privilegien hat um Datenbanken zu erstellen. Andernfalls erstellen Sie bitte jetzt eine Datenbank und geben Sie den Namen hier ein.
+        welcome_to_tinyci: Willkommen zu TinyCI
+        database_password: Datenbank-Passwort
+        save_and_restart: Speichern und neu starten
+  errors:
+    "404":
+      title: Die gewünschte Seite wurde nicht gefunden.
+      error_message: Möglicherweise haben Sie die Adresse falsch eingetippt, oder die Seite wurde entfernt.
+    "422":
+      title: Ihre gewünschte Änderung wurde verweigert.
+      error_message: Möglicherweise haben Sie versucht, etwas zu ändern, ohne die benötigten Zugriffsrechte zu besitzen.
+    "500":
+      title: Es tut uns leid, aber gerade ist etwas schief gelaufen.
+      error_message: Bitte melden Sie diesen Bug und wir werden uns darum kümmern.
+  projects:
+    new:
+      new_project: Neues Projekt
+      create: Erstellen
+    edit:
+      update: Speichern
+      edit_project_name: Projekt {{name}} bearbeiten
+    index:
+      name: Name
+      options: Optionen
+      edit: Bearbeiten
+      new_project: Neues Project
+      description: Beschreibung
+      listing_projects: Alle Projekte
+    form:
+      name: Name
+      description: Beschreibung
+      name_description: Der Name des Projektes wird in der URL erscheinen. Durch Änderung des Namens werden alle bisherigen URLs ungültig. Nur Buchstaben, Zahlen, Unterstriche und Bindestriche sind im Namen erlaubt.
+  start:
+    slave_status:
+      slave_is_offline: Build-Rechner ist offline.
+      configure_slave: Konfigurieren
+      no_slaves_configured: Keine Build-Rechner konfiguriert.
+      configure_slaves_now: Jetzt konfigurieren
+    queue:
+      build_queue: Build-Warteschlange
+      slave_status: Status der Build-Rechner
+      recently_finished_builds: Zuletzt beendete Builds
+    index:
+      manage_build_slaves: Build-Rechner verwalten
+      sign_up: Registrieren
+      quick_links: Schnellstart
+      create_accounts: Benutzerkonten erstellen
+      create_admin_account: Erstes Administrator-Konto erstellen
+      create_a_project: Projekt erstellen
+  users:
+    new:
+      create_new_account: Neues Benutzerkonto erstellen
+      password_confirmation: Passwort bestätigen
+      create_account: Benutzerkonto erstellen
+      login_name: Benutzername
+      the_email_address_is_used_for_notifications: Diese E-Mail-Adresse wird für Benachrichtigungen verwendet.
+      password: Passwort
+      the_nick_name_used_for_logins: Der Benutzername wird zum einloggen verwendet.
+      please_repeat_the_password_exactly_as_above: Bitte wiederholen Sie das Passwort exakt.
+      email_address: E-Mail-Adresse
+    edit:
+      edit_users_profile: "{{login}}s Profil bearbeiten"
+      update: Speichern
+      the_users_role: Die Benutzerrolle. Auf "user" stellen für normale Benutzerkonten.
+      the_email_address_is_used_for_notifications: Diese E-Mail-Adresse wird für Benachrichtigungen verwendet.
+      email_address: E-Mail-Adresse
+    index:
+      there_are_no_user_accounts_yet: Bisher gibt es keine Benutzerkonten.
+      options: Optionen
+      listing_users: Alle Benutzer
+      edit: Bearbeiten
+      new_account: Neues Benutzerkonto
+      login_name: Benutzername
+      create_first_administrator_account: Erstes Administrator-Konto erstellen
+    show:
+      users_profile: "{{login}}s Profil"
+      edit_profile: Profil bearbeiten
+  report:
+    status: Status
+    test_case: Test-Case
+    command: Befehl {{name}}
+    tests: Tests
+    total_time: Gesamtzeit
+    test_run: Testlauf {{name}}
+    details: Details
+    build_tool: Buildwerkzeug
+    build: Build
+    errors: Fehler
+    task: Aufgabe {{name}}
+    deploy_tool: Deploy-Tool
+    summary: Zusammenfassung
+    targets: Build-Ziele
+    deploy: Deploy
+    tasks: Aufgaben
+    duration: Dauer
+    failures: Fehlschläge
+    assertions: Prüfungen
+    command_output: "Befehlsausgabe:"
+  navigation:
+    help: Hilfe
+  flash:
+    error:
+      access_denied: Sie können das nicht tun
+      connect_to_database: Konnte keine Verbindung zur Datenbank aufbauen
+    notice:
+      updated_configuration: Konfiguration wurde erfolgreich aktualisiert
+      updated_slave: Build-Rechner wurde erfolgreich aktualisiert
+      logged_in: Erfolgreich eingeloggt
+      updated_project: Projekt wurde erfolgreich aktualisiert
+      created_slave: Build-Rechner wurde erfolgreich erstellt
+      created_plan: Plan wurde erfolgreich erstellt
+      created_account: Benutzerkonto wurde erfolgreich erstellt
+      updated_profile: "{{user}}s Profil wurde erfolgreich aktualisiert"
+      updated_plan: Plan wurde erfolgreich aktualisiert
+      created_project: Projekt wurde erfolgreich erstellt
+      building_plan: Baue Plan {{name}}
+      deleted_slave: Build-Rechner wurde erfolgreich entfernt
+      login_required: Sie müssen eingeloggt sein um auf diese Seite zuzugreifen
+      logged_out: Erfolgreich ausgeloggt
+  builds:
+    completed:
+      status: Status
+      timestamp: Zeitstempel
+      name: Name
+      number: Nummer
+      no_builds: Keine Builds
+      duration: Dauer
+    list:
+      name: Name
+      timestamp: Zeitstempel
+      status: Status
+      number: Nummer
+      no_builds: Keine Builds
+    build:
+      status: Status
+      on_slave: auf Build-Rechner {{slave_name}}
+      details: Details
+      raw_output: Rohe Ausgabe
+      started_by: Gestartet von
+      build_output_of_plan: "Build-Ausgabe von {{plan}} #{{position}}"
+      requested_manually: (manuell gestartet)
+      revision: Revision
+      gist: Wesentliches
+      duration: Dauer
+      unknown: unbekannt
+    index:
+      builds_of_plan: Builds von Plan {{plan_link}}
+      back_to_plan: Zurück zu Plan
+    show:
+      back_to_builds: Zurück zu den Builds
+    report:
+      no_output_yet: Keine Ausgabe (bisher)
+  layouts:
+    configuration: Konfiguration
+    quick_links: Schnellzugriff
+    report_link_text: Melden Sie ihn!
+    help: Hilfe
+    close_flash: Schließen
+    logout: Ausloggen
+    guest_greeter: Willkommen, Gast!
+    projects: Projekte
+    you_are_here: "Sie sind hier: {{bread_crumb}}"
+    github_project_page: Github-Projektseite
+    signup: Registrieren
+    slaves: Build-Rechner
+    subtitle: Continuous Integration für Ruby on Rails
+    user_greeter: Willkommen, {{user}}!
+    settings: Einstellungen
+    setup: Einrichten
+    users: Benutzer
+    home: Start
+    login: Login
+    report_bugs: Fehler gefunden? {{report_link}}
+  build_mailer:
+    subject:
+      success: "[TinyCI] Build {{project}} / {{plan}} erfolgreich"
+      failure: "[TinyCI] Build {{project}} / {{plan}} fehlgeschlagen"
+  user_sessions:
+    new:
+      password: Passwort
+      user_name: Benutzername
+      login: Login
+      remember_me: Von diesem Rechner aus automatisch anmelden
