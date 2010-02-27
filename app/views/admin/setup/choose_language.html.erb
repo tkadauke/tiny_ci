@@ -1,0 +1,7 @@
+<p>Please choose your language</p>
+<p>Bitte wählen Sie Ihre Sprache</p>
+
+<% form_tag({}, :method => :get) do %>
+  <%= select_tag :language, options_for_select([['English', 'en'], ['Deutsch', 'de']]) %>
+  <%= submit_tag 'Ok' %>
+<% end %>

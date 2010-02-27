@@ -2,6 +2,7 @@ module TinyCI
   module Setup
     class InitialConfig
       attr_accessor :db_user, :db_password, :db_host, :db_name
+      attr_accessor :language
       attr_accessor :error_message
   
       def initialize(attributes = {})

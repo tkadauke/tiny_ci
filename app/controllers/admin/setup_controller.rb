@@ -3,12 +3,25 @@ class Admin::SetupController < ApplicationController
   skip_before_filter :setup
   before_filter :only_setup, :except => :redirect_me
   
+  def set_language
+    if params[:language]
+      session[:language] = params[:language].to_sym
+      redirect_to :action => 'index'
+    else
+      if session[:language].blank?
+        render :action => 'choose_language'
+      else
+        I18n.locale = session[:language]
+      end
+    end
+  end
+  
   def index
     @config = TinyCI::Setup::InitialConfig.new
   end
   
   def create
-    @config = TinyCI::Setup::InitialConfig.new(params[:config])
+    @config = TinyCI::Setup::InitialConfig.new(params[:config].merge(:language => session[:language]))
     if @config.save
       redirect_to :action => 'restart'
     else

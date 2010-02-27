@@ -1,3 +1,11 @@
+- language:
+    name: 'Language'
+    description: "The language to be used by TinyCI."
+    type: String
+    default: <%= YAML.load(File.read("#{RAILS_ROOT}/config/language.yml"))['language'] rescue 'en' %>
+    values:
+      - en
+      - de
 - base_path:
     name: 'Base Path'
     description: "The default path under which builds are checked out. This can be overridden per slave."

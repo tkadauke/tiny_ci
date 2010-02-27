@@ -1,7 +1,3 @@
-<h1>Restarting ...</h1>
-
-<p>Please wait while TinyCI is restarting.</p>
-
-<p>In a few moments, you will be redirected to the start page. If not, <%= link_to 'please click here to get there', '/' %>.</p>
+<%= render :partial => 'restart_message' %>
 
 <%= periodically_call_remote :url => '/admin/setup/redirect_me', :method => 'get', :frequency => 5 %>

@@ -9,11 +9,16 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   
   before_filter :setup
+  before_filter :set_language
   
   helper_method :setup?
   helper_method :current_user_session, :current_user, :logged_in?
   
 protected
+  def set_language
+    I18n.locale = TinyCI::Config.language.to_sym
+  end
+
   def method_missing(method, *args)
     if method.to_s =~ /^can_.*\?$/
       if current_user.send(method, *args)
