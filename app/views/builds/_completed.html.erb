@@ -17,7 +17,7 @@
           <td><%= link_to build.position, project_plan_build_path(build.project, build.plan, build) %></td>
           <td><%= link_to build.project.name, project_path(build.project) %> / <%= link_to build.name, project_plan_path(build.project, build.plan) %></td>
           <td><%= link_to build.created_at.to_s(:timestamp), project_plan_build_path(build.project, build.plan, build) %></td>
-          <td><%= image_tag "icons/small/#{build.status}.png" %> <%= build.status %></td>
+          <td><%= image_tag "icons/small/#{build.status}.png" %> <%= t("build.status.#{build.status}") %></td>
           <td><%= duration(build.duration) %></td>
         </tr>
       <% end %>

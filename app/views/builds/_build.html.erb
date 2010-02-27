@@ -2,7 +2,7 @@
 
 <dl>
   <dt><%= t('.status') %></dt>
-  <dd><%= image_tag "icons/large/#{@build.status}.png" %> <%= @build.status %></dd>
+  <dd><%= image_tag "icons/large/#{@build.status}.png" %> <%= t("build.status.#{@build.status}") %></dd>
 
   <dt><%= t('.revision') %></dt>
   <dd><%= @build.revision.blank? ? t('.unknown') : @build.revision %></dd>
@@ -31,7 +31,7 @@
 </div>
 
 <% if @build.finished? %>
-  <p><%= image_tag "icons/small/#{@build.status}.png" %> <%= @build.status %></p>
+  <p><%= image_tag "icons/small/#{@build.status}.png" %> <%= t("build.status.#{@build.status}") %></p>
 <% elsif @build.running? %>
   <%= image_tag('spinner.gif') %>
 <% end %>

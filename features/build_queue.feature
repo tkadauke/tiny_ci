@@ -13,7 +13,7 @@ Feature: Build Queue
     And a pending build of plan "some_plan" in project "some_project"
     When I am on the dashboard
     Then I should see "some_plan"
-    And I should see "pending"
+    And I should see "Pending"
 
   Scenario: Cancel pending build in queue
     Given a project "some_project"
@@ -22,4 +22,4 @@ Feature: Build Queue
     When I am on the dashboard
     And I follow remote link "Stop"
     Then I should see "some_plan"
-    And I should see "stopping"
+    And I should see "Stopping"

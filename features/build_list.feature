@@ -15,4 +15,4 @@ Feature: Build List
     And a successfully finished build of plan "some_plan" in project "some_project"
     When I am on the builds page of plan "some_plan" in project "some_project"
     Then I should see "some_plan"
-    And I should see "success"
+    And I should see "Success"

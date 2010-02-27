@@ -40,6 +40,7 @@ de:
       overview: Überblick
       listing_plans: Plans
     show:
+      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
       status: Status
       steps: Schritte
       commit_hook: Commit-Hook
@@ -335,3 +336,13 @@ de:
     help_topics: Hilfe
     child: In Kind-Plan umwandeln
     login: Login
+  build:
+    status:
+      stopping: Anhalten
+      success: Erfolg
+      canceled: Abgebrochen
+      stopped: Angehalten
+      failure: Fehlschlag
+      error: Fehler
+      pending: Geplant
+      waiting: Wartend

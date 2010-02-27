@@ -14,4 +14,4 @@ Feature: Recently Finished Builds
     And a successfully finished build of plan "some_plan" in project "some_project" on slave "localhost"
     When I am on the dashboard
     Then I should see "some_plan"
-    And I should see "success"
+    And I should see "Success"
