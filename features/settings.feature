@@ -8,5 +8,5 @@ Feature: Settings
     And I am on my settings page
     When I fill in "Growl Host" with "localhost"
     And I press "Update"
-    Then I should see "Successfully updated your configuration"
+    Then I should see "Successfully updated configuration"
     And the "Growl Host" field should contain "localhost"

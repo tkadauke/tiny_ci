@@ -30,7 +30,7 @@ end
 
 def login(user)
   visit login_path
-  fill_in :login, :with => user.login
+  fill_in 'user name', :with => user.login
   fill_in :password, :with => 'password'
   click_button "Login"
 end

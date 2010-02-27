@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   
   before_filter :setup
-  before_filter :set_language
+  before_filter :set_language unless ['test', 'cucumber'].include?(Rails.env)
   
   helper_method :setup?
   helper_method :current_user_session, :current_user, :logged_in?

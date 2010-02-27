@@ -6,7 +6,7 @@ Feature: Login
   Scenario: Log in
     Given a user "alice" with password "foobar"
     And I am on the login page
-    When I fill in "login" with "alice"
+    When I fill in "user name" with "alice"
     And I fill in "password" with "foobar"
     And I press "Login"
     Then I should see "Successfully logged in"
