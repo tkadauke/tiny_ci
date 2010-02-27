@@ -336,6 +336,7 @@ de:
     help_topics: Hilfe
     child: In Kind-Plan umwandeln
     login: Login
+    settings: Einstellungen
   build:
     status:
       stopping: Anhalten
@@ -346,3 +347,8 @@ de:
       error: Fehler
       pending: Geplant
       waiting: Wartend
+  duration: 
+    days: Tage
+    seconds: Sekunden
+    minutes: Minuten
+    hours: Stunden

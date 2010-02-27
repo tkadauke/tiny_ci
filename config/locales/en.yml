@@ -40,7 +40,6 @@ en:
       overview: Overview
       listing_plans: Listing Plans
     show:
-      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
       status: Status
       steps: Steps
       commit_hook: Commit Hook
@@ -50,6 +49,7 @@ en:
       plan_details: Plan details
       plan_name: Plan {{name}}
       edit: Edit
+      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
       url: URL
       convert_to_standalone_plan: Convert to Standalone Plan
       convert_to_child_plan: Convert to Child Plan
@@ -77,6 +77,31 @@ en:
       steps_description: Steps necessary to build the plan.
       run_this_plan_after: Run this plan after
       plan_requirements: Plan requirements
+  breadcrumb:
+    new: New
+    configuration: Configuration
+    plans: Plans
+    edit: Edit
+    projects: Projects
+    admin: Admin
+    slaves: Slaves
+    help_topics: Help
+    child: Convert to Child
+    settings: Settings
+    users: Users
+    home: Home
+    builds: Builds
+    login: Login
+  build:
+    status:
+      error: Error
+      pending: Pending
+      stopped: Stopped
+      waiting: Waiting
+      success: Success
+      canceled: Canceled
+      stopping: Stopping
+      failure: Failure
   admin:
     configurations:
       show:
@@ -215,6 +240,11 @@ en:
     show:
       users_profile: "{{login}}'s Profile"
       edit_profile: Edit profile
+  duration:
+    days: days
+    seconds: seconds
+    minutes: minutes
+    hours: hours
   report:
     status: Status
     test_case: Test Case
@@ -291,7 +321,6 @@ en:
     report:
       no_output_yet: No output (yet)
   layouts:
-    all_plans: All Plans
     configuration: Configuration
     quick_links: Quick links
     report_link_text: Report it!
@@ -300,6 +329,7 @@ en:
     logout: Logout
     guest_greeter: Welcome, Guest!
     projects: Projects
+    all_plans: All Plans
     you_are_here: "You are here: {{bread_crumb}}"
     github_project_page: Github project page
     signup: Signup
@@ -322,27 +352,8 @@ en:
       user_name: User name
       login: Login
       remember_me: Remember me
-  breadcrumb:
-    home: Home
-    projects: Projects
-    plans: Plans
-    builds: Builds
-    edit: Edit
-    new: New
-    users: Users
-    admin: Admin
-    slaves: Slaves
-    configuration: Configuration
-    help_topics: Help
-    child: Convert to Child
-    login: Login
-  build:
-    status:
-      stopping: Stopping
-      success: Success
-      canceled: Canceled
-      stopped: Stopped
-      failure: Failure
-      error: Error
-      pending: Pending
-      waiting: Waiting
+  duration:
+    days: days
+    seconds: seconds
+    minutes: minutes
+    hours: hours

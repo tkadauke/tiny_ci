@@ -10,7 +10,7 @@ module ApplicationHelper
     dur /= 24
     days = dur
     
-    [[days, 'days'], [hours, 'hours'], [minutes, 'minutes'], [seconds, 'seconds']].reject { |part| part.first == 0 }.collect { |part| part.join(' ') }.join(', ')
+    [[days, t('duration.days')], [hours, t('duration.hours')], [minutes, t('duration.minutes')], [seconds, t('duration.seconds')]].reject { |part| part.first == 0 }.collect { |part| part.join(' ') }.join(', ')
   end
   
   def auto_update(container)
