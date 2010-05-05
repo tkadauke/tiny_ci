@@ -4,3 +4,4 @@ vendor/gems
 vendor/rails
 test/coverage
 config/*.yml
+rerun.txt

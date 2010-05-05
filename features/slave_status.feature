@@ -16,7 +16,7 @@ Feature: Slave Status
     And a running build of plan "some_plan" in project "some_project" on slave "localhost"
     When I am on the dashboard
     Then I should see "some_plan"
-    And I should see "running"
+    And I should see "Running"
 
   Scenario: Slave is offline
     Given an offline slave "localhost"
