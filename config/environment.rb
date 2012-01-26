@@ -34,7 +34,7 @@ else
 
     # Specify gems that this application depends on and have them installed with rake gems:install
     config.gem 'fastercsv'
-    config.gem 'juggernaut'
+    config.gem 'juggernaut', :version => '0.5.8'
     config.gem 'net-ssh', :lib => "net/ssh"
     config.gem 'RedCloth'
     config.gem 'authlogic'
