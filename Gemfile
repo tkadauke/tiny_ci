@@ -21,5 +21,4 @@ end
 group :test do
   gem 'mocha', '0.9.8', :require => false
   gem 'rcov', :require => false
-  gem 'sqlite3'
 end
