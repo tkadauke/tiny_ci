@@ -4,7 +4,7 @@ development:
   password:
   encoding: utf8
   host: localhost
-  database: tiny_vault_development
+  database: tiny_ci_development
 
 test: &TEST
   adapter: mysql
@@ -12,7 +12,7 @@ test: &TEST
   password:
   encoding: utf8
   host: localhost
-  database: tiny_vault_test
+  database: tiny_ci_test
 
 cucumber:
   <<: *TEST

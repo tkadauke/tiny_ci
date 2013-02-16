@@ -9,9 +9,7 @@ gem 'net-ssh', :require => "net/ssh"
 gem 'RedCloth'
 gem 'authlogic', '2.1.3'
 
-group :production do
-  gem 'mysql'
-end
+gem 'mysql'
 
 group :development do
   gem 'ya2yaml'
