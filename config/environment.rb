@@ -31,13 +31,6 @@ else
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{RAILS_ROOT}/extras )
-
-    # Specify gems that this application depends on and have them installed with rake gems:install
-    config.gem 'fastercsv'
-    config.gem 'juggernaut', :version => '0.5.8'
-    config.gem 'net-ssh', :lib => "net/ssh"
-    config.gem 'RedCloth'
-    config.gem 'authlogic', :version => '2.1.3'
   
     # config.gem "bj"
     # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
