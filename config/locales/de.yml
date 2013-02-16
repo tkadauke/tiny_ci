@@ -13,16 +13,16 @@ de:
         database_password: Datenbank-Passwort
         database_username: Datenbank-Benutzername
         db_error: "Konnte keine Verbindung zur Datenbank aufbauen. Folgende Fehlermeldung wurde geliefert:"
-        password_description: "Dieses Passwort wird unverschlüsselt in {{path}} gespeichert."
+        password_description: "Dieses Passwort wird unverschlüsselt in %{path} gespeichert."
         save_and_restart: "Speichern und neu starten"
         welcome_to_tinyci: "Willkommen zu TinyCI"
     slaves: 
       edit: 
-        edit_slave: "Build-Rechner {{name}} bearbeiten"
+        edit_slave: "Build-Rechner %{name} bearbeiten"
         update: Speichern
       form: 
         base_path: Basis-Pfad
-        base_path_description: "Freilassen, um den Standardpfad {{default_path}} zu verwenden"
+        base_path_description: "Freilassen, um den Standardpfad %{default_path} zu verwenden"
         capabilities_description: "Durch Kommas getrennt."
         host_name: Hostname
         max_builds_description: "Maximale Anzahl paralleler Builds auf diesem Rechner (0 = unbegrenzt)"
@@ -63,7 +63,7 @@ de:
         : Nein
         offline: Offline
         protocol: Protokoll
-        slave_name: "Build-Rechner {{name}}"
+        slave_name: "Build-Rechner %{name}"
         slaves_overview: "Überblick über Build-Rechner"
         ? "yes"
         : Ja
@@ -95,15 +95,15 @@ de:
       waiting: Wartend
   build_mailer: 
     subject: 
-      failure: "[TinyCI] Build {{project}} / {{plan}} fehlgeschlagen"
-      success: "[TinyCI] Build {{project}} / {{plan}} erfolgreich"
+      failure: "[TinyCI] Build %{project} / %{plan} fehlgeschlagen"
+      success: "[TinyCI] Build %{project} / %{plan} erfolgreich"
   builds: 
     build: 
-      build_output_of_plan: "Build-Ausgabe von {{plan}} #{{position}}"
+      build_output_of_plan: "Build-Ausgabe von %{plan} #%{position}"
       details: Details
       duration: Dauer
       gist: Wesentliches
-      on_slave: "auf Build-Rechner {{slave_name}}"
+      on_slave: "auf Build-Rechner %{slave_name}"
       raw_output: "Rohe Ausgabe"
       requested_manually: "(manuell gestartet)"
       revision: Revision
@@ -119,7 +119,7 @@ de:
       timestamp: Zeitstempel
     index: 
       back_to_plan: "Zurück zu Plan"
-      builds_of_plan: "Builds von Plan {{plan_link}}"
+      builds_of_plan: "Builds von Plan %{plan_link}"
     list: 
       name: Name
       no_builds: "Keine Builds"
@@ -156,7 +156,7 @@ de:
       access_denied: "Sie können das nicht tun"
       connect_to_database: "Konnte keine Verbindung zur Datenbank aufbauen"
     notice: 
-      building_plan: "Baue Plan {{name}}"
+      building_plan: "Baue Plan %{name}"
       created_account: "Benutzerkonto wurde erfolgreich erstellt"
       created_plan: "Plan wurde erfolgreich erstellt"
       created_project: "Projekt wurde erfolgreich erstellt"
@@ -167,7 +167,7 @@ de:
       login_required: "Sie müssen eingeloggt sein um auf diese Seite zuzugreifen"
       updated_configuration: "Konfiguration wurde erfolgreich aktualisiert"
       updated_plan: "Plan wurde erfolgreich aktualisiert"
-      updated_profile: "{{user}}s Profil wurde erfolgreich aktualisiert"
+      updated_profile: "%{user}s Profil wurde erfolgreich aktualisiert"
       updated_project: "Projekt wurde erfolgreich aktualisiert"
       updated_slave: "Build-Rechner wurde erfolgreich aktualisiert"
   growl_notifier: 
@@ -175,8 +175,8 @@ de:
       failure: Fehler
       success: Erfolg
     text: 
-      failure: "Build {{project}} / {{plan}} ({{build}}) fehlgeschlagen (Status {{status}})!"
-      success: "Build {{project}} / {{plan}} ({{build}}) erfolgreich beendet!"
+      failure: "Build %{project} / %{plan} (%{build}) fehlgeschlagen (Status %{status})!"
+      success: "Build %{project} / %{plan} (%{build}) erfolgreich beendet!"
   layouts: 
     all_plans: "Alle Plans"
     close_flash: Schließen
@@ -189,25 +189,25 @@ de:
     logout: Ausloggen
     projects: Projekte
     quick_links: Schnellzugriff
-    report_bugs: "Fehler gefunden? {{report_link}}"
+    report_bugs: "Fehler gefunden? %{report_link}"
     report_link_text: "Melden Sie ihn!"
     settings: Einstellungen
     setup: Einrichten
     signup: Registrieren
     slaves: Build-Rechner
     subtitle: "Continuous Integration für Ruby on Rails"
-    user_greeter: "Willkommen, {{user}}!"
+    user_greeter: "Willkommen, %{user}!"
     users: Benutzer
-    you_are_here: "Sie sind hier: {{bread_crumb}}"
+    you_are_here: "Sie sind hier: %{bread_crumb}"
   navigation: 
     help: Hilfe
   plans: 
     child: 
       select_parent_plan: "Übergeorneten Plan auswählen"
-      select_parent_plan_for_plan: "Übergeorneten Plan für {{plan}} auswählen"
+      select_parent_plan_for_plan: "Übergeorneten Plan für %{plan} auswählen"
       update: Speichern
     edit: 
-      edit_plan_name: "Bearbeite Plan {{name}}"
+      edit_plan_name: "Bearbeite Plan %{name}"
       update: Speichern
     form: 
       description: Beschreibung
@@ -230,31 +230,31 @@ de:
       new_plan: "Neuer Plan"
       overview: Überblick
     list: 
-      count_of_the_last_5_builds_were_successful: "{{count}} der letzten 5 Builds waren erfolgreich"
+      count_of_the_last_5_builds_were_successful: "%{count} der letzten 5 Builds waren erfolgreich"
       description: Beschreibung
       last_build_time: "Letzte Buildzeit"
       last_failure: "Letzter Fehlschlag"
       last_success: "Letzter Erfolg"
       name: Name
-      time_ago: "vor {{time}}"
+      time_ago: "vor %{time}"
       unknown: unbekannt
     new: 
       create: Erstellen
       new_plan: "Neuer Plan"
     show: 
-      back_to_parent_plan: "Zurück zum übergeordneten Plan {{parent}}"
-      back_to_project: "Zurück zu Projekt {{link}}"
+      back_to_parent_plan: "Zurück zum übergeordneten Plan %{parent}"
+      back_to_project: "Zurück zu Projekt %{link}"
       build_chain: Build-Kette
       build_now: "Jetzt bauen"
       builds: Builds
-      child_of_parent_plan: "(Kind von {{parent_plan}})"
+      child_of_parent_plan: "(Kind von %{parent_plan})"
       children: Kinder
       clone: Klonen
       commit_hook: Commit-Hook
       confirm_delete: "Wollen Sie wirklich diesen Plan sowie alle dessen Kinder und Build löschen? Dieser Vorgang kann nicht rückgängig gemacht werden."
       convert_to_child_plan: "In Kind-Plan umwandeln"
       convert_to_standalone_plan: "In eigenständigen Plan umwandeln"
-      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
+      count_of_the_last_5_builds_were_successful: "%{count} of the last 5 builds were successful"
       delete: Löschen
       description: Beschreibung
       edit: Bearbeiten
@@ -262,7 +262,7 @@ de:
       move_to_another_parent: "Einem anderen Plan unterordnen"
       new_child_plan: "Neuer Kind-Plan"
       plan_details: Plan-Details
-      plan_name: "Plan {{name}}"
+      plan_name: "Plan %{name}"
       requirements: Anforderungen
       status: Status
       steps: Schritte
@@ -270,7 +270,7 @@ de:
       weather: Wetter
   projects: 
     edit: 
-      edit_project_name: "Projekt {{name}} bearbeiten"
+      edit_project_name: "Projekt %{name} bearbeiten"
       update: Speichern
     form: 
       description: Beschreibung
@@ -290,7 +290,7 @@ de:
     assertions: Prüfungen
     build: Build
     build_tool: Buildwerkzeug
-    command: "Befehl {{name}}"
+    command: "Befehl %{name}"
     command_output: "Befehlsausgabe:"
     deploy: Deploy
     deploy_tool: Deploy-Tool
@@ -301,10 +301,10 @@ de:
     status: Status
     summary: Zusammenfassung
     targets: Build-Ziele
-    task: "Aufgabe {{name}}"
+    task: "Aufgabe %{name}"
     tasks: Aufgaben
     test_case: Test-Case
-    test_run: "Testlauf {{name}}"
+    test_run: "Testlauf %{name}"
     tests: Tests
     total_time: Gesamtzeit
   start: 
@@ -332,7 +332,7 @@ de:
       user_name: Benutzername
   users: 
     edit: 
-      edit_users_profile: "{{login}}s Profil bearbeiten"
+      edit_users_profile: "%{login}s Profil bearbeiten"
       email_address: E-Mail-Adresse
       the_email_address_is_used_for_notifications: "Diese E-Mail-Adresse wird für Benachrichtigungen verwendet."
       the_users_role: "Die Benutzerrolle. Auf \"user\" stellen für normale Benutzerkonten."
@@ -357,4 +357,4 @@ de:
       the_nick_name_used_for_logins: "Der Benutzername wird zum einloggen verwendet."
     show: 
       edit_profile: "Profil bearbeiten"
-      users_profile: "{{login}}s Profil"
+      users_profile: "%{login}s Profil"

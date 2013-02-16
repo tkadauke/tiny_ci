@@ -11,7 +11,7 @@ class ActionController::TestCase
       :password_confirmation => 'password',
       :email => (attributes[:login] || 'alice') + '@example.com'
     }
-    returning User.create!(default_attributes.merge(attributes)) do
+    User.create!(default_attributes.merge(attributes)).tap do
       logout
     end
   end

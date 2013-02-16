@@ -13,16 +13,16 @@ en:
         database_password: "Database Password"
         database_username: "Database Username"
         db_error: "Could not connect to the database. The following error message was received:"
-        password_description: "This password will be saved as plain text in {{path}}."
+        password_description: "This password will be saved as plain text in %{path}."
         save_and_restart: "Save and restart"
         welcome_to_tinyci: "Welcome to TinyCI"
     slaves: 
       edit: 
-        edit_slave: "Edit Slave {{name}}"
+        edit_slave: "Edit Slave %{name}"
         update: Update
       form: 
         base_path: "Base Path"
-        base_path_description: "Leave blank to use the default of {{default_path}}"
+        base_path_description: "Leave blank to use the default of %{default_path}"
         capabilities_description: "Separated by commas."
         host_name: "Host Name"
         max_builds_description: "Maximum number of parallel builds on this slave (0 = unlimited)"
@@ -63,7 +63,7 @@ en:
         : "No"
         offline: Offline
         protocol: Protocol
-        slave_name: "Slave {{name}}"
+        slave_name: "Slave %{name}"
         slaves_overview: "Slaves Overview"
         ? "yes"
         : "Yes"
@@ -95,15 +95,15 @@ en:
       waiting: Waiting
   build_mailer: 
     subject: 
-      failure: "[TinyCI] Build {{project}} / {{plan}} failed"
-      success: "[TinyCI] Build {{project}} / {{plan}} succeeded"
+      failure: "[TinyCI] Build %{project} / %{plan} failed"
+      success: "[TinyCI] Build %{project} / %{plan} succeeded"
   builds: 
     build: 
-      build_output_of_plan: "Build output of {{plan}} #{{position}}"
+      build_output_of_plan: "Build output of %{plan} #%{position}"
       details: Details
       duration: Duration
       gist: Gist
-      on_slave: "on slave {{slave_name}}"
+      on_slave: "on slave %{slave_name}"
       raw_output: "Raw output"
       requested_manually: "(Requested manually)"
       revision: Revision
@@ -119,7 +119,7 @@ en:
       timestamp: Timestamp
     index: 
       back_to_plan: "Back to Plan"
-      builds_of_plan: "Builds of Plan {{plan_link}}"
+      builds_of_plan: "Builds of Plan %{plan_link}"
     list: 
       name: Name
       no_builds: "No builds"
@@ -156,7 +156,7 @@ en:
       access_denied: "You can not do that"
       connect_to_database: "Could not connect to the database"
     notice: 
-      building_plan: "Building plan {{name}}"
+      building_plan: "Building plan %{name}"
       created_account: "Successfully created account"
       created_plan: "Successfully created plan"
       created_project: "Successfully created project"
@@ -167,7 +167,7 @@ en:
       login_required: "You must be logged in to access this page"
       updated_configuration: "Successfully updated configuration"
       updated_plan: "Successfully updated plan"
-      updated_profile: "Successfully updated {{user}}'s profile"
+      updated_profile: "Successfully updated %{user}'s profile"
       updated_project: "Successfully updated project"
       updated_slave: "Successfully updated slave"
   growl_notifier: 
@@ -175,8 +175,8 @@ en:
       failure: Failure
       success: Success
     text: 
-      failure: "Build {{project}} / {{plan}} ({{build}}) failed (status {{status}})!"
-      success: "Build {{project}} / {{plan}} ({{build}}) finished successfully!"
+      failure: "Build %{project} / %{plan} (%{build}) failed (status %{status})!"
+      success: "Build %{project} / %{plan} (%{build}) finished successfully!"
   layouts: 
     all_plans: "All Plans"
     close_flash: Close
@@ -189,25 +189,25 @@ en:
     logout: Logout
     projects: Projects
     quick_links: "Quick links"
-    report_bugs: "Found a bug? {{report_link}}"
+    report_bugs: "Found a bug? %{report_link}"
     report_link_text: "Report it!"
     settings: Settings
     setup: Setup
     signup: Signup
     slaves: Slaves
     subtitle: "Continuous Integration for Ruby on Rails"
-    user_greeter: "Welcome, {{user}}!"
+    user_greeter: "Welcome, %{user}!"
     users: Users
-    you_are_here: "You are here: {{bread_crumb}}"
+    you_are_here: "You are here: %{bread_crumb}"
   navigation: 
     help: Help
   plans: 
     child: 
       select_parent_plan: "Select Parent Plan"
-      select_parent_plan_for_plan: "Select parent plan for {{plan}}"
+      select_parent_plan_for_plan: "Select parent plan for %{plan}"
       update: Update
     edit: 
-      edit_plan_name: "Edit Plan {{name}}"
+      edit_plan_name: "Edit Plan %{name}"
       update: Update
     form: 
       description: Description
@@ -230,31 +230,31 @@ en:
       new_plan: "New Plan"
       overview: Overview
     list: 
-      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
+      count_of_the_last_5_builds_were_successful: "%{count} of the last 5 builds were successful"
       description: Description
       last_build_time: "Last Build time"
       last_failure: "Last Failure"
       last_success: "Last Success"
       name: Name
-      time_ago: "{{time}} ago"
+      time_ago: "%{time} ago"
       unknown: unknown
     new: 
       create: Create
       new_plan: "New Plan"
     show: 
-      back_to_parent_plan: "Back to parent plan {{parent}}"
-      back_to_project: "Back to project {{link}}"
+      back_to_parent_plan: "Back to parent plan %{parent}"
+      back_to_project: "Back to project %{link}"
       build_chain: "Build chain"
       build_now: "Build now"
       builds: Builds
-      child_of_parent_plan: "(child of {{parent_plan}})"
+      child_of_parent_plan: "(child of %{parent_plan})"
       children: Children
       clone: Clone
       commit_hook: "Commit Hook"
       confirm_delete: "Do you really want to delete this plan and all its children and builds? This operation can not be undone."
       convert_to_child_plan: "Convert to Child Plan"
       convert_to_standalone_plan: "Convert to Standalone Plan"
-      count_of_the_last_5_builds_were_successful: "{{count}} of the last 5 builds were successful"
+      count_of_the_last_5_builds_were_successful: "%{count} of the last 5 builds were successful"
       delete: Delete
       description: Description
       edit: Edit
@@ -262,7 +262,7 @@ en:
       move_to_another_parent: "Move to another Parent"
       new_child_plan: "New Child Plan"
       plan_details: "Plan details"
-      plan_name: "Plan {{name}}"
+      plan_name: "Plan %{name}"
       requirements: Requirements
       status: Status
       steps: Steps
@@ -270,7 +270,7 @@ en:
       weather: Weather
   projects: 
     edit: 
-      edit_project_name: "Edit Project {{name}}"
+      edit_project_name: "Edit Project %{name}"
       update: Update
     form: 
       description: Description
@@ -290,7 +290,7 @@ en:
     assertions: Assertions
     build: Build
     build_tool: "Build tool"
-    command: "Command {{name}}"
+    command: "Command %{name}"
     command_output: "Command output:"
     deploy: Deploy
     deploy_tool: "Deploy tool"
@@ -301,10 +301,10 @@ en:
     status: Status
     summary: Summary
     targets: Targets
-    task: "Task {{name}}"
+    task: "Task %{name}"
     tasks: Tasks
     test_case: "Test Case"
-    test_run: "Test Run {{name}}"
+    test_run: "Test Run %{name}"
     tests: Tests
     total_time: "Total time"
   start: 
@@ -332,7 +332,7 @@ en:
       user_name: "User name"
   users: 
     edit: 
-      edit_users_profile: "Edit {{login}}'s Profile"
+      edit_users_profile: "Edit %{login}'s Profile"
       email_address: "E-Mail Address"
       the_email_address_is_used_for_notifications: "The email address is used for notifications."
       the_users_role: "The user's role. Set to \"user\" for normal user accounts."
@@ -357,4 +357,4 @@ en:
       the_nick_name_used_for_logins: "The nick name used for logins."
     show: 
       edit_profile: "Edit profile"
-      users_profile: "{{login}}'s Profile"
+      users_profile: "%{login}'s Profile"

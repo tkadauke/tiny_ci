@@ -28,7 +28,7 @@ module TinyCI
       end
       
       def consume!
-        returning @output.consume! do |output_line|
+        @output.consume!.tap do |output_line|
           consumed_output << output_line
         end
       end

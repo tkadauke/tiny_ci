@@ -26,7 +26,7 @@ module TinyCI
 
     private
       def try_connection
-        require 'activerecord'
+        require 'active_record'
 
         ActiveRecord::Base.establish_connection(
           :adapter => 'mysql',
