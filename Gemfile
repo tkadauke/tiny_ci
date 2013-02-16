@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails', '2.3.3'
+gem 'rails', '2.3.16'
 gem 'rdoc'
 
 gem 'fastercsv'
