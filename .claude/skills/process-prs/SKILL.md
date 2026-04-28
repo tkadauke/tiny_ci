@@ -38,16 +38,31 @@ truncating is fragile — it will silently drop PRs in edge cases.
 
 Only act on PRs authored by `tkadauke` or `tkadauke-winston[bot]`.
 
-For each PR, fetch feedback:
+### Step 2a: Self-heal the tracker
+
+GitHub is the source of truth for which PRs exist; the tracker is just a
+cache of "when did we last look at this PR." A PR can land in the tracker
+via several paths (process-issues seeding, manual `implement-issue`
+invocation, hand-authored PR by tkadauke), and we must not depend on any
+single path having run.
+
+For every open PR returned above that is authored by `tkadauke` or
+`tkadauke-winston[bot]` AND is missing from `.trackers/pr-tracker.json`,
+add an entry with `last_processed_at: "1970-01-01T00:00:00Z"` so the
+feedback comparison below treats it as "never processed, look at it." Save
+the tracker.
+
+Also remove any tracker entries whose PR is no longer open (merged/closed).
+
+### Step 2b: Filter to PRs with new feedback
+
+For each remaining tracked PR, fetch feedback:
 ```
 gh pr view NUMBER --repo tkadauke/tiny_ci --json reviews,comments
 ```
 
-Read `.trackers/pr-tracker.json` and skip PRs with no new human feedback
-since `last_processed_at`. Only @tkadauke is a human.
-Ignore @tkadauke-winston[bot] comments.
-
-Remove merged/closed PRs from the tracker.
+Skip PRs with no new human feedback since `last_processed_at`. Only
+@tkadauke is a human. Ignore @tkadauke-winston[bot] comments.
 
 Take the first N PRs with actionable feedback.
 
