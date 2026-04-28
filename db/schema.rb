@@ -4,7 +4,7 @@
 # The historical migrations under db/migrate/ are preserved for reference,
 # but db:schema:load is the supported way to bootstrap a fresh database.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_27_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
   create_table "builds", force: :cascade do |t|
     t.integer  "plan_id"
     t.integer  "position"
@@ -63,7 +63,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_27_000000) do
     t.string   "name"
     t.string   "hostname"
     t.string   "username"
-    t.string   "password"
+    t.text     "password"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "base_path"
