@@ -73,11 +73,11 @@ module TinyCI
     end
   
     def get_config_option(key)
-      ConfigOption.find_by_user_id_and_key(@user_id, key)
+      ConfigOption.find_by(user_id: @user_id, key: key)
     end
-  
+
     def set_config_option(key, value)
-      db_option = ConfigOption.find_or_create_by_user_id_and_key(@user_id, key.to_s)
+      db_option = ConfigOption.find_or_create_by(user_id: @user_id, key: key.to_s)
       db_option.update_attribute(:value, value.to_yaml)
     end
   

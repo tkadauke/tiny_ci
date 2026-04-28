@@ -38,7 +38,7 @@ module TinyCI
 
       def schedule!
         begin
-          builds = Build.pending.find(:all)
+          builds = Build.pending.to_a
           next_build = builds.find { |build| build.buildable? }
           if next_build
             slave = Slave.find_free_slave_for(next_build)
