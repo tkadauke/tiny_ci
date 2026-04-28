@@ -1,6 +1,6 @@
 module BuildsHelper
   def render_report(report, version)
-    template_path = "#{RAILS_ROOT}/lib/tiny_ci/report/templates/#{version}/#{report.class.name.underscore.split('/').last}.html.erb"
+    template_path = Rails.root.join('lib', 'tiny_ci', 'report', 'templates', version.to_s, "#{report.class.name.underscore.split('/').last}.html.erb").to_s
     begin
       render :file => template_path, :locals => { :report => report }
     rescue ActionView::MissingTemplate

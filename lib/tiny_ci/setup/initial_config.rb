@@ -53,9 +53,9 @@ module TinyCI
       end
   
       def write_config
-        Dir.glob("#{RAILS_ROOT}/config/templates/*.yml.erb").each do |file_path|
+        Dir.glob(Rails.root.join('config', 'templates', '*.yml.erb').to_s).each do |file_path|
           file_name = File.basename(file_path).gsub(/\.erb$/, '')
-          File.open("#{RAILS_ROOT}/config/#{file_name}", 'w') do |file|
+          File.open(Rails.root.join('config', file_name).to_s, 'w') do |file|
             config = self
             file.print ERB.new(File.read(file_path)).result(binding)
           end

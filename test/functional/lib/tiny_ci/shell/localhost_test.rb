@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../../../test_helper'
 class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should find directory with exists?" do
     localhost = TinyCI::Shell::Localhost.new(Build.new)
-    assert localhost.exists?(File.dirname(__FILE__), RAILS_ROOT)
+    assert localhost.exists?(File.dirname(__FILE__), Rails.root.to_s)
   end
 
   test "should find file with exists?" do

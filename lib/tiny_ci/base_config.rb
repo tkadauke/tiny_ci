@@ -66,9 +66,9 @@ module TinyCI
   private
     def config_file_name
       if @user_id
-        "#{RAILS_ROOT}/config/user_options.yml"
+        Rails.root.join('config', 'user_options.yml').to_s
       else
-        "#{RAILS_ROOT}/config/options.yml"
+        Rails.root.join('config', 'options.yml').to_s
       end
     end
   
