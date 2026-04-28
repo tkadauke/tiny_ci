@@ -36,11 +36,42 @@ or any other top-N truncation.** Pull every open issue and let the tracker
 filtering below decide what's actionable. Truncating by `createdAt`/`updatedAt`
 silently drops issues that fall just outside the cutoff.
 
-Read `.trackers/issue-tracker.json` and filter out already-processed issues:
+### Step 2a: Self-heal the tracker
+
+GitHub is the source of truth for which issues exist; the tracker is just a
+cache of "what we did with this issue last time." Issues can change state
+outside our orchestration (closed manually, commented by tkadauke directly,
+labelled, deleted), so reconcile before filtering — do not rely on the
+tracker being authoritative.
+
+For every open issue returned above that is missing from
+`.trackers/issue-tracker.json`, add a sentinel entry:
+```json
+{
+  "last_seen_at": "1970-01-01T00:00:00Z",
+  "last_processed_at": "1970-01-01T00:00:00Z",
+  "status": null,
+  "pr_number": null,
+  "comment_id": null,
+  "last_human_comment_at": null
+}
+```
+This makes the issue eligible for evaluation in Step 2b.
+
+Also evict tracker entries for issues that are no longer open (closed,
+deleted) — they should not weigh against future fairness rounds.
+
+Save the tracker.
+
+### Step 2b: Filter to actionable issues
+
+Read the (now self-healed) `.trackers/issue-tracker.json` and filter:
 - `pr_created` with open PR → skip (process-prs handles it)
-- `commented` with no new human reply → skip
+- `pr_created` with closed-without-merge PR → retry
+- `commented` with no new human reply since `last_processed_at` → skip
 - `skipped` with no updates since `last_processed_at` → skip
 - `error` → always retry
+- sentinel (just added in Step 2a) → eligible
 
 Apply round-robin fairness: pick from newest third, then oldest third,
 then middle third. Take up to N issues.
