@@ -1,19 +1,17 @@
 development: &MYSQL_DB
-  adapter: mysql
+  adapter: trilogy
+  encoding: utf8mb4
   username: <%= config.db_user %>
   password: <%= config.db_password %>
-  encoding: utf8
   host: <%= config.db_host %>
   database: <%= config.db_name %>
+  pool: 5
 
 production:
   <<: *MYSQL_DB
 
-test: &TEST
+test:
   adapter: sqlite3
-  database: db/test.sqlite3
+  database: storage/test.sqlite3
   pool: 5
   timeout: 5000
-
-cucumber:
-  <<: *TEST

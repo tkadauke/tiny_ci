@@ -1,7 +1,0 @@
-default:
-  :handler:
-  - :drb:
-
-test:
-  :handler:
-  - :in_process:
