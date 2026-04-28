@@ -43,6 +43,24 @@ class TinyCI::DSLTest < ActiveSupport::TestCase
     TinyCI::DSL.evaluate(build)
   end
 
+  test "should run rake task via the DSL" do
+    build = stub(workspace_path: "/")
+    TinyCI::Steps::Builder::Rake.expects(:new).with(build, ["test"], "/", {}).returns(stub(run!: nil))
+    TinyCI::DSL.new(build).rake "test"
+  end
+
+  test "should extract environment variables from rake options" do
+    build = stub(workspace_path: "/")
+    TinyCI::Steps::Builder::Rake.expects(:new).with(build, ["test"], "/", { "some_key" => "some_value" }).returns(stub(run!: nil))
+    TinyCI::DSL.new(build).rake "test", "some_key" => "some_value"
+  end
+
+  test "should run cap task via the DSL" do
+    build = stub(workspace_path: "/")
+    TinyCI::Steps::Deployer::Capistrano.expects(:new).with(build, ["deploy"], "/", {}).returns(stub(run!: nil))
+    TinyCI::DSL.new(build).cap "deploy"
+  end
+
   test "should change to absolute directory" do
     build = stub(workspace_path: "/some/workspace")
     dsl = TinyCI::DSL.new(build)
