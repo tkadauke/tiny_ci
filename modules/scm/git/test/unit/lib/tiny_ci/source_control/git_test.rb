@@ -23,15 +23,16 @@ class TinyCI::SourceControl::GitTest < ActiveSupport::TestCase
     git = TinyCI::SourceControl::Git.new(build, {})
     git.expects(:exists?).returns(true)
     git.expects(:run).with("git", "reset --hard HEAD")
-    git.expects(:run).with("git", "pull origin master")
+    git.expects(:run).with("git", "fetch origin")
     git.send :clone_or_update
   end
-  
+
   test "should find out revision" do
     build = stub(:revision => nil)
     build.expects(:update_attributes).with(:revision => '12345')
-    
+
     git = TinyCI::SourceControl::Git.new(build, {})
+    git.expects(:run).with("git", "checkout -f origin/HEAD")
     git.expects(:capture).returns('12345')
     git.send :find_or_checkout_revision
   end

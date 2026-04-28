@@ -15,16 +15,17 @@ module TinyCI
       def clone_or_update
         if exists?('.git')
           reset
-          run("git", "pull origin master")
+          run("git", "fetch origin")
         else
           dest = File.expand_path(@build.workspace_path + '/..')
           mkdir(dest)
           run("git", "clone #{@build.repository_url} #{@build.name}", dest)
         end
       end
-      
+
       def find_or_checkout_revision
         if @build.revision.blank?
+          run("git", "checkout -f origin/HEAD")
           revision = capture(%{git rev-parse HEAD})
           @build.update_attributes(:revision => revision)
         else
