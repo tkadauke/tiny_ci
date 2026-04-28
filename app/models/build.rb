@@ -95,7 +95,6 @@ class Build < ApplicationRecord
   end
 
   def stop!
-    update(status: "stopping")
     TinyCI::Scheduler::Client.stop(self)
   end
 
