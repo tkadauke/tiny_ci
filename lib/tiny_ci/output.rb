@@ -1,19 +1,21 @@
+require "csv"
+
 module TinyCI
   class Output
     include Enumerable
-    
+
     class OutputLine
       attr_accessor :timestamp, :command, :line
-      
+
       def initialize(timestamp, command, line)
         @timestamp, @command, @line = Time.at(timestamp.to_f), command, line
       end
     end
-    
+
     def initialize(output_string_or_array)
       if output_string_or_array.is_a?(String)
         @output = []
-        FasterCSV.parse(output_string_or_array || "") { |timestamp, command, line| @output << OutputLine.new(timestamp, command, line) }
+        CSV.parse(output_string_or_array || "") { |timestamp, command, line| @output << OutputLine.new(timestamp, command, line) }
       else
         @output = output_string_or_array
       end
