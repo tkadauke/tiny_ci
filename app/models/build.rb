@@ -132,7 +132,7 @@ class Build < ApplicationRecord
   end
 
   def flush_output!
-    reload.update(output: build_output.join)
+    update_columns(output: build_output.join, updated_at: Time.current)
   end
 
   def to_param
