@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# The legacy Rails 2 Test::Unit / RSpec 1.3 / Cucumber harness is not yet
+# ported to Rails 7.2, so we deliberately do not run `rails test` here.
+# The current minimum bar is `zeitwerk:check` (eager-loads every model,
+# controller, helper) plus static security scans.
+jobs:
+  lint:
+    name: zeitwerk:check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.3
+          bundler-cache: true
+
+      # config/database.yml is gitignored (the Rails 2 setup wizard generated
+      # it at install time). Rails 7 needs it present before any AR-aware
+      # task can run. Use sqlite3 — matches what the Gemfile pins and is
+      # enough for boot-time eager loading.
+      - name: Write minimal config/database.yml
+        run: |
+          cat > config/database.yml <<'YAML'
+          default: &default
+            adapter: sqlite3
+            pool: 5
+            timeout: 5000
+          development:
+            <<: *default
+            database: db/development.sqlite3
+          test:
+            <<: *default
+            database: db/test.sqlite3
+          production:
+            <<: *default
+            database: db/production.sqlite3
+          YAML
+
+      - name: Eager-load application (zeitwerk:check)
+        run: bin/rails zeitwerk:check
+
+  security:
+    name: bundler-audit + brakeman
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.3
+          bundler-cache: true
+
+      # bundler-audit and brakeman are intentionally NOT in the Gemfile —
+      # they are CI-only tools, install them ad-hoc.
+      - name: Install audit tools
+        run: gem install bundler-audit brakeman --no-document
+
+      - name: bundler-audit (Gemfile.lock CVE scan)
+        run: |
+          bundle audit update
+          bundle audit check
+
+      - name: brakeman (static security scan)
+        run: brakeman --no-pager
