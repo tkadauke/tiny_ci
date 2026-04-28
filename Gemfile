@@ -1,27 +1,32 @@
-source :rubygems
+source "https://rubygems.org"
 
-gem 'rails', '2.3.16'
-gem 'rdoc'
+ruby "3.2.3"
 
-gem 'fastercsv'
-gem 'juggernaut', '0.5.8'
-gem 'net-ssh', :require => "net/ssh"
-gem 'RedCloth'
-gem 'authlogic', '2.1.3'
+gem "rails", "~> 7.2.0"
+gem "trilogy"
+gem "sqlite3", "~> 1.7"
+gem "puma"
+gem "bootsnap", require: false
+gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 
-gem 'mysql'
+gem "bcrypt"
+gem "net-ssh"
+gem "RedCloth"
+gem "csv"
+
+gem "acts_as_list"
+gem "acts_as_tree"
 
 group :development do
-  gem 'ya2yaml'
-  gem 'i18n_tools', '0.0.3'
+  gem "web-console"
+  gem "listen"
+end
+
+group :development, :test do
+  gem "debug", platforms: %i[mri windows]
 end
 
 group :test do
-  gem 'mocha', '0.9.8', :require => false
-  gem 'rcov', :require => false
-  gem 'cucumber-rails', '=0.3.0', :require => false
-  gem 'database_cleaner', '=0.5.0', :require => false
-  gem 'webrat', '=0.7.0', :require => false
-  gem 'rspec', '=1.3.0', :require => false
-  gem 'rspec-rails', '=1.3.2', :require => false
+  gem "mocha"
+  gem "simplecov", require: false
 end

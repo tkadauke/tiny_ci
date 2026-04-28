@@ -28,7 +28,7 @@
             <div id="center_header">
               <div id="suggestion">
                 <div class="suggestion_corner_right">
-                  <span><%= t('layouts.report_bugs', :report_link => link_to(t('layouts.report_link_text'), "http://github.com/tkadauke/tiny_ci/issues")) %></span>
+                  <span><%= t('layouts.report_bugs_html', :report_link => link_to(t('layouts.report_link_text'), "http://github.com/tkadauke/tiny_ci/issues")) %></span>
                 </div>
               </div>
             </div>
@@ -81,15 +81,15 @@
         <% if flash[:error] %>
           <div id="flash" class="error">
             <%= flash[:error] %>
-            <%= link_to_function t('layouts.close_flash'), "$('flash').fade()" %>
+            <a href="#" onclick="document.getElementById('flash').style.display='none';return false;"><%= t('layouts.close_flash') %></a>
           </div>
         <% elsif flash[:notice] %>
           <div id="flash" class="notice">
             <%= flash[:notice] %>
-            <%= link_to_function t('layouts.close_flash'), "$('flash').fade()" %>
+            <a href="#" onclick="document.getElementById('flash').style.display='none';return false;"><%= t('layouts.close_flash') %></a>
           </div>
         <% end %>
-        <p><%= t('layouts.you_are_here', :bread_crumb => bread_crumb) %></p>
+        <p><%= t('layouts.you_are_here_html', :bread_crumb => bread_crumb) %></p>
         <%= yield %>
       <div class="clearer"></div>
 

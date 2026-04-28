@@ -5,3 +5,13 @@ vendor/rails
 test/coverage
 config/*.yml
 rerun.txt
+storage/
+
+# Runtime artefacts
+/log/*.log
+/tmp/*
+!/tmp/.keep
+
+# Bundler / local env
+.bundle/
+.env*.local

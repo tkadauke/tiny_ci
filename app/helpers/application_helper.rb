@@ -13,32 +13,37 @@ module ApplicationHelper
     [[days, t('duration.days')], [hours, t('duration.hours')], [minutes, t('duration.minutes')], [seconds, t('duration.seconds')]].reject { |part| part.first == 0 }.collect { |part| part.join(' ') }.join(', ')
   end
   
-  def auto_update(container)
-    periodically_call_remote(:url => request.request_uri, :update => container, :method => 'get')
+  def auto_update(_container)
+    # `periodically_call_remote` was a Rails 2 RJS helper; modern equivalent is
+    # Hotwire Turbo Streams or Stimulus. No-op until ported.
+    nil
   end
+
+  # Legacy Juggernaut realtime push view helper. The original gem is dead;
+  # this stub renders nothing so old views keep working.
+  def juggernaut(*) = "".html_safe
   
   def bread_crumb
-    breadcrumb = %{<a href="/">#{I18n.t('breadcrumb.home')}</a>}
+    parts = [link_to(I18n.t('breadcrumb.home'), '/')]
     sofar = ''
-    elements = request.request_uri.split('?').first.split('/')
+    elements = request.path.split('/')
     parent_model = nil
-    for i in 1...elements.size
+    (1...elements.size).each do |i|
       sofar += '/' + elements[i]
-      
+
       parent_model, link_text = begin
         next_model = if parent_model
-          parent_model.instance_eval("#{elements[i - 1]}.from_param!('#{elements[i]}')")
+          parent_model.public_send(elements[i - 1]).from_param!(elements[i])
         else
-          eval("#{elements[i - 1].singularize.camelize}.from_param!('#{elements[i]}')")
+          elements[i - 1].singularize.camelize.constantize.from_param!(elements[i])
         end
         [next_model, next_model.to_param]
-      rescue Exception => e
+      rescue StandardError
         [parent_model, I18n.t("breadcrumb.#{elements[i]}")]
       end
-        
-      breadcrumb += ' &gt; '
-      breadcrumb += "<a href='#{sofar}'>"  + link_text + '</a>'
+
+      parts << link_to(link_text, sofar)
     end
-    breadcrumb
+    safe_join(parts, ' > '.html_safe)
   end
 end

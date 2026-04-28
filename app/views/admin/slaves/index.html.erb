@@ -4,7 +4,7 @@
   <p><%= t('.there_are_no_slaves_configured_yet') %></p>
   
   <p><%= link_to t('.add_the_first_slave'), new_admin_slave_path %> <strong><%= t('.or') %></strong></p>
-  <% form_for [:admin, Slave.new] do |f| %>
+  <%= form_for [:admin, Slave.new] do |f| %>
     <%= f.hidden_field :name, :value => 'localhost' %>
     <%= f.hidden_field :protocol, :value => 'localhost' %>
     <%= f.submit t('.use_localhost_as_the_first_slave') %>

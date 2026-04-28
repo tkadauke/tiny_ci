@@ -1,16 +1,6 @@
-class BuildObserver < ActiveRecord::Observer
-  def after_create(build)
-    Juggernaut.send_to_channel("Queue.update()", "queue")
-  end
-  
-  def after_update(build)
-    if build.previous_changes.has_key?('output') || build.previous_changes.has_key?('status')
-      Juggernaut.send_to_channel("Report.update()", "build_#{build.name}_#{build.position}")
-    end
-    
-    if build.previous_changes.has_key?('status')
-      Juggernaut.send_to_channel("Queue.update()", "queue")
-      TinyCI::Notifier::Base.notify(build)
-    end
-  end
+# Rails 5+ removed observers. The lifecycle hooks live on Build directly via
+# `after_create_commit` / `after_update_commit`. Keeping this file as a stub so
+# legacy references (e.g. config.active_record.observers) don't blow up; it is
+# not registered anywhere.
+class BuildObserver
 end

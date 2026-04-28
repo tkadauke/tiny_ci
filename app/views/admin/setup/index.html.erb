@@ -4,7 +4,7 @@
 
 <h2><%= t('.database_configuration') %></h2>
 
-<% form_for :config, @config, :url => '/admin/setup/create', :method => :post do |f| %>
+<%= form_for :config, @config, :url => '/admin/setup/create', :method => :post do |f| %>
   <% if @config.error_message %>
     <div class="errorExplanation">
       <p><%= t('.db_error') %></p>

@@ -1,0 +1,2 @@
+module TinyCI
+end

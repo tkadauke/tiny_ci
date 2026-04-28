@@ -99,7 +99,7 @@ de:
       success: "[TinyCI] Build %{project} / %{plan} erfolgreich"
   builds: 
     build: 
-      build_output_of_plan: "Build-Ausgabe von %{plan} #%{position}"
+      build_output_of_plan_html: "Build-Ausgabe von %{plan} #%{position}"
       details: Details
       duration: Dauer
       gist: Wesentliches
@@ -119,7 +119,7 @@ de:
       timestamp: Zeitstempel
     index: 
       back_to_plan: "Zurück zu Plan"
-      builds_of_plan: "Builds von Plan %{plan_link}"
+      builds_of_plan_html: "Builds von Plan %{plan_link}"
     list: 
       name: Name
       no_builds: "Keine Builds"
@@ -189,7 +189,7 @@ de:
     logout: Ausloggen
     projects: Projekte
     quick_links: Schnellzugriff
-    report_bugs: "Fehler gefunden? %{report_link}"
+    report_bugs_html: "Fehler gefunden? %{report_link}"
     report_link_text: "Melden Sie ihn!"
     settings: Einstellungen
     setup: Einrichten
@@ -198,7 +198,7 @@ de:
     subtitle: "Continuous Integration für Ruby on Rails"
     user_greeter: "Willkommen, %{user}!"
     users: Benutzer
-    you_are_here: "Sie sind hier: %{bread_crumb}"
+    you_are_here_html: "Sie sind hier: %{bread_crumb}"
   navigation: 
     help: Hilfe
   plans: 
@@ -243,11 +243,11 @@ de:
       new_plan: "Neuer Plan"
     show: 
       back_to_parent_plan: "Zurück zum übergeordneten Plan %{parent}"
-      back_to_project: "Zurück zu Projekt %{link}"
+      back_to_project_html: "Zurück zu Projekt %{link}"
       build_chain: Build-Kette
       build_now: "Jetzt bauen"
       builds: Builds
-      child_of_parent_plan: "(Kind von %{parent_plan})"
+      child_of_parent_plan_html: "(Kind von %{parent_plan})"
       children: Kinder
       clone: Klonen
       commit_hook: Commit-Hook

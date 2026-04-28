@@ -1,28 +1,26 @@
-# Settings specified here will take precedence over those in config/environment.rb
+require "active_support/core_ext/integer/time"
 
-# The production environment is meant for finished, "live" apps.
-# Code is not reloaded between requests
-config.cache_classes = true
+Rails.application.configure do
+  config.cache_classes = true
+  config.eager_load = true
 
-# Full error reports are disabled and caching is turned on
-config.action_controller.consider_all_requests_local = false
-config.action_controller.perform_caching             = true
-config.action_view.cache_template_loading            = true
+  config.consider_all_requests_local = false
+  config.action_controller.perform_caching = true
 
-# See everything in the log (default is :info)
-# config.log_level = :debug
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-# Use a different logger for distributed setups
-# config.logger = SyslogLogger.new
+  config.log_level = :info
+  config.log_tags = [:request_id]
+  config.logger = ActiveSupport::TaggedLogging.new(Logger.new($stdout))
 
-# Use a different cache store in production
-# config.cache_store = :mem_cache_store
+  config.cache_store = :memory_store
 
-# Enable serving of images, stylesheets, and javascripts from an asset server
-# config.action_controller.asset_host = "http://assets.example.com"
+  config.i18n.fallbacks = true
 
-# Disable delivery errors, bad email addresses will be ignored
-config.action_mailer.raise_delivery_errors = false
+  config.active_support.report_deprecations = false
 
-# Enable threaded mode
-# config.threadsafe!
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.perform_caching = false
+
+  config.active_record.dump_schema_after_migration = false
+end

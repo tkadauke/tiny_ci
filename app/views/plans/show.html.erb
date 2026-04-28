@@ -1,4 +1,4 @@
-<h1><%= t('.plan_name', :name => @plan.name) %> <%= t('.child_of_parent_plan', :parent_plan => link_to(@plan.parent.name, project_plan_path(@project, @plan.parent))) if @plan.parent %></h1>
+<h1><%= t('.plan_name', :name => @plan.name) %> <%= t('.child_of_parent_plan_html', :parent_plan => link_to(@plan.parent.name, project_plan_path(@project, @plan.parent))) if @plan.parent %></h1>
 
 <ul class="action-list">
   <% if current_user.can_edit_plan?(@plan) %>
@@ -97,4 +97,4 @@
   <p><%= link_to t('.back_to_parent_plan', :parent => @plan.parent.name), project_plan_path(@project, @plan.parent) %></p>
 <% end %>
 
-<p><%= t('.back_to_project', :link => link_to(@project.name, project_plans_path(@project))) %></p>
+<p><%= t('.back_to_project_html', :link => link_to(@project.name, project_plans_path(@project))) %></p>

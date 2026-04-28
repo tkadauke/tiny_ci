@@ -1,22 +1,19 @@
-# Filters added to this controller apply to all controllers in the application.
-# Likewise, all the methods added will be available for all controllers.
-
 class ApplicationController < ActionController::Base
-  helper :all # include all helpers, all the time
-  # protect_from_forgery # See ActionController::RequestForgeryProtection for details
+  protect_from_forgery with: :exception
 
-  # Scrub sensitive parameters from your log
-  # filter_parameter_logging :password
-  
-  before_filter :setup
-  before_filter :set_language unless ['test', 'cucumber'].include?(Rails.env)
-  
-  helper_method :setup?
-  helper_method :current_user_session, :current_user, :logged_in?
-  
-protected
+  before_action :setup_redirect
+  before_action :set_language unless Rails.env.test?
+
+  helper_method :setup?, :current_user, :logged_in?
+
+  protected
+
   def set_language
+    return unless defined?(TinyCI::Config)
     I18n.locale = TinyCI::Config.language.to_sym
+  rescue StandardError
+    # Config might not be available in this stripped-down boot
+    I18n.locale = I18n.default_locale
   end
 
   def method_missing(method, *args)
@@ -28,10 +25,10 @@ protected
         false
       end
     elsif method.to_s =~ /^can_.*\!$/
-      if current_user.send(method.to_s.gsub(/\!$/, '?'), *args)
+      if current_user.send(method.to_s.gsub(/\!$/, "?"), *args)
         yield if block_given?
       else
-        flash[:error] = t('flash.error.access_denied')
+        flash[:error] = t("flash.error.access_denied")
         redirect_to root_path
       end
     else
@@ -39,47 +36,44 @@ protected
     end
   end
 
-  def setup
-    redirect_to '/admin/setup' if setup?
-  end
-  
-  def setup?
-    ENV['SETUP'] == 'true'
+  def respond_to_missing?(method, include_private = false)
+    method.to_s.match?(/^can_.*[!?]$/) || super
   end
 
-  def current_user_session
-    return @current_user_session if defined?(@current_user_session)
-    @current_user_session = UserSession.find
+  def setup_redirect
+    redirect_to "/admin/setup" if setup?
+  end
+
+  def setup?
+    ENV["SETUP"] == "true"
   end
 
   def current_user
-    return @current_user if defined?(@current_user)
-    @current_user = (current_user_session && current_user_session.user) || Guest.new
+    @current_user ||= load_current_user
   end
-  
+
+  def load_current_user
+    user = User.find_by(id: session[:user_id]) if session[:user_id]
+    user || Guest.new
+  end
+
   def logged_in?
-    current_user.is_a? User
+    current_user.is_a?(User)
   end
-  
+
   def require_user
-    unless logged_in?
-      store_location
-      flash[:notice] = t('flash.notice.login_required')
-      redirect_to login_url
-      return false
-    end
+    return if logged_in?
+    store_location
+    flash[:notice] = t("flash.notice.login_required")
+    redirect_to login_url
+    false
   end
 
   def store_location
-    session[:return_to] = request.request_uri
+    session[:return_to] = request.original_fullpath
   end
-  
-  def render_optional_error_file(status_code)
-    status = interpret_status(status_code)
-    render :template => "/errors/#{status[0,3]}.html.erb", :status => status, :layout => 'plain.html.erb'
-  end
-  
+
   def not_found
-    render_optional_error_file(404)
+    render template: "errors/404", status: :not_found, layout: "plain"
   end
 end

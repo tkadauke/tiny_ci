@@ -1,118 +1,121 @@
-class Build < ActiveRecord::Base
-  attr_reader :shell
-  attr_accessor :source_control
-  
-  validates_presence_of :plan_id
-  
-  serialize :parameters, Hash
+require "csv"
 
-  delegate :name, :repository_url, :requirements, :needed_resources, :project, :to => :plan
+class Build < ApplicationRecord
+  include OverridesField
+
+  attr_reader :shell
+  attr_accessor :source_control, :previous_changes_for_observer
+
+  validates :plan_id, presence: true
+
+  serialize :parameters, type: Hash, coder: YAML
+
+  delegate :name, :repository_url, :requirements, :needed_resources, :project, to: :plan
 
   belongs_to :plan
-  belongs_to :slave
-  belongs_to :starter, :class_name => 'User'
-  acts_as_list :scope => :plan_id
+  belongs_to :slave, optional: true
+  belongs_to :starter, class_name: "User", optional: true
+  acts_as_list scope: :plan_id
   acts_as_tree
-  
-  named_scope :pending, :conditions => { :status => 'pending' }
-  named_scope :finished, :conditions => ['status != ? and status != ?', 'pending', 'running']
-  
-  overrides_field :revision, :from => :parent, :if => lambda { |build| build.repository_url == build.parent.repository_url }
-  
-  attr_accessor :previous_changes
-  before_save { |build| build.previous_changes = build.changes }
-  
+
+  scope :pending,  -> { where(status: "pending") }
+  scope :finished, -> { where("status != ? and status != ?", "pending", "running") }
+
+  overrides_field :revision, from: :parent,
+                             if: ->(build) { build.parent && build.repository_url == build.parent.repository_url }
+
+  before_save { |build| build.previous_changes_for_observer = build.changes }
   after_update :update_stats_if_neccessary
-  
+  after_create_commit  :broadcast_queue_update
+  after_update_commit  :broadcast_realtime_updates
+
   def cleanup_for_background
     @shell = nil
     @source_control = nil
   end
-  
+
   def duration
     finished_at && started_at ? (finished_at - started_at) : nil
   end
-  
+
   def environment
-    @environment ||= (self.parameters || {})
+    @environment ||= (parameters || {})
   end
-  
+
   def current_environment
     slave.current_environment.merge(environment)
   end
-  
+
   def assign_to!(slave)
-    update_attributes(:slave => slave)
+    update(slave: slave)
   end
-  
+
   def buildable?
     plan.buildable? && pending?
   end
-  
+
   def finished?
     good? || bad?
   end
-  
-  [:running, :pending, :waiting, :success, :error, :failure, :canceled, :stopping, :stopped].each do |status_name|
-    define_method "#{status_name}?" do
-      self.status == status_name.to_s
-    end
+
+  %i[running pending waiting success error failure canceled stopping stopped].each do |status_name|
+    define_method("#{status_name}?") { status == status_name.to_s }
   end
-  
+
   def good?
     success?
   end
-  
+
   def bad?
     error? || failure? || canceled? || stopped?
   end
-  
+
   def has_children?
     !children.empty?
   end
-  
+
   def build!
     @shell = TinyCI::Shell.open(self)
-    
+
     create_base_directory
     TinyCI::DSL.evaluate(self)
     if plan.has_children?
-      update_attributes :status => 'waiting'
+      update(status: "waiting")
     else
-      update_attributes :status => 'success', :finished_at => Time.now
+      update(status: "success", finished_at: Time.now)
     end
-  rescue SignalException => e
-  rescue TinyCI::Shell::CommandExecutionFailed => e
-    update_attributes :status => 'failure', :finished_at => Time.now
+  rescue SignalException
+  rescue TinyCI::Shell::CommandExecutionFailed
+    update(status: "failure", finished_at: Time.now)
   rescue Exception => e
-    add_to_output(Time.now, 'runner', [e.message] + e.backtrace)
-    update_attributes :status => 'error', :finished_at => Time.now
+    add_to_output(Time.now, "runner", [e.message] + e.backtrace)
+    update(status: "error", finished_at: Time.now)
   ensure
     finished
   end
-  
+
   def stop!
-    update_attributes :status => 'stopping'
+    update(status: "stopping")
     TinyCI::Scheduler::Client.stop(self)
   end
-  
+
   def finished
     parent.child_finished(self) if parent
     plan.build_next!(self) if success?
   end
-  
+
   def child_finished(child)
     if waiting? && children.all?(&:finished?)
       success = children.all?(&:success?)
-      update_attributes :status => (success ? 'success' : 'failure'), :finished_at => Time.now
+      update(status: (success ? "success" : "failure"), finished_at: Time.now)
       plan.build_next!(self) if success?
     end
   end
-  
+
   def workspace_path
     "#{slave.base_path}/#{project.name}/#{name}"
   end
-  
+
   def build_output
     @build_output ||= []
   end
@@ -121,33 +124,49 @@ class Build < ActiveRecord::Base
     add_lines_to_output(time, command, lines)
     flush_output! if updated_at < 1.second.ago
   end
-  
+
   def add_lines_to_output(time, command, lines)
     [lines].flatten.each do |line|
-      build_output << [time.to_f, command, line.strip].to_csv
+      build_output << CSV.generate_line([time.to_f, command, line.strip])
     end
   end
-  
+
   def flush_output!
-    reload.update_attributes(:output => build_output.join)
+    reload.update(output: build_output.join)
   end
-  
+
   def to_param
     position.to_s
   end
-  
+
   def self.from_param!(param)
-    find_by_position!(param)
+    find_by!(position: param)
   end
-  
+
   def update_stats_if_neccessary
-    if previous_changes.has_key?('status') && finished?
+    if previous_changes_for_observer&.key?("status") && finished?
       plan.update_build_stats!
     end
   end
 
-private
+  private
+
   def create_base_directory
     @shell.mkdir(slave.base_path)
+  end
+
+  def broadcast_queue_update
+    Juggernaut.send_to_channel("Queue.update()", "queue")
+  end
+
+  def broadcast_realtime_updates
+    changed = previous_changes_for_observer || {}
+    if changed.key?("output") || changed.key?("status")
+      Juggernaut.send_to_channel("Report.update()", "build_#{name}_#{position}")
+    end
+    if changed.key?("status")
+      Juggernaut.send_to_channel("Queue.update()", "queue")
+      TinyCI::Notifier::Base.notify(self) if defined?(TinyCI::Notifier::Base)
+    end
   end
 end

@@ -1,3 +1,3 @@
-class ConfigOption < ActiveRecord::Base
-  validates_presence_of :key
+class ConfigOption < ApplicationRecord
+  validates :key, presence: true
 end

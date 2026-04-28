@@ -1,18 +1,27 @@
-# Settings specified here will take precedence over those in config/environment.rb
+require "active_support/core_ext/integer/time"
 
-# In the development environment your application's code is reloaded on
-# every request.  This slows down response time but is perfect for development
-# since you don't have to restart the webserver when you make code changes.
-config.cache_classes = false
+Rails.application.configure do
+  config.cache_classes = false
+  config.eager_load = false
 
-# Log error messages when you accidentally call methods on nil.
-config.whiny_nils = true
+  config.consider_all_requests_local = true
+  config.server_timing = true
 
-# Show full error reports and disable caching
-config.action_controller.consider_all_requests_local = true
-config.action_view.debug_rjs                         = true
-config.action_controller.perform_caching             = false
+  if Rails.root.join("tmp/caching-dev.txt").exist?
+    config.action_controller.perform_caching = true
+    config.cache_store = :memory_store
+  else
+    config.action_controller.perform_caching = false
+    config.cache_store = :null_store
+  end
 
-# Don't care if the mailer can't send
-config.action_mailer.raise_delivery_errors = false
-config.action_mailer.delivery_method = :test
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.perform_caching = false
+  config.action_mailer.delivery_method = :test
+
+  config.active_support.deprecation = :log
+  config.active_record.migration_error = :page_load
+  config.active_record.verbose_query_logs = true
+
+  config.action_view.annotate_rendered_view_with_filenames = true
+end

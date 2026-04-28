@@ -1,6 +1,6 @@
 <%= juggernaut :channels => ["queue"] %>
 
-<h1><%= t('.builds_of_plan', :plan_link => link_to(@plan.name, project_plan_path(@project, @plan))) %></h1>
+<h1><%= t('.builds_of_plan_html', :plan_link => link_to(@plan.name, project_plan_path(@project, @plan))) %></h1>
 
 <%= auto_update 'queue' %>
 <div id="queue">

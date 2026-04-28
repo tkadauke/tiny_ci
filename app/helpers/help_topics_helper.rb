@@ -1,6 +1,6 @@
 module HelpTopicsHelper
   def render_help_text(text)
-    RedCloth.new(text.gsub(/\":([a-z]+)/) { $1 == 'http' ? '":' + $1 : %{":/help_topics/#{$1}} }).to_html
+    RedCloth.new(text.gsub(/\":([a-z]+)/) { $1 == 'http' ? '":' + $1 : %{":/help_topics/#{$1}} }).to_html.html_safe
   end
   
   def help_link(topic_name)

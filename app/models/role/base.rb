@@ -2,7 +2,7 @@ module Role::Base
   module ClassMethods
     def allow(*things)
       things.each do |thing|
-        define_method "can_#{thing}?" do
+        define_method "can_#{thing}?" do |*|
           true
         end
       end
