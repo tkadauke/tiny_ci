@@ -15,3 +15,8 @@ storage/
 # Bundler / local env
 .bundle/
 .env*.local
+
+# Claude Code runtime
+.claude/settings.local.json
+.claude/worktrees/
+.trackers/
