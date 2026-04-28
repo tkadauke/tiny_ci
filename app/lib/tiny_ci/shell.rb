@@ -1,12 +1,18 @@
 module TinyCI
-  # Stub: real implementation lives in lib/tiny_ci/shell.rb (legacy code that
-  # talks to local processes and remote SSH slaves). Web tier only references
-  # `Shell::CommandExecutionFailed` for rescue clauses, so we expose just that.
   module Shell
     class CommandExecutionFailed < StandardError; end
 
-    def self.open(_build)
-      raise NotImplementedError, "TinyCI::Shell is not ported to modern Rails yet"
+    def self.open(build)
+      klass = for_protocol(build.slave.protocol)
+      raise ArgumentError, "Unknown shell protocol: #{build.slave.protocol.inspect}" unless klass
+      klass.new(build)
+    end
+
+    def self.for_protocol(protocol)
+      case protocol
+      when "localhost" then Localhost
+      when "ssh"       then SSH
+      end
     end
   end
 end

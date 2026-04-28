@@ -1,0 +1,58 @@
+require "fileutils"
+
+module TinyCI
+  module Shell
+    class Localhost
+      def initialize(build)
+        @build = build
+      end
+
+      def run(command, parameters, working_dir, environment)
+        cmdline = "#{command} #{[parameters].flatten.join(' ')}"
+        Dir.chdir(working_dir) do
+          env = build_environment({ "RAILS_ENV" => "development" }.merge(@build.current_environment.merge(environment)))
+
+          IO.popen("sh -c '#{env} #{cmdline} 2>&1'") do |stdout|
+            until stdout.eof?
+              line = stdout.gets
+              @build.add_to_output(Time.now, command, line) if line
+            end
+            @build.flush_output!
+          end
+
+          raise(CommandExecutionFailed) unless success?
+        end
+      end
+
+      def exists?(path, working_dir)
+        return false unless File.exist?(working_dir)
+
+        Dir.chdir(working_dir) do
+          File.exist?(path)
+        end
+      end
+
+      def mkdir(path)
+        FileUtils.mkdir_p(path)
+      end
+
+      def capture(command, working_dir)
+        Dir.chdir(working_dir) do
+          `#{command}`
+        end
+      end
+
+      private
+
+      def success?
+        $?.success?
+      end
+
+      def build_environment(environment = {})
+        @build.current_environment.merge(environment).collect { |key, value|
+          %{#{key}="#{value.gsub('"', '\\"')}"}
+        }.join(" ")
+      end
+    end
+  end
+end
