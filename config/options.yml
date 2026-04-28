@@ -6,7 +6,7 @@
       en: "The language to be used by TinyCI."
       de: "Die Sprache, die von TinyCI benutzt wird."
     type: String
-    default: <%= YAML.load(File.read("#{RAILS_ROOT}/config/language.yml"))['language'] rescue 'en' %>
+    default: <%= YAML.load(File.read(Rails.root.join('config', 'language.yml').to_s))['language'] rescue 'en' %>
     values:
       - en
       - de
