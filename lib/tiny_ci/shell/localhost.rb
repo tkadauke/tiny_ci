@@ -44,7 +44,7 @@ module TinyCI
       
     private
       def success?
-        $? == 0
+        $?.success?
       end
       
       def build_environment(environment = {})
