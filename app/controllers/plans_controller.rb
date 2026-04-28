@@ -1,4 +1,5 @@
 class PlansController < ApplicationController
+  before_action :require_user
   before_action :find_project, except: :full_index
   before_action :can_create_plans!,  only: %i[new create]
   before_action :can_edit_plans!,    only: %i[edit update]

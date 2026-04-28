@@ -1,4 +1,5 @@
 class Admin::ConfigurationsController < ApplicationController
+  before_action :require_user
   before_action :can_configure_system_variables!
 
   def show
