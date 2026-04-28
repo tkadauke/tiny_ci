@@ -33,8 +33,11 @@ class TinyCI::Notifier::BaseTest < ActiveSupport::TestCase
   end
   
   test "should log exceptions" do
-    RAILS_DEFAULT_LOGGER.expects(:info).with('abc')
-    
+    logger = stub
+    logger.expects(:error).with('abc')
+    logger.expects(:error).with(instance_of(String))
+    Rails.stubs(:logger).returns(logger)
+
     build = stub(:good? => true, :bad? => false)
     TinyCI::Notifier::Base.expects(:subclasses).returns(TestNotifier.to_s)
     TestNotifier.any_instance.expects(:success).with(build).raises(StandardError.new('abc'))
