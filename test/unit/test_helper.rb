@@ -1,3 +1,1 @@
-require File.dirname(__FILE__) + '/../test_helper'
-
-require 'mocha'
+require_relative "../test_helper"

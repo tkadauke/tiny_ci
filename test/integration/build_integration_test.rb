@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require_relative "../test_helper"
 
-class BuildTest < ActiveSupport::TestCase
+class BuildIntegrationTest < ActiveSupport::TestCase
   def setup
     @project = Project.create(:name => 'some_project')
     @plan = @project.plans.create(:name => 'some_plan')

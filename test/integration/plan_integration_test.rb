@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require_relative "../test_helper"
 
-class PlanTest < ActiveSupport::TestCase
+class PlanIntegrationTest < ActiveSupport::TestCase
   def setup
     @project = Project.create(:name => 'some_project')
   end
@@ -107,7 +107,7 @@ class PlanTest < ActiveSupport::TestCase
     next_plan = @project.plans.create!(:name => 'another_plan', :previous => plan)
     new_parent = @project.plans.create!(:name => 'parent_plan')
     
-    plan.update_attributes(:parent => new_parent)
+    plan.update(parent: new_parent)
     assert_nil plan.next
     assert_nil next_plan.reload.previous
   end

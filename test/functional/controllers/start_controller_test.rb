@@ -1,20 +1,19 @@
-require File.dirname(__FILE__) + '/../test_helper'
-
+require_relative "../test_helper"
 class StartControllerTest < ActionController::TestCase
   test "should get index on empty database" do
-    get 'index'
+    get :index
     assert_response :success
   end
   
   test "should get index on filled database" do
     Slave.create(:name => 'some_slave', :protocol => 'localhost')
-    get 'index'
+    get :index
     assert_response :success
   end
   
   test "should update index on filled database" do
     Slave.create(:name => 'some_slave', :protocol => 'localhost')
-    xhr :get, 'index'
+    get :index, xhr: true
     assert_response :success
   end
 end

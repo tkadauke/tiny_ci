@@ -1,43 +1,42 @@
-require File.dirname(__FILE__) + '/../../test_helper'
-
+require_relative "../../test_helper"
 class Admin::SlavesControllerTest < ActionController::TestCase
   test "should render index page" do
     Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'index'
+    get :index
     assert_response :success
   end
   
   test "should show slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'show', :id => slave.name
+    get :show, params: { id: slave.name }
     assert_response :success
   end
   
   test "should raise record not found if slave does not exist" do
-    slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
-    
+    Slave.create(:name => 'some_slave', :protocol => 'localhost')
+
     assert_raise ActiveRecord::RecordNotFound do
-      get 'show', :id => nil
+      get :show, params: { id: 'no-such-slave' }
     end
   end
   
   test "should show new" do
-    get 'new'
+    get :new
     assert_response :success
   end
   
   test "should clone slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'new', :clone => slave.name
+    get :new, params: { clone: slave.name }
     assert_response :success
   end
   
   test "should create slave" do
     assert_difference 'Slave.count' do
-      post 'create', :slave => { :name => 'some_slave', :protocol => 'localhost' }
+      post :create, params: { slave: { name: 'some_slave', protocol: 'localhost' } }
       assert_response :redirect
       assert_not_nil flash[:notice]
     end
@@ -45,8 +44,8 @@ class Admin::SlavesControllerTest < ActionController::TestCase
 
   test "should not create invalid slave" do
     assert_no_difference 'Slave.count' do
-      post 'create'
-      assert_response :success
+      post :create, params: { slave: { name: '' } }
+      assert_response :unprocessable_content
       assert_nil flash[:notice]
     end
   end
@@ -54,14 +53,14 @@ class Admin::SlavesControllerTest < ActionController::TestCase
   test "should show edit" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
     
-    get 'edit', :id => slave.name
+    get :edit, params: { id: slave.name }
     assert_response :success
   end
   
   test "should update slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
-    post 'update', :id => slave.name, :slave => { :name => 'some_slave', :protocol => 'ssh' }
+    post :update, params: { id: slave.name, slave: { name: 'some_slave', protocol: 'ssh' } }
     assert_response :redirect
     assert_not_nil flash[:notice]
   end
@@ -69,8 +68,8 @@ class Admin::SlavesControllerTest < ActionController::TestCase
   test "should not update invalid slave" do
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
-    post 'update', :id => slave.name, :slave => { :name => 'some_slave', :protocol => nil }
-    assert_response :success
+    post :update, params: { id: slave.name, slave: { name: 'some_slave', protocol: nil } }
+    assert_response :unprocessable_content
     assert_nil flash[:notice]
   end
 
@@ -78,7 +77,7 @@ class Admin::SlavesControllerTest < ActionController::TestCase
     slave = Slave.create(:name => 'some_slave', :protocol => 'localhost')
 
     assert_difference 'Slave.count', -1 do
-      delete 'destroy', :id => slave.name
+      delete :destroy, params: { id: slave.name }
       assert_response :redirect
       assert_not_nil flash[:notice]
     end

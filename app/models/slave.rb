@@ -9,10 +9,10 @@ class Slave < ApplicationRecord
   has_many :running_builds, -> { where(status: "running") }, class_name: "Build"
 
   scope :least_busy, -> {
-    includes(:running_builds)
-      .group("builds.id")
-      .order("COUNT(builds.id)")
-      .where.not(offline: true)
+    where.not(offline: true)
+      .left_joins(:running_builds)
+      .group("slaves.id")
+      .order(Arel.sql("COUNT(builds.id) ASC"))
   }
 
   validates :name, presence: true, uniqueness: true

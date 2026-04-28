@@ -5,8 +5,6 @@ class User < ApplicationRecord
                     format: { with: /\A[a-zA-Z0-9\-_]+\z/ }
   validates :email, presence: true, uniqueness: true
 
-  attr_readonly :role
-
   after_initialize :extend_with_role
 
   def to_param

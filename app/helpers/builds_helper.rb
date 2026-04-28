@@ -1,18 +1,17 @@
 module BuildsHelper
   def render_report(report, version)
-    template_path = Rails.root.join('lib', 'tiny_ci', 'report', 'templates', version.to_s, "#{report.class.name.underscore.split('/').last}.html.erb").to_s
-    begin
-      render :file => template_path, :locals => { :report => report }
-    rescue ActionView::MissingTemplate
-      ""
-    end
+    template_path = Rails.root.join("lib/tiny_ci/report/templates", version.to_s, "#{report.class.name.underscore.split('/').last}.html.erb").to_s
+    render(file: template_path, locals: { report: report })
+  rescue ActionView::MissingTemplate
+    ""
   end
-  
+
   def stop_link(project, plan, build)
-    spinner_id = dom_id(build, :spinner)
-    html = ""
-    html << link_to_remote(image_tag("icons/small/stopped.png") + ' Stop', :url => stop_project_plan_build_path(project, plan, build), :method => :post, :before => "$('#{spinner_id}').show()")
-    html << image_tag('spinner.gif', :id => spinner_id, :style => 'display: none')
-    html
+    button_to(
+      image_tag("icons/small/stopped.png") + " Stop",
+      stop_project_plan_build_path(project, plan, build),
+      method: :post,
+      class: "stop-link"
+    )
   end
 end

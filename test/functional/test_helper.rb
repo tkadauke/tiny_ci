@@ -1,41 +1,33 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require "authlogic/test_case"
+require_relative "../test_helper"
 
 class ActionController::TestCase
-  setup :activate_authlogic
-  
   def create_user(attributes = {})
-    default_attributes = {
-      :login => 'alice',
-      :password => 'password',
-      :password_confirmation => 'password',
-      :email => (attributes[:login] || 'alice') + '@example.com'
+    login = attributes[:login] || "alice"
+    defaults = {
+      login: login,
+      password: "password",
+      password_confirmation: "password",
+      email: attributes[:email] || "#{login}@example.com"
     }
-    User.create!(default_attributes.merge(attributes)).tap do
-      logout
-    end
+    User.create!(defaults.merge(attributes))
   end
-  
+
   def create_admin(attributes = {})
-    default_attributes = {
-      :login => 'admin'
-    }
-    user = create_user(default_attributes.merge(attributes))
-    user.role = 'admin'
-    user.save
+    user = create_user({ login: "admin" }.merge(attributes))
+    user.update!(role: "admin")
     user
   end
-  
+
   def login_with(user)
-    UserSession.create(user)
+    @request.session[:user_id] = user.id
   end
-  
+
   def logout
-    UserSession.find.destroy
+    @request.session.delete(:user_id)
   end
-  
+
   def assert_access_denied
     assert_response :redirect
-    assert_equal 'You can not do that', flash[:error]
+    assert_equal "You can not do that", flash[:error]
   end
 end

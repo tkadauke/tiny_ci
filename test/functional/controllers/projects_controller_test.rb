@@ -1,42 +1,41 @@
-require File.dirname(__FILE__) + '/../test_helper'
-
+require_relative "../test_helper"
 class ProjectsControllerTest < ActionController::TestCase
   test "should render index page" do
     Project.create(:name => 'some_project')
     
-    get 'index'
+    get :index
     assert_response :success
   end
   
   test "should show new" do
-    get 'new'
+    get :new
     assert_response :success
   end
   
   test "should not show new to unauthorized user" do
     create_user
     
-    get 'new'
+    get :new
     assert_access_denied
   end
   
   test "should redirect to plans page on show action" do
     project = Project.create(:name => 'some_project')
     
-    get 'show', :id => project.name
+    get :show, params: { id: project.name }
     assert_response :redirect
   end
   
   test "should clone project" do
     project = Project.create(:name => 'some_project')
     
-    get 'new', :clone => project.name
+    get :new, params: { clone: project.name }
     assert_response :success
   end
   
   test "should create project" do
     assert_difference 'Project.count' do
-      post 'create', :project => { :name => 'some_project' }
+      post :create, params: { project: { name: 'some_project' } }
       assert_response :redirect
       assert_not_nil flash[:notice]
     end
@@ -46,15 +45,15 @@ class ProjectsControllerTest < ActionController::TestCase
     create_user
     
     assert_no_difference 'Project.count' do
-      post 'create', :project => { :name => 'some_project' }
+      post :create, params: { project: { name: 'some_project' } }
       assert_access_denied
     end
   end
 
   test "should not create invalid project" do
     assert_no_difference 'Project.count' do
-      post 'create'
-      assert_response :success
+      post :create, params: { project: { name: '' } }
+      assert_response :unprocessable_content
       assert_nil flash[:notice]
     end
   end
@@ -62,7 +61,7 @@ class ProjectsControllerTest < ActionController::TestCase
   test "should show edit" do
     project = Project.create(:name => 'some_project')
     
-    get 'edit', :id => project.name
+    get :edit, params: { id: project.name }
     assert_response :success
   end
   
@@ -70,14 +69,14 @@ class ProjectsControllerTest < ActionController::TestCase
     create_user
     project = Project.create(:name => 'some_project')
     
-    get 'edit', :id => project.name
+    get :edit, params: { id: project.name }
     assert_access_denied
   end
   
   test "should update project" do
     project = Project.create(:name => 'some_project')
 
-    post 'update', :id => project.name, :project => { :name => 'some_project' }
+    post :update, params: { id: project.name, project: { name: 'some_project' } }
     assert_response :redirect
     assert_not_nil flash[:notice]
   end
@@ -86,16 +85,16 @@ class ProjectsControllerTest < ActionController::TestCase
     create_user
     project = Project.create(:name => 'some_project')
 
-    post 'update', :id => project.name, :project => { :name => 'some_project' }
+    post :update, params: { id: project.name, project: { name: 'some_project' } }
     assert_access_denied
   end
 
   test "should not update invalid project" do
     project = Project.create(:name => 'some_project')
-    project_two = Project.create(:name => 'some_project_two')
+    Project.create(:name => 'some_project_two')
 
-    post 'update', :id => project.name, :project => { :name => 'some_project_two' }
-    assert_response :success
+    post :update, params: { id: project.name, project: { name: 'some_project_two' } }
+    assert_response :unprocessable_content
     assert_nil flash[:notice]
   end
 end

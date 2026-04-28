@@ -1,5 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
-
+require_relative "../test_helper"
 class BuildsControllerTest < ActionController::TestCase
   def setup
     @project = Project.create(:name => 'default')
@@ -8,20 +7,20 @@ class BuildsControllerTest < ActionController::TestCase
   test "should render index page" do
     plan = @project.plans.create(:name => 'some_plan')
     
-    get 'index', :project_id => @project.name, :plan_id => plan.name
+    get :index, params: { project_id: @project.name, plan_id: plan.name }
     assert_response :success
   end
   
   test "should update index page" do
     plan = @project.plans.create(:name => 'some_plan')
     
-    xhr :get, 'index', :project_id => @project.name, :plan_id => plan.name
+    get :index, params: { project_id: @project.name, plan_id: plan.name }, xhr: true
     assert_response :success
   end
   
   test "should raise record not found if plan not found" do
     assert_raise ActiveRecord::RecordNotFound do
-      get 'index', :project_id => @project.name, :plan_id => nil
+      get :index, params: { project_id: @project.name, plan_id: 'nonexistent' }
     end
   end
   
@@ -30,7 +29,7 @@ class BuildsControllerTest < ActionController::TestCase
     plan = @project.plans.create(:name => 'some_plan')
     build = plan.builds.create(:status => 'success', :starter => user)
     
-    get 'show', :project_id => @project.name, :plan_id => plan.name, :id => build.position
+    get :show, params: { project_id: @project.name, plan_id: plan.name, id: build.position }
     assert_response :success
   end
   
@@ -38,15 +37,15 @@ class BuildsControllerTest < ActionController::TestCase
     plan = @project.plans.create(:name => 'some_plan')
     build = plan.builds.create(:status => 'success')
     
-    xhr :get, 'show', :project_id => @project.name, :plan_id => plan.name, :id => build.position
+    get :show, params: { project_id: @project.name, plan_id: plan.name, id: build.position }, xhr: true
     assert_response :success
   end
   
   test "should raise record not found if build does not exist" do
     plan = @project.plans.create(:name => 'some_plan')
-    
+
     assert_raise ActiveRecord::RecordNotFound do
-      get 'show', :project_id => @project.name, :plan_id => plan.name, :id => nil
+      get :show, params: { project_id: @project.name, plan_id: plan.name, id: 999 }
     end
   end
   
@@ -54,7 +53,7 @@ class BuildsControllerTest < ActionController::TestCase
     plan = @project.plans.create(:name => 'some_plan')
     
     assert_difference 'Build.count' do
-      post 'create', :project_id => @project.name, :plan_id => plan.name
+      post :create, params: { project_id: @project.name, plan_id: plan.name }
       assert_response :redirect
       assert_not_nil flash[:notice]
     end
@@ -66,7 +65,7 @@ class BuildsControllerTest < ActionController::TestCase
     plan = @project.plans.create(:name => 'some_plan')
     
     login_with user
-    post 'create', :project_id => @project.name, :plan_id => plan.name
+    post :create, params: { project_id: @project.name, plan_id: plan.name }
     assert_equal user, Build.last.starter
   end
   
@@ -74,7 +73,7 @@ class BuildsControllerTest < ActionController::TestCase
     plan = @project.plans.create(:name => 'some_plan')
     build = plan.builds.create(:status => 'running')
   
-    post 'stop', :project_id => @project.name, :plan_id => plan.name, :id => build.position
+    post :stop, params: { project_id: @project.name, plan_id: plan.name, id: build.position }
     assert_response :redirect
     assert build.reload.stopping?
   end
@@ -83,7 +82,7 @@ class BuildsControllerTest < ActionController::TestCase
     plan = @project.plans.create(:name => 'some_plan')
     build = plan.builds.create(:status => 'running')
   
-    xhr :post, 'stop', :project_id => @project.name, :plan_id => plan.name, :id => build.position
+    post :stop, params: { project_id: @project.name, plan_id: plan.name, id: build.position }, xhr: true
     assert_response :success
     assert build.reload.stopping?
   end

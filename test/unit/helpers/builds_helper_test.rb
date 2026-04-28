@@ -1,39 +1,38 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require_relative "../test_helper"
 
 class BuildsHelperTest < ActionView::TestCase
   class TestReport
   end
-  
-  def setup
-    stubs(:protect_against_forgery?).returns(false)
-  end
-  
+
   test "should render report if template is available" do
     report = TestReport.new
-    expects(:render).with(has_entry(:locals => { :report => report })).returns('result')
-    assert_equal 'result', render_report(report, :details)
+    expects(:render).with(has_entry(locals: { report: report })).returns("result")
+    assert_equal "result", render_report(report, :details)
   end
-  
+
   test "should return empty string if template is missing" do
     report = TestReport.new
-    expects(:render).raises(ActionView::MissingTemplate.new(['paths'], 'path'))
-    assert_equal '', render_report(report, :details)
+    expects(:render).raises(ActionView::MissingTemplate.new(["paths"], "path", [], false, "html"))
+    assert_equal "", render_report(report, :details)
   end
-  
-  test "should render ajax stop link" do
-    html = stop_link(stub(:id => 27), stub(:id => 13), stub(:id => 7))
-    assert html =~ /<a href="#"/
-    assert html =~ /Ajax.Request/
-    assert html =~ /<img/
+
+  test "should render stop link as a POST form" do
+    project = Project.new(name: "p")
+    plan = stub(to_param: "main")
+    build = stub(to_param: "1", to_key: nil, model_name: ActiveModel::Name.new(Build))
+    project.stubs(to_param: "p")
+    html = stop_link(project, plan, build)
+    assert_match(/<form/, html)
+    assert_match(/method="post"/, html)
+    assert_match(/Stop/, html)
   end
-  
-  test "should include image in stop link" do
-    html = stop_link(stub(:id => 27), stub(:id => 13), stub(:id => 7))
-    assert html =~ /stopped.png/
-  end
-  
-  test "should include spinner image in stop link" do
-    html = stop_link(stub(:id => 27), stub(:id => 13), stub(:id => 7))
-    assert html =~ /spinner.gif/
+
+  test "should include the stop icon" do
+    project = Project.new(name: "p")
+    plan = stub(to_param: "main")
+    build = stub(to_param: "1", to_key: nil, model_name: ActiveModel::Name.new(Build))
+    project.stubs(to_param: "p")
+    html = stop_link(project, plan, build)
+    assert_match(%r{icons/small/stopped\.png}, html)
   end
 end

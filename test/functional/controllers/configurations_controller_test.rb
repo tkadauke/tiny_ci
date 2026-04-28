@@ -1,10 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
-
+require_relative "../test_helper"
 class ConfigurationsControllerTest < ActionController::TestCase
   test "should show user settings" do
     login_with create_user
     
-    get 'show'
+    get :show
     assert_response :success
   end
   
@@ -12,7 +11,7 @@ class ConfigurationsControllerTest < ActionController::TestCase
     user = create_user
     login_with user
     
-    post 'create', :config => { :growl_host => 'localhost' }
+    post :create, params: { config: { growl_host: 'localhost' } }
     assert_not_nil flash[:notice]
     assert_response :redirect
     
