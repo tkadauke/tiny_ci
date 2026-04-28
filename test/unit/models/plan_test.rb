@@ -132,7 +132,11 @@ class PlanTest < ActiveSupport::TestCase
   end
 
   test "should only return numbered resources" do
-    skip "TinyCI::Resources::Parser is currently a stub — see app/lib/tiny_ci/resources.rb"
+    assert_equal([], Plan.new.needed_resources.to_a)
+    assert_equal([], Plan.new(requirements: "linux").needed_resources.to_a)
+    assert_equal([["gb ram", 2]], Plan.new(requirements: "linux, 2 gb ram").needed_resources.to_a)
+    assert_equal([["cpus", 4], ["gb ram", 2]],
+                 Plan.new(requirements: "linux, 2 gb ram, 4 cpus").needed_resources.to_a.sort_by(&:first))
   end
 
   private

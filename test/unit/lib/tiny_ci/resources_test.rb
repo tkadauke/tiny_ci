@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require_relative "../../../test_helper"
 
 class TinyCI::ResourcesTest < ActiveSupport::TestCase
   test "should find out if one set includes another set of numbered resources" do

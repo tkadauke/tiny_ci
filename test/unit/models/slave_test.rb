@@ -40,20 +40,70 @@ class SlaveTest < ActiveSupport::TestCase
     assert slave.free?
   end
 
-  # The slave-matching tests depend on TinyCI::Resources::Parser which is a
-  # stub in app/lib/tiny_ci/resources.rb pending the scheduler port.
-  %w[
-    should_find_least_busy_slave_for_build
-    should_find_no_slave_for_build_if_requirements_are_too_high
-    should_find_no_slave_for_build_if_unnumbered_requirements_is_not_met
-    should_find_slave_if_max_number_of_builds_is_not_exceeded
-    should_not_find_slave_if_every_slaves_max_number_of_builds_is_exceeded
-    should_find_least_busy_slave_for_build_even_if_another_build_is_running
-    should_not_find_a_slave_for_build_if_there_are_too_many_resources_reserved
-  ].each do |name|
-    test name.tr("_", " ") do
-      skip "Slave#can_build_now? depends on unported TinyCI::Resources::Parser"
-    end
+  test "should find least busy slave for build" do
+    slave = Slave.new(capabilities: "2 gb ram, linux, windows")
+    plan = Plan.new(requirements: "1 gb ram, linux")
+    build = Build.new(plan: plan)
+    Slave.expects(:least_busy).returns([slave])
+    assert_equal slave, Slave.find_free_slave_for(build)
+  end
+
+  test "should find no slave for build if requirements are too high" do
+    slave = Slave.new(capabilities: "2 gb ram, linux, windows")
+    plan = Plan.new(requirements: "5 gb ram, linux")
+    build = Build.new(plan: plan)
+    Slave.expects(:least_busy).returns([slave])
+    assert_nil Slave.find_free_slave_for(build)
+  end
+
+  test "should find no slave for build if unnumbered requirements is not met" do
+    slave = Slave.new(capabilities: "2 gb ram, linux, windows")
+    plan = Plan.new(requirements: "1 gb ram, macos")
+    build = Build.new(plan: plan)
+    Slave.expects(:least_busy).returns([slave])
+    assert_nil Slave.find_free_slave_for(build)
+  end
+
+  test "should find slave if max number of builds is not exceeded" do
+    slave = Slave.new(max_builds: 2)
+    plan = Plan.new
+    pending_build = Build.new(plan: plan)
+    slave.stubs(:running_builds).returns(stub(count: 1, each: nil))
+
+    assert slave.can_build_now?(pending_build)
+  end
+
+  test "should not find slave if every slave's max number of builds is exceeded" do
+    slave = Slave.new(max_builds: 2)
+    plan = Plan.new
+    pending_build = Build.new(plan: plan)
+    slave.stubs(:running_builds).returns(stub(count: 2))
+
+    assert_not slave.can_build_now?(pending_build)
+  end
+
+  test "should find least busy slave for build even if another build is running" do
+    slave = Slave.new(capabilities: "2 gb ram, linux, windows")
+    running_plan = Plan.new(requirements: "1 gb ram, linux")
+    running_build = Build.new(plan: running_plan)
+    slave.stubs(:running_builds).returns([running_build])
+
+    plan = Plan.new(requirements: "1 gb ram, linux")
+    build = Build.new(plan: plan)
+    Slave.expects(:least_busy).returns([slave])
+    assert_equal slave, Slave.find_free_slave_for(build)
+  end
+
+  test "should not find a slave for build if there are too many resources reserved" do
+    slave = Slave.new(capabilities: "3 gb ram, linux, windows")
+    running_plan = Plan.new(requirements: "2 gb ram, linux")
+    running_build = Build.new(plan: running_plan)
+    slave.stubs(:running_builds).returns([running_build])
+
+    plan = Plan.new(requirements: "2 gb ram, linux")
+    build = Build.new(plan: plan)
+    Slave.expects(:least_busy).returns([slave])
+    assert_nil Slave.find_free_slave_for(build)
   end
 
   test "should clean up environment before save" do
