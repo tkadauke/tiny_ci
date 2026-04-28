@@ -1,0 +1,10 @@
+Hello,
+
+Build #<%= @build.position %> of plan <%= @build.name %> succeeded.
+
+See
+
+  http://<%= TinyCI::Config.site_root %><%= project_plan_build_path(@build.project, @build.plan, @build) %>
+
+Sincerely,
+TinyCI
