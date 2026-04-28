@@ -57,9 +57,8 @@ module TinyCI
       @build.shell.run(command, parameters, @pwd, @build.environment)
     end
 
-    # Build steps. Legacy modules under modules/{builders,deployers}/ used to
-    # `class_eval` these onto the DSL at boot. We just define them here —
-    # adding new step types is a normal class definition + DSL method.
+    # Build steps. Adding a new step type is a class definition under
+    # TinyCI::Steps + a method on the DSL.
 
     def rake(*tasks)
       environment = tasks.extract_options!
