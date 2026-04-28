@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require_relative "../../../test_helper"
 
 class TinyCI::OutputTest < ActiveSupport::TestCase
   test "should be empty if input string is empty" do
@@ -7,7 +7,7 @@ class TinyCI::OutputTest < ActiveSupport::TestCase
   
   test "should parse output" do
     output = TinyCI::Output.new("1,cmd,some output\n2,cmd,more output")
-    lines = output.collect
+    lines = output.to_a
     assert_equal 'cmd', lines.first.command
     assert_equal 'some output', lines.first.line
     assert_equal 'more output', lines.last.line

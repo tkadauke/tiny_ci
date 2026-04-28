@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test_helper'
+require_relative "../../../../test_helper"
 
 class TinyCI::Report::TestReportTest < ActiveSupport::TestCase
   test "should add test case" do

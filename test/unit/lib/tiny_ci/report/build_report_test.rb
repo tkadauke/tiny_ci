@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test_helper'
+require_relative "../../../../test_helper"
 
 class TinyCI::Report::BuildReportTest < ActiveSupport::TestCase
   test "should initialize task accessor" do

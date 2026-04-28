@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test_helper'
+require_relative "../../../../test_helper"
 
 class TinyCI::Report::DeployTaskReportTest < ActiveSupport::TestCase
   test "should initialize commands accessor" do
