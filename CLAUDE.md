@@ -4,81 +4,71 @@ This file provides guidance to Claude Code (and similar coding agents) when work
 
 ## Project Overview
 
-TinyCI is a continuous integration server written as a Ruby on Rails 2.3 application. It schedules and runs builds across local and remote build slaves, supports chained and parallel (child) builds, and exposes a web UI on port 7199 with real-time updates via Juggernaut. While intended primarily for Rails projects using Git and Test::Unit, builds can be configured for any language. Functionality is extensible through plugins (builders, notifiers, SCM, deployers) located under `modules/`.
+TinyCI is a continuous integration server. It schedules and runs builds across local and remote build slaves, supports chained and parallel (child) builds, and exposes a web UI on port 7199. While intended primarily for Rails projects using Git and Test::Unit, builds can be configured for any language. New build steps, SCMs, and notifiers are plain classes under `app/lib/tiny_ci/` plus a method on `TinyCI::DSL`.
+
+The repo was migrated from Rails 2.3 to Rails 7.2 in early 2026 (see git log + `docs/modernize.md`). When in doubt about a pattern, copy what the rest of the modern code does — do not reach for Rails 2 idioms.
 
 ## Tech Stack
 
-- Ruby on Rails 2.3.16
-- MySQL (via the `mysql` gem)
-- Authlogic for authentication
-- Juggernaut 0.5.8 for real-time page updates
+- Ruby 3.2.3 (`.ruby-version`)
+- Rails 7.2 (`config.load_defaults 7.2`)
+- Trilogy / MySQL in production, SQLite in dev/test
+- `has_secure_password` for authentication (no Authlogic)
+- ActiveJob (default `:async` adapter) for the build scheduler
 - net-ssh for remote build slave communication
-- RedCloth, fastercsv
-- Test::Unit (unit/functional), RSpec 1.3, Cucumber + Webrat (features), Mocha
-- Bundler / Gemfile
+- Test::Unit + Mocha for unit/functional tests; legacy Cucumber `.feature` files under `features/` are kept as a behavior spec for the eventual Capybara/Cuprite system-test port (§3.3 of the roadmap) but do not run today
+- RedCloth for help-topic rendering
 
 ## Repository Structure
 
-- `app/` - Standard Rails MVC: `controllers/`, `models/`, `views/`, `helpers/`. Notable models: `build.rb`, `plan.rb`, `project.rb`, `slave.rb`, `user.rb`, `build_observer.rb`.
-- `config/` - Rails environment, routes, locales (English + German), initializers, `version.rb` (`TINY_CI_VERSION`), `background.yml`, `options.yml`.
-- `db/` - Migrations and schema.
-- `lib/tiny_ci/` - Core CI logic outside of Rails MVC: `scheduler/`, `background_queue.rb`, `dsl.rb`, `config.rb`, `output.rb`, `output_parser/`, `report/`, `shell.rb`, `source_control/`, `steps/`, `notifier/`, `setup/`.
-- `modules/` - Plugin tree loaded by `modules/load_modules.rb`. Layout: `modules/<kind>/<name>/init.rb`. Existing kinds: `builders/rake`, `scm/git`, `notifiers/email`, `notifiers/growl`, `deployers/capistrano`.
-- `script/` - Rails 2 scripts plus TinyCI-specific entry points: `tiny_ci`, `scheduler`, `builder`, `daemon`, `background`, `cucumber`.
-- `test/` - `unit/`, `functional/`, `performance/`, plus `test_helper.rb`.
-- `features/` - Cucumber feature files and step definitions.
-- `vendor/`, `public/`, `doc/`, `log/`, `tmp/` - Standard Rails dirs.
+- `app/` - Standard Rails MVC.
+  - `app/jobs/build_job.rb` runs a single build.
+  - `app/lib/tiny_ci/` holds the CI domain code: `scheduler.rb`, `dsl.rb`, `shell/`, `source_control/`, `steps/`, `notifier/`, `output.rb`, `output_parser/`, `report/`, `setup/`, `resources.rb`, `config.rb`, `base_config.rb`, `util/`. Zeitwerk-autoloaded.
+  - `app/lib/juggernaut.rb` is a no-op stub kept so legacy view helpers still resolve until Action Cable / Hotwire replaces them.
+  - `app/views/build_reports/{details,gist}/` holds the report partials rendered by `BuildsHelper#render_report`.
+  - `app/mailers/build_mailer.rb` + `app/views/build_mailer/` for the email notifier.
+- `config/` - Rails config. `application.rb`, `routes.rb`, `database.yml`, `puma.rb`, `locales/` (en + de), `initializers/`, `version.rb` (`TINY_CI_VERSION`), `options.yml` and `user_options.yml` consumed by `TinyCI::Config`/`TinyCI::BaseConfig`. `templates/` are ERB-rendered into `config/` by the first-run setup wizard.
+- `db/` - `schema.rb` is the source of truth for fresh installs (`bin/rails db:schema:load`); `db/migrate/` is preserved for reference but not the recommended bootstrap path.
+- `lib/tasks/` - Rake tasks, including `tiny_ci:scheduler` (foreground poller) and the legacy `setup` / `dist` / `configuration` tasks (some still need a Rails 7 audit).
+- `bin/` - `rails`, `rake`, `setup`. The Rails 2 `script/*` tree is gone.
+- `test/` - `unit/`, `functional/`, `integration/`, plus `test_helper.rb`. ~320 runs.
+- `features/` - Legacy Cucumber feature files; not run today (see `features/README.md`).
+- `public/`, `doc/`, `log/`, `tmp/`, `storage/` - Standard Rails dirs.
 
 ## Common Commands
 
-Setup (installs bundled gems):
-
-    rake setup            # or: sudo rake setup when cloning from source
-
-Run server (production):
-
-    RAILS_ENV=production rake start    # starts daemon on port 7199
-    rake stop
-    RAILS_ENV=production rake restart
-
-Development run (all required processes, foreground):
-
-    script/tiny_ci
-
-Tests:
-
-    rake                  # unit + functional tests
-    rake test:modules     # runs `rake test` in each modules/*/*/ that has init.rb
-    rake test:coverage    # rcov coverage into test/coverage
-    rake cucumber:all     # feature tests (requires mocha, cucumber, webrat, rspec, rspec-rails)
-
-Distribution:
-
-    rake dist
-    rake distclean
+```
+bin/setup                              # install gems, prepare db
+bin/rails server -p 7199               # web tier
+bundle exec rake tiny_ci:scheduler     # run the build scheduler in the foreground
+bin/rails test                         # full test suite
+bin/rails zeitwerk:check               # eager-load every autoloaded file
+```
 
 ## Architecture & Conventions
 
-- Three runtime processes when idle: the Rails web server, the scheduler (spawns and supervises build processes), and a Juggernaut server pushing live UI updates.
-- The scheduler does not reload classes between requests; the Rails server does. Restart everything (Ctrl-C in `script/tiny_ci`) when changing scheduler-side code.
-- `config.active_record.observers = :build_observer` wires `app/models/build_observer.rb` for build lifecycle side effects.
-- Plugins are auto-loaded by `modules/load_modules.rb`, which globs `modules/*/*/init.rb`. New builders, SCMs, notifiers, or deployers go in their respective subdirectory and supply an `init.rb`.
-- Build configuration is expressed via the DSL in `lib/tiny_ci/dsl.rb`; output parsing and reporting live under `lib/tiny_ci/output_parser/` and `lib/tiny_ci/report/`.
-- Locales: i18n files under `config/locales/` (English and German). `i18n_tools` is used in development.
-- A `SETUP=true` environment variable short-circuits initialization (skips ActiveRecord/observers) so `rake setup` can run before the database exists.
+- The scheduler is `TinyCI::Scheduler` (module, not Singleton). `Scheduler.tick` is one stateless pass — pick the next buildable Build, find a free Slave, enqueue a `BuildJob`. `Scheduler.run` is the long-running poller used by the rake task. `BuildJob#perform` calls `Build#build!` and, if the build finished in `waiting` with a plan that has children, kicks off `plan.build_children!`.
+- Build configuration is the DSL in `app/lib/tiny_ci/dsl.rb`. Plan steps are stored as Ruby source in the DB and `instance_eval`'d — that is a documented RCE; replacing with a sandboxed / structured step format is a P0 in `docs/modernize.md` §3.6, and plan editing must remain admin-gated until then.
+- New step types (e.g. `bundle exec rspec`): add a class under `TinyCI::Steps::Builder::*` and a method on `DSL`. No plugin loader.
+- New SCMs: subclass `TinyCI::SourceControl::Base`, expose `update`. `repository :foo` will resolve `TinyCI::SourceControl::Foo`.
+- New notifiers: subclass `TinyCI::Notifier::Base`. The `inherited` hook auto-registers them.
+- Locales live in `config/locales/` (English + German). Translations that interpolate HTML must end in `_html` so Rails preserves `html_safe`.
+- A `SETUP=true` environment variable short-circuits initialization (skips ActiveRecord) so the first-run setup wizard can run before the database exists. The wizard is reached at `/admin/setup`.
+- Default port is 7199.
 
 ## Testing
 
-- Unit and functional tests use Test::Unit with Mocha; default `rake` target runs them.
-- Module tests are run from each module directory via `rake test:modules`.
-- Acceptance tests use Cucumber + Webrat under `features/`; run `rake cucumber:all`.
-- Test helpers: `test/test_helper.rb`, `test/unit/test_helper.rb`, `test/functional/test_helper.rb`.
+- Test::Unit + Mocha. Run with `bin/rails test`.
+- `test/test_helper.rb` requires `rails/test_help` and `mocha/minitest`. `test/functional/test_helper.rb` adds session-based `login_with`/`logout` helpers.
+- Integration tests live in `test/integration/` (legacy `test/functional/models/` was renamed to avoid class-name collisions).
+- 3 expected skips: 2 SSH tests use `Net::SSH::Test`'s scripted-channel API which is broken on net-ssh 7.x; 1 source_control_base_test only constructs an object with no assertions.
+- No CI pipeline yet — `docs/modernize.md` P0 calls for GitHub Actions but that's deferred until the modernization roadmap is more complete.
 
 ## Notes / Gotchas
 
-- This is Rails 2.3, not modern Rails. Patterns differ from Rails 5+: `config/environment.rb` style boot, `script/*` rather than `bin/*`, `Rails::Initializer.run`, `RAILS_ROOT`, observers, etc. Do not introduce Rails 3+ idioms unintentionally.
-- Gem versions in `Gemfile` are pinned to old releases (Rails 2.3.16, authlogic 2.1.3, rspec 1.3.0, cucumber-rails 0.3.0). Avoid bumping casually.
-- Default port is 7199.
-- Several test gems (mocha, cucumber, webrat, rspec, rspec-rails) are required for tests but not part of the self-contained distribution; install via Bundler/`rake setup`.
-- `source :rubygems` in the Gemfile is legacy syntax; modern Bundler may warn.
+- Modern Ruby's Psych YAML parser is strict. Don't put `[ :symbol1, :symbol2 ]` in YAML files (use `[symbol1, symbol2]` or quote them).
+- Translations that interpolate HTML must end in `_html` (`t('foo.bar_html', link: link_to(...))`), or Rails escapes the entire result.
+- `<% form_for ... %>` (no `=`) was Rails 2 buffer-style; Rails 3+ requires `<%= form_for ... %>` or the form renders blank.
+- Mocha's `mock(:method)` doesn't expect a call — use `stub(method: nil)` for a permissive mock.
+- `belongs_to :foo` adds implicit presence validation in Rails 5+. Tests that previously set `foo_id: 1` against a non-existent record now need a real record.
 - Internet Explorer is explicitly unsupported (per README).
