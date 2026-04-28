@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../config/environment'
-require 'drb'
-
-DRb.start_service "druby://localhost:2250", TinyCI::Scheduler::Server.instance
-
-TinyCI::Scheduler::Runner.run
