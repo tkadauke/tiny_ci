@@ -53,7 +53,10 @@ Note especially:
 - This is Rails 7.2 on Ruby 3.2.3 (just modernized — see git log)
 - The legacy scheduler/builder/modules under `lib/tiny_ci/scheduler/` etc.
   are NOT yet ported. Stubs live in `app/lib/tiny_ci/`.
-- The legacy Test::Unit / RSpec 1.3 / Cucumber tests do not run yet
+- The Test::Unit suite under `test/unit/` and `test/integration/` is
+  modernized and runs on Rails 7.2 (~210 runs, ~17 expected skips for
+  unported subsystems — see `test/disabled/README.md`). RSpec 1.3 and
+  Cucumber are gone; do not add tests in those frameworks.
 - There is no rubocop configured yet
 
 Read files relevant to the issue to understand the existing code before
@@ -80,12 +83,20 @@ bundler.
 ```bash
 BUNDLE_GEMFILE=.claude/worktrees/issue-NUMBER/Gemfile bundle install --quiet
 BUNDLE_GEMFILE=.claude/worktrees/issue-NUMBER/Gemfile bundle exec rails zeitwerk:check
+BUNDLE_GEMFILE=.claude/worktrees/issue-NUMBER/Gemfile bundle exec rails test
 ```
 
-`zeitwerk:check` is the minimum bar — it eager-loads every model/controller
-and catches the bulk of breakage. Add stronger checks (rspec, rubocop) once
-the modernization roadmap reaches them; do not invoke commands that don't
-exist yet.
+`zeitwerk:check` eager-loads every model/controller/helper and catches
+load-order breakage. The test suite catches behaviour regressions; both
+must be clean before pushing. Expected baseline: ~210 runs, 0 failures,
+0 errors, ~17 skips (the skipped count is fine; the others must all
+zero out).
+
+If the rbenv shim triggers permission-prompt loops, invoke through the
+absolute path of the versioned binary instead:
+```
+/Users/tkadauke/.rbenv/versions/3.2.3/bin/bundle exec rails test
+```
 
 If the change touches views/controllers, also boot the server (background)
 and curl the affected route to confirm a non-500 response.

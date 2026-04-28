@@ -86,12 +86,15 @@ block to prevent broad filesystem scans:
 5. Make the requested changes in the worktree following CLAUDE.md
 6. Validate (in worktree, fix and repeat until clean):
    ```
-   bundle -C .claude/worktrees/pr-NUMBER install --quiet
-   bundle exec --gemfile=.claude/worktrees/pr-NUMBER/Gemfile rails zeitwerk:check
+   BUNDLE_GEMFILE=.claude/worktrees/pr-NUMBER/Gemfile bundle install --quiet
+   BUNDLE_GEMFILE=.claude/worktrees/pr-NUMBER/Gemfile bundle exec rails zeitwerk:check
+   BUNDLE_GEMFILE=.claude/worktrees/pr-NUMBER/Gemfile bundle exec rails test
    ```
-   If a working test suite is available (see CLAUDE.md — currently the
-   legacy Test::Unit/RSpec 1.3 tests are not ported), also run it from the
-   worktree. Do not consider a PR ready unless `zeitwerk:check` is green.
+   `zeitwerk:check` covers load-order; the test suite covers behaviour.
+   Expected baseline: ~210 runs, 0 failures, 0 errors, ~17 skips. Do not
+   consider a PR ready unless both are clean. If the rbenv shim triggers
+   permission-prompt loops, invoke through the absolute path of the
+   versioned binary instead (`/Users/tkadauke/.rbenv/versions/3.2.3/bin/bundle ...`).
 7. `git -C .claude/worktrees/pr-NUMBER add -A && git -C .claude/worktrees/pr-NUMBER commit -m "..."`
 8. `git -C .claude/worktrees/pr-NUMBER push origin BRANCH`
 9. `git worktree remove .claude/worktrees/pr-NUMBER`

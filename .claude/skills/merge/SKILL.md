@@ -43,8 +43,19 @@ Resolve conflicts following CLAUDE.md if needed.
 ```
 bundle install --quiet
 bundle exec rails zeitwerk:check
+bundle exec rails test
 ```
-Fix any breakage, `git add -A && git commit`, repeat until clean.
+Both must be clean. `zeitwerk:check` catches load-order issues across
+the autoloaded tree; the test suite catches behaviour regressions. As
+of 2026-04-27 the suite has ~210 runs and ~17 expected skips — see
+test/disabled/README.md for which subsystems are still parked. Fix any
+breakage, `git add -A && git commit`, repeat until clean.
+
+To bypass the rbenv shim's permission-prompt loop, invoke through the
+absolute path of the versioned binary:
+```
+/Users/tkadauke/.rbenv/versions/3.2.3/bin/bundle exec rails test
+```
 
 ## Step 5: Push and merge
 
@@ -80,5 +91,5 @@ git branch -D BRANCH
 
 ## Rules
 - Never skip the rebase
-- Always run `zeitwerk:check` before pushing
+- Always run `zeitwerk:check` AND the test suite before pushing
 - If conflicts cannot be resolved, abort and tell the user
