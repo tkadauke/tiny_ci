@@ -208,12 +208,11 @@ class BuildTest < ActiveSupport::TestCase
   
   test "should flush output" do
     time = Time.now
-    
+
     build = Build.new(:updated_at => time)
     build.stubs(:plan).returns(stub(:name => 'some_plan'))
     build.add_to_output(time, 'command', 'some output')
-    build.expects(:reload).returns(build)
-    build.expects(:update_attributes).with(:output => "#{time.to_f},command,some output\n")
+    build.expects(:update_columns).with(has_entries(:output => "#{time.to_f},command,some output\n"))
     build.flush_output!
   end
   
