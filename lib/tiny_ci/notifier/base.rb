@@ -32,7 +32,8 @@ module TinyCI
           begin
             yield
           rescue Exception => e
-            RAILS_DEFAULT_LOGGER.info(e.message)
+            Rails.logger.error(e.message)
+            Rails.logger.error(e.backtrace.join("\n"))
           end
         end
       end
