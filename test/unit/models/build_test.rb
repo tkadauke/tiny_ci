@@ -26,23 +26,93 @@ class BuildTest < ActiveSupport::TestCase
     assert_nil child.revision
   end
 
-  # The following tests exercise Build#build!, which orchestrates
-  # TinyCI::Shell + TinyCI::DSL + slave/SCM. Those classes are stubs in
-  # app/lib/tiny_ci/ pending the Solid Queue scheduler port — see
-  # docs/modernize.md §3.5. Re-enable when that subsystem lands.
-  %w[
-    should_use_the_slaves_shell_when_building
-    should_create_base_directory
-    should_evaluate_steps
-    should_set_status_to_success_when_finished
-    should_set_status_to_waiting_when_finished_but_children_are_present
-    should_set_status_to_failure_on_failing_command
-    should_ignore_exception_when_build_process_is_killed
-    should_set_status_to_error_on_internal_error
-  ].each do |name|
-    test name.tr("_", " ") do
-      skip "Build#build! depends on unported TinyCI::Shell/DSL — see test/disabled/README.md"
+  test "should use the slave's shell when building" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(:plan).returns(stub(has_children?: false))
+    build.stubs(slave: stub(protocol: "ssh"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate)
+    build.stubs(:update)
+
+    TinyCI::Shell::SSH.expects(:new).returns(stub(mkdir: nil))
+    build.build!
+  end
+
+  test "should create base directory" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(:plan).returns(stub(has_children?: false))
+    build.stubs(slave: stub(protocol: "localhost", base_path: "/some/base/path"))
+    shell = mock
+    shell.expects(:mkdir)
+    TinyCI::Shell::Localhost.stubs(:new).returns(shell)
+    TinyCI::DSL.stubs(:evaluate)
+
+    build.stubs(:update)
+    build.build!
+  end
+
+  test "should evaluate steps" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(:plan).returns(stub(has_children?: false))
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.expects(:evaluate)
+
+    build.stubs(:update)
+    build.build!
+  end
+
+  test "should set status to success when finished" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(:plan).returns(stub(has_children?: false))
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate)
+
+    build.expects(:update).with(has_entry(status: "success"))
+    build.build!
+  end
+
+  test "should set status to waiting when finished but children are present" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(:plan).returns(stub(has_children?: true))
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate)
+
+    build.expects(:update).with({ status: "waiting" })
+    build.build!
+  end
+
+  test "should set status to failure on failing command" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate).raises(TinyCI::Shell::CommandExecutionFailed)
+
+    build.expects(:update).with(has_entry(status: "failure"))
+    build.build!
+  end
+
+  test "should ignore exception when build process is killed" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate).raises(SignalException.new("TERM"))
+
+    assert_nothing_raised do
+      build.build!
     end
+  end
+
+  test "should set status to error on internal error" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate).raises(RuntimeError)
+
+    build.expects(:update).with(has_entry(status: "error"))
+    build.build!
   end
 
   test "should stop build" do
