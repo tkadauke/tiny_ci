@@ -1,14 +1,16 @@
 module TinyCI
-  # Build-step DSL. Plan steps are stored in the database as Ruby source and
-  # executed via instance_eval against an instance of this class. That is a
-  # remote-code-execution vector by design — anyone who can edit a plan can
-  # run arbitrary code on every build slave. Replacing this with a sandboxed
-  # / structured step format is tracked as a P0 in docs/modernize.md §3.6.
-  # Until then, plan editing must remain admin-gated.
+  # Build-step DSL. Plan steps are stored in the database as Ruby source.
+  # Before evaluation we walk the source's Prism AST and reject anything
+  # outside a strict allowlist (sh, rake, cap, cd, env, repository, update
+  # with literal-only arguments) — see TinyCI::DSL::Validator. That closes
+  # the legacy RCE-from-DB (modernize.md §3.6) while still letting
+  # existing plans run unchanged. Plan editing should still be admin-gated.
   class DSL
     attr_reader :pwd
 
     def self.evaluate(build)
+      Validator.validate!(build.plan.steps) if build.plan.steps.present?
+
       dsl = new(build)
       dsl.instance_eval do
         if build.repository_url
@@ -16,7 +18,7 @@ module TinyCI
           update
         end
       end
-      dsl.instance_eval build.plan.steps
+      dsl.instance_eval build.plan.steps if build.plan.steps.present?
     end
 
     def initialize(build)
