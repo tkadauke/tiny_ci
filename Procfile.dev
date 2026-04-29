@@ -1,0 +1,2 @@
+web:       bin/rails server -p 7199
+scheduler: bundle exec rake tiny_ci:scheduler

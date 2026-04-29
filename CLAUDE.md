@@ -39,11 +39,16 @@ The repo was migrated from Rails 2.3 to Rails 7.2 in early 2026 (see git log + `
 
 ```
 bin/setup                              # install gems, prepare db
-bin/rails server -p 7199               # web tier
-bundle exec rake tiny_ci:scheduler     # run the build scheduler in the foreground
+bin/dev                                # web + scheduler together (foreman + Procfile.dev)
+bin/rails server -p 7199               # web tier on its own
+bundle exec rake tiny_ci:scheduler     # build scheduler on its own
 bin/rails test                         # full test suite
 bin/rails zeitwerk:check               # eager-load every autoloaded file
 ```
+
+`bin/dev` is the modern equivalent of the old `script/tiny_ci` foreground
+orchestrator. It uses foreman + `Procfile.dev` to run web + scheduler in
+parallel; the script auto-installs foreman on first run.
 
 ## Architecture & Conventions
 
