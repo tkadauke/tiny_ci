@@ -8,11 +8,14 @@ module TinyCI
       end
 
       def run(command, parameters, working_dir, environment)
-        cmdline = "#{command} #{[parameters].flatten.join(' ')}"
-        Dir.chdir(working_dir) do
-          env = build_environment({ "RAILS_ENV" => "development" }.merge(@build.current_environment.merge(environment)))
+        cmdline = "#{command} #{[parameters].flatten.join(' ')} 2>&1"
+        env = { "RAILS_ENV" => "development" }
+              .merge(@build.current_environment)
+              .merge(environment)
+        env = stringify_env(env)
 
-          IO.popen("sh -c '#{env} #{cmdline} 2>&1'") do |stdout|
+        Dir.chdir(working_dir) do
+          IO.popen([env, "sh", "-c", cmdline]) do |stdout|
             until stdout.eof?
               line = stdout.gets
               @build.add_to_output(Time.now, command, line) if line
@@ -48,10 +51,14 @@ module TinyCI
         $?.success?
       end
 
-      def build_environment(environment = {})
-        @build.current_environment.merge(environment).collect { |key, value|
-          %{#{key}="#{value.gsub('"', '\\"')}"}
-        }.join(" ")
+      # IO.popen accepts a String=>String/nil hash as its first arg; nil
+      # values unset the variable in the child env. Coerce values to strings
+      # (or leave them nil) so the kernel call doesn't trip on a Symbol /
+      # Integer / etc.
+      def stringify_env(env)
+        env.each_with_object({}) do |(k, v), out|
+          out[k.to_s] = v.nil? ? nil : v.to_s
+        end
       end
     end
   end

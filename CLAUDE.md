@@ -67,7 +67,8 @@ parallel; the script auto-installs foreman on first run.
 - `test/test_helper.rb` requires `rails/test_help` and `mocha/minitest`. `test/functional/test_helper.rb` adds session-based `login_with`/`logout` helpers.
 - Integration tests live in `test/integration/` (legacy `test/functional/models/` was renamed to avoid class-name collisions).
 - 3 expected skips: 2 SSH tests use `Net::SSH::Test`'s scripted-channel API which is broken on net-ssh 7.x; 1 source_control_base_test only constructs an object with no assertions.
-- No CI pipeline yet — `docs/modernize.md` P0 calls for GitHub Actions but that's deferred until the modernization roadmap is more complete.
+- **Naming convention:** test names use the imperative `should X` form to match the existing suite (e.g. `test "should validate"`, `test "should clone slave"`). Don't drift to `test "saves X"` or `test "regression for Y"` — match what's around the file you're touching.
+- CI runs `zeitwerk:check` + `bin/rails test` + `bundle-audit` on every push and PR; see `.github/workflows/ci.yml`.
 
 ## Notes / Gotchas
 

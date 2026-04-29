@@ -3,9 +3,12 @@ dist/*
 vendor/gems
 vendor/rails
 test/coverage
-config/*.yml
 rerun.txt
 storage/
+
+# Local-only config (project tracks the templates above; secrets via ENV)
+config/master.key
+config/credentials/*.key
 
 # Runtime artefacts
 /log/*.log

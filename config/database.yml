@@ -1,0 +1,27 @@
+# Default to SQLite for development/test so contributors can boot without
+# a running MySQL. Production still uses Trilogy/MySQL — see &mysql block below.
+mysql_default: &mysql_default
+  adapter: trilogy
+  encoding: utf8mb4
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("MYSQL_USER", "root") %>
+  password: <%= ENV.fetch("MYSQL_PASSWORD", "") %>
+  host: <%= ENV.fetch("MYSQL_HOST", "127.0.0.1") %>
+  port: <%= ENV.fetch("MYSQL_PORT", 3306) %>
+
+sqlite_default: &sqlite_default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  <<: *sqlite_default
+  database: storage/development.sqlite3
+
+test:
+  <<: *sqlite_default
+  database: storage/test.sqlite3
+
+production:
+  <<: *mysql_default
+  database: <%= ENV.fetch("DATABASE_NAME", "tiny_ci_production") %>

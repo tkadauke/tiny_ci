@@ -5,6 +5,13 @@ class Slave < ApplicationRecord
 
   before_save :cleanup_environment
 
+  # Strong params produce ActiveSupport::HashWithIndifferentAccess, which
+  # the YAML coder rejects with Psych::DisallowedClass. Coerce to plain
+  # Hash on assignment so the value can serialize.
+  def environment_variables=(value)
+    super(value.respond_to?(:to_hash) ? value.to_hash : value)
+  end
+
   has_many :builds, dependent: :nullify
   has_many :running_builds, -> { where(status: "running") }, class_name: "Build"
 
@@ -85,7 +92,8 @@ class Slave < ApplicationRecord
   protected
 
   def cleanup_environment
-    (environment_variables || {}).reject! { |_, kv| kv["key"].blank? }
+    return if environment_variables.nil?
+    self.environment_variables = environment_variables.reject { |_, kv| kv["key"].blank? }
   end
 
   def unnumbered_resources(res)

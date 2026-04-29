@@ -207,8 +207,15 @@ class BuildTest < ActiveSupport::TestCase
 
     build = Build.new(updated_at: time)
     build.stubs(plan: stub(name: "some_plan"))
+    build.stubs(new_record?: false)
     build.add_to_output(time, "command", "some output")
     build.expects(:update_columns).with(has_entries(output: "#{time.to_f},command,some output\n"))
+    build.flush_output!
+  end
+
+  test "should not try to flush output before the build is persisted" do
+    build = Build.new
+    build.expects(:update_columns).never
     build.flush_output!
   end
 

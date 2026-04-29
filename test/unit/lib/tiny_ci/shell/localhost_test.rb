@@ -48,11 +48,31 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should set environment variables when running commands" do
     build = stub(current_environment: { "BUILD_KEY" => "BUILD_VALUE" })
 
-    IO.expects(:popen).with(all_of(regexp_matches(/BUILD_KEY/), regexp_matches(/COMMAND_VALUE/)))
+    IO.expects(:popen).with do |args|
+      env, sh, dash_c, cmd = args
+      env["BUILD_KEY"] == "BUILD_VALUE" &&
+        env["COMMAND_KEY"] == "COMMAND_VALUE" &&
+        sh == "sh" && dash_c == "-c" && cmd =~ /some_command/
+    end
 
     localhost = TinyCI::Shell::Localhost.new(build)
     localhost.expects(:success?).returns(true)
     localhost.run("some_command", ["parameters"], ".", { "COMMAND_KEY" => "COMMAND_VALUE" })
+  end
+
+  test "should pass nil-valued env vars through to popen so they unset" do
+    build = stub(current_environment: { "KEEP_ME" => "yes" })
+
+    IO.expects(:popen).with do |args|
+      env, sh, dash_c, _cmd = args
+      env["KEEP_ME"] == "yes" &&
+        env.key?("BUNDLE_GEMFILE") && env["BUNDLE_GEMFILE"].nil? &&
+        sh == "sh" && dash_c == "-c"
+    end
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    localhost.expects(:success?).returns(true)
+    localhost.run("some_command", [], ".", { "BUNDLE_GEMFILE" => nil })
   end
 
   test "should raise exception when command fails" do

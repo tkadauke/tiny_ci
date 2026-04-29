@@ -88,9 +88,11 @@ class Build < ApplicationRecord
     end
   rescue SignalException
   rescue TinyCI::Shell::CommandExecutionFailed
+    flush_output!
     update(status: "failure", finished_at: Time.now)
   rescue Exception => e
-    add_to_output(Time.now, "runner", [e.message] + e.backtrace)
+    add_lines_to_output(Time.now, "runner", [e.message] + e.backtrace)
+    flush_output!
     update(status: "error", finished_at: Time.now)
   ensure
     finished
@@ -133,6 +135,7 @@ class Build < ApplicationRecord
   end
 
   def flush_output!
+    return if new_record?
     update_columns(output: build_output.join, updated_at: Time.current)
   end
 

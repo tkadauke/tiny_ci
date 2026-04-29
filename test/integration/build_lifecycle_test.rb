@@ -40,6 +40,32 @@ class BuildLifecycleTest < ActiveSupport::TestCase
     assert_match(/hello world/, @build.output)
   end
 
+  test "should persist runner output when an unexpected exception ends the build in error" do
+    @plan.update!(steps: %(sh "echo hello"))
+    error_build = @plan.builds.create!(status: "pending", slave: @slave)
+    TinyCI::DSL.stubs(:evaluate).raises(RuntimeError, "boom from the runner")
+
+    BuildJob.perform_now(error_build.id)
+    error_build.reload
+
+    assert_equal "error", error_build.status
+    assert_match(/boom from the runner/, error_build.output, "expected exception message in output: #{error_build.output.inspect}")
+  end
+
+  test "should pass nil-valued env vars through without crashing the shell" do
+    @plan.update!(steps: <<~RUBY)
+      env "BUNDLE_GEMFILE" => nil, "BUNDLER_VERSION" => nil
+      sh "echo nil-env-ok"
+    RUBY
+    nil_env_build = @plan.builds.create!(status: "pending", slave: @slave)
+
+    BuildJob.perform_now(nil_env_build.id)
+    nil_env_build.reload
+
+    assert_equal "success", nil_env_build.status, "output=#{nil_env_build.output.inspect}"
+    assert_match(/nil-env-ok/, nil_env_build.output)
+  end
+
   test "build fails when shell step exits non-zero" do
     @plan.update!(steps: %(sh "false"))
     failing = @plan.builds.create!(status: "pending", slave: @slave)

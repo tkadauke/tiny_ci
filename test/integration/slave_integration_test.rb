@@ -28,4 +28,23 @@ class SlaveIntegrationTest < ActiveSupport::TestCase
 
     assert_equal [busy_slave], Slave.least_busy
   end
+
+  test "should save environment_variables when passed as HashWithIndifferentAccess" do
+    attrs = ActiveSupport::HashWithIndifferentAccess.new(
+      "0" => { "key" => "FOO", "value" => "bar" }
+    )
+    slave = Slave.create!(name: "alpha", protocol: "localhost", environment_variables: attrs)
+    slave.reload
+    assert_equal({ "0" => { "key" => "FOO", "value" => "bar" } }, slave.environment_variables)
+  end
+
+  test "should filter blank-key environment variables before saving" do
+    attrs = ActiveSupport::HashWithIndifferentAccess.new(
+      "0" => { "key" => "FOO", "value" => "bar" },
+      "1" => { "key" => "", "value" => "" }
+    )
+    slave = Slave.create!(name: "beta", protocol: "localhost", environment_variables: attrs)
+    slave.reload
+    assert_equal({ "0" => { "key" => "FOO", "value" => "bar" } }, slave.environment_variables)
+  end
 end
