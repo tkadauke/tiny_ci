@@ -1,8 +1,8 @@
-<%= juggernaut :channels => ["queue"] %>
+<%= turbo_stream_from "queue" %>
+<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
 
 <h1><%= t('.builds_of_plan_html', :plan_link => link_to(@plan.name, project_plan_path(@project, @plan))) %></h1>
 
-<%= auto_update 'queue' %>
 <div id="queue">
   <%= render :partial => 'list', :locals => { :builds => @builds } %>
 </div>

@@ -5,7 +5,8 @@
   <li><%= link_to t('.overview'), all_plans_path(:report => 'overview') %></li>
 </ul>
 
-<%= auto_update 'plans' %>
+<%= turbo_stream_from "queue" %>
+<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
 <div id="plans">
   <%= render :partial => @report, :locals => { :plans => @plans } %>
 </div>

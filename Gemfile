@@ -17,6 +17,9 @@ gem "csv"
 gem "acts_as_list"
 gem "acts_as_tree"
 
+gem "turbo-rails"
+gem "importmap-rails"
+
 group :development do
   gem "web-console"
   gem "listen"

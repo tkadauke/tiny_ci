@@ -12,11 +12,4 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal "15 days, 2 seconds", duration(1296002)
   end
 
-  test "auto_update is a no-op until Hotwire/Turbo Streams port" do
-    assert_nil auto_update("queue")
-  end
-
-  test "juggernaut helper renders nothing" do
-    assert_equal "", juggernaut(channels: ["queue"])
-  end
 end

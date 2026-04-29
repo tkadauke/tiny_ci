@@ -24,6 +24,8 @@ class Build < ApplicationRecord
   overrides_field :revision, from: :parent,
                              if: ->(build) { build.parent && build.repository_url == build.parent.repository_url }
 
+  include Turbo::Broadcastable
+
   before_save { |build| build.previous_changes_for_observer = build.changes }
   after_update :update_stats_if_neccessary
   after_create_commit  :broadcast_queue_update
@@ -155,16 +157,16 @@ class Build < ApplicationRecord
   end
 
   def broadcast_queue_update
-    Juggernaut.send_to_channel("Queue.update()", "queue")
+    broadcast_refresh_to("queue")
   end
 
   def broadcast_realtime_updates
     changed = previous_changes_for_observer || {}
     if changed.key?("output") || changed.key?("status")
-      Juggernaut.send_to_channel("Report.update()", "build_#{name}_#{position}")
+      broadcast_refresh_to("build_#{name}_#{position}")
     end
     if changed.key?("status")
-      Juggernaut.send_to_channel("Queue.update()", "queue")
+      broadcast_refresh_to("queue")
       TinyCI::Notifier::Base.notify(self) if defined?(TinyCI::Notifier::Base)
     end
   end

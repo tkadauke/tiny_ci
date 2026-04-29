@@ -13,15 +13,11 @@ module ApplicationHelper
     [[days, t('duration.days')], [hours, t('duration.hours')], [minutes, t('duration.minutes')], [seconds, t('duration.seconds')]].reject { |part| part.first == 0 }.collect { |part| part.join(' ') }.join(', ')
   end
   
-  def auto_update(_container)
-    # `periodically_call_remote` was a Rails 2 RJS helper; modern equivalent is
-    # Hotwire Turbo Streams or Stimulus. No-op until ported.
-    nil
-  end
-
-  # Legacy Juggernaut realtime push view helper. The original gem is dead;
-  # this stub renders nothing so old views keep working.
-  def juggernaut(*) = "".html_safe
+  # Both auto_update (the Rails 2 periodically_call_remote helper) and
+  # juggernaut (the Flash WebSocket push helper) are gone — replaced by
+  # turbo_stream_from + Build broadcasting refreshes via Turbo. The
+  # remaining old call sites still in views were updated to use
+  # turbo_stream_from directly.
   
   def bread_crumb
     parts = [link_to(I18n.t('breadcrumb.home'), '/')]

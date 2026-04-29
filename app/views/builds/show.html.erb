@@ -1,6 +1,6 @@
-<%= juggernaut :channels => ["build_#{@build.name}_#{@build.position}"] %>
+<%= turbo_stream_from "build_#{@build.name}_#{@build.position}" %>
+<%= turbo_refreshes_with method: :morph, scroll: :preserve unless @build.finished? %>
 
-<%= auto_update 'build' unless @build.finished? %>
 <div id="build">
   <%= render :partial => "build" %>
 </div>
