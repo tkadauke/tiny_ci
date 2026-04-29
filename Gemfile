@@ -24,6 +24,7 @@ end
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
+  gem "bundler-audit", require: false
 end
 
 group :test do
