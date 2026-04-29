@@ -23,6 +23,7 @@ gem "importmap-rails"
 group :development do
   gem "web-console"
   gem "listen"
+  gem "foreman", require: false
 end
 
 group :development, :test do
