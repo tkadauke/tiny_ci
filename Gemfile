@@ -19,6 +19,7 @@ gem "acts_as_tree"
 
 gem "turbo-rails"
 gem "importmap-rails"
+gem "propshaft"
 
 group :development do
   gem "web-console"
