@@ -4,7 +4,7 @@ ruby "3.2.3"
 
 gem "rails", "~> 7.2.0"
 gem "trilogy"
-gem "sqlite3", "~> 1.7"
+gem "sqlite3", "~> 2.9"
 gem "puma"
 gem "bootsnap", require: false
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
