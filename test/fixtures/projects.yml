@@ -1,0 +1,3 @@
+rails_project:
+  name: fixture_rails_project
+  description: Sample Rails project used by opt-in fixture-loading tests.

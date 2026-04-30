@@ -12,5 +12,5 @@ require "mocha/minitest"
 
 class ActiveSupport::TestCase
   parallelize(workers: 1)
-  fixtures :all if File.directory?(Rails.root.join("test/fixtures"))
+  # Fixtures are opt-in; tests that want them call `fixtures :name`.
 end
