@@ -3,6 +3,7 @@ dist/*
 vendor/gems
 vendor/rails
 test/coverage
+/coverage/
 rerun.txt
 storage/
 
