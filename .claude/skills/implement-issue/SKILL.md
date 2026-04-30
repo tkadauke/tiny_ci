@@ -46,6 +46,17 @@ the worktree. NEVER read, write, grep, or glob in the main checkout. If the
 worktree does not exist, STOP IMMEDIATELY and report failure — do not fall
 back to the main checkout.**
 
+A `PreToolUse` hook (`.claude/hooks/guard-main-tree.sh`) enforces this for
+`Write`/`Edit`/`NotebookEdit`: any file_path under
+`/Users/tkadauke/code/tiny_ci/` that is NOT inside `.claude/` or `.trackers/`
+will be rejected with exit code 2. If you see a `BLOCKED` message from that
+hook, you wrote a main-tree path by mistake — re-issue the call with the
+worktree prefix `.claude/worktrees/issue-NUMBER/<rest-of-path>`.
+
+The hook does NOT cover `Bash` (since shell commands have many legitimate
+shapes). Stay disciplined with `git -C <worktree>`, `BUNDLE_GEMFILE=<worktree>/Gemfile`,
+and absolute paths anchored at the worktree.
+
 ## Step 1: Understand the codebase
 
 Read `CLAUDE.md` in the worktree root for conventions, patterns, and rules.

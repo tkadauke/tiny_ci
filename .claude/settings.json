@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/tkadauke/code/tiny_ci/.claude/hooks/guard-main-tree.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
