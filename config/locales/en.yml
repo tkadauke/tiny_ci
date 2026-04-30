@@ -13,7 +13,7 @@ en:
         database_password: "Database Password"
         database_username: "Database Username"
         db_error: "Could not connect to the database. The following error message was received:"
-        password_description: "This password will be saved as plain text in %{path}."
+        password_description_html: "This password will be saved as plain text in %{path}."
         save_and_restart: "Save and restart"
         welcome_to_tinyci: "Welcome to TinyCI"
     slaves: 
