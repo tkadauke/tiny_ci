@@ -21,7 +21,12 @@ class UsersController < ApplicationController
     @user.role = "admin" if current_user.initial_admin?
     if @user.save
       flash[:notice] = t("flash.notice.created_account")
-      redirect_to users_path
+      if logged_in?
+        redirect_to users_path
+      else
+        session[:user_id] = @user.id
+        redirect_to root_path
+      end
     else
       render :new, status: :unprocessable_entity
     end
