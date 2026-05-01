@@ -29,5 +29,10 @@ Rails.application.routes.draw do
   get "/help_topics",     to: "help_topics#index", as: :help_topics
   get "/help_topics/*id", to: "help_topics#show",  as: :help_topic
 
+  # GitHub webhook receiver. HMAC-authenticated; auth happens inside the
+  # controller (no session/CSRF). Per-project routing keys the secret
+  # lookup off the URL.
+  post "/webhooks/github/:project_id", to: "webhooks#github", as: :github_webhook
+
   root to: "start#index"
 end
