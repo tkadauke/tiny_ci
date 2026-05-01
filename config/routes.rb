@@ -33,8 +33,12 @@ Rails.application.routes.draw do
   # that adding /api/v2 later doesn't break existing CLI / MCP clients.
   namespace :api do
     namespace :v1 do
-      post "/projects/:project_id/trigger",         to: "projects#trigger", as: :project_trigger
-      get  "/projects/:project_id/builds/:id",      to: "projects#show_build", as: :project_build
+      get  "/projects",                                  to: "projects#index"
+      post "/projects/:project_id/trigger",              to: "projects#trigger",            as: :project_trigger
+      get  "/projects/:project_id/builds",               to: "projects#list_recent_builds", as: :project_builds
+      get  "/projects/:project_id/builds/:id",           to: "projects#show_build",         as: :project_build
+      get  "/projects/:project_id/builds/:id/log",       to: "projects#get_log",            as: :project_build_log
+      post "/projects/:project_id/builds/:id/cancel",    to: "projects#cancel_build",       as: :project_build_cancel
     end
   end
 
