@@ -1,6 +1,8 @@
 class Slave < ApplicationRecord
   include OverridesField
 
+  encrypts :password
+
   serialize :environment_variables, type: Hash, coder: YAML
 
   before_save :cleanup_environment
