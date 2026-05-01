@@ -1,4 +1,5 @@
 class BuildsController < ApplicationController
+  before_action :require_user
   before_action :find_project
   before_action :find_plan
 

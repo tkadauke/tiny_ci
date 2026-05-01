@@ -1,4 +1,5 @@
 class Admin::SlavesController < ApplicationController
+  before_action :require_user
   before_action :can_configure_slaves!
 
   def index
