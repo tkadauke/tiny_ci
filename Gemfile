@@ -14,8 +14,8 @@ gem "net-ssh"
 gem "RedCloth"
 gem "csv"
 
-gem "acts_as_list"
-gem "acts_as_tree"
+gem "acts_as_list", "~> 1.2"
+gem "acts_as_tree", "~> 2.9"
 
 gem "turbo-rails"
 gem "importmap-rails"
