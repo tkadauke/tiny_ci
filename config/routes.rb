@@ -29,5 +29,10 @@ Rails.application.routes.draw do
   get "/help_topics",     to: "help_topics#index", as: :help_topics
   get "/help_topics/*id", to: "help_topics#show",  as: :help_topic
 
+  # Prometheus scrape endpoint. ActionController::API; no session/CSRF.
+  # Network-level access control (NetworkPolicy / scrape-only Service)
+  # gates exposure.
+  get "/metrics", to: "metrics#index"
+
   root to: "start#index"
 end
