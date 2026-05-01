@@ -1,0 +1,136 @@
+# Default values for tiny-ci.
+# Override per-environment via HelmRelease values in green_acres.
+
+image:
+  repository: ghcr.io/tkadauke/tiny-ci
+  tag: ""  # falls back to .Chart.appVersion when empty
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# Number of server replicas. The web tier is stateless; the scheduler runs as a
+# separate process inside the same image (Procfile.dev pattern in production
+# image), so replicas > 1 needs leader election or a separate scheduler
+# Deployment. Default 1 — fine until traffic warrants it.
+replicaCount: 1
+
+# The host the dashboard + webhook receiver are reachable at. Required.
+host: ""
+
+server:
+  port: 7199
+
+  # Optional resource requests/limits.
+  resources: {}
+    # requests:
+    #   cpu: 100m
+    #   memory: 256Mi
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+
+  # Liveness/readiness probes hit the Rails app's healthz endpoint. The
+  # endpoint itself is added in a follow-up — these are off by default until
+  # it lands so a fresh deploy doesn't crashloop on a missing route.
+  probes:
+    enabled: false
+    path: /up
+
+  # Extra envs (non-secret). Secrets come in via secret.envFromSecretName.
+  env: {}
+    # RAILS_LOG_TO_STDOUT: "true"
+
+  # Name of an existing Kubernetes Secret with required envs:
+  #   DATABASE_URL
+  #   GITHUB_APP_PRIVATE_KEY        (PEM)
+  #   GITHUB_APP_ID
+  #   WEBHOOK_SECRET
+  #   SECRET_KEY_BASE
+  # Sealed-secrets-managed (#86); the chart does not create the secret itself.
+  envFromSecretName: ""
+
+  # Extra annotations/labels on the server Pod.
+  podAnnotations: {}
+  podLabels: {}
+
+  # nodeSelector / tolerations / affinity for the server pod.
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Service exposed in front of the server. Traefik IngressRoute targets this.
+service:
+  type: ClusterIP
+  port: 80
+  # If your cluster's Traefik watches a non-default service annotation, set it here.
+  annotations: {}
+
+# Traefik IngressRoute for the dashboard + webhook. Disable to bring your own.
+ingressRoute:
+  enabled: true
+  entryPoints:
+    - websecure
+  tls:
+    enabled: true
+    # certResolver to use, if any (e.g. "letsencrypt"). Empty = use the default
+    # cert configured on the entryPoint.
+    certResolver: ""
+
+# Server-side configuration mounted as a ConfigMap. Anything that needs to
+# differ per env without redeploying the image goes here.
+config:
+  # Namespace the server creates build Jobs in. Defaults to <release>-runners.
+  # Set to the empty string to fall back to the release namespace (mostly
+  # useful for single-namespace dev installs).
+  runnerNamespace: ""
+
+  # Per-build resource defaults applied if a project's tiny_ci.yml doesn't
+  # override them. Real enforcement lands in #82 with the k8s Job runner.
+  defaultRunnerResources:
+    cpu: "1"
+    memory: "1Gi"
+
+  storage:
+    # Path in the server pod where the shared build cache PVC is mounted.
+    # Runners (k8s Jobs) mount the same PVC at the same path so cache writes
+    # from a build are visible to subsequent builds.
+    cachePath: /var/tiny-ci/cache
+
+  # Extra arbitrary key/value pairs surfaced to the app as env via the
+  # rendered ConfigMap. Use for non-secret tunables.
+  extra: {}
+
+# Service account that the server pod runs as. The chart also issues RBAC for
+# this SA in the runner namespace so the server can create/watch/delete Jobs
+# and read their Pods/logs.
+serviceAccount:
+  create: true
+  # If create=false, set this to an existing SA name in the release namespace.
+  name: ""
+  annotations: {}
+
+# Runner namespace + RBAC. The server creates k8s Jobs here (used by #82).
+runnerNamespace:
+  # Have the chart create the runner namespace as a Helm-managed object.
+  # Disable if it's provisioned out-of-band (e.g. by an Argo ApplicationSet).
+  create: true
+  labels: {}
+  annotations: {}
+
+# Shared build cache PVC. Mounted by the server (read-mostly) and runners
+# (read+write, set up in #85). Disable if you want the cache off entirely or
+# referenced from somewhere else.
+buildCache:
+  enabled: true
+  # Set to the empty string to fall back to the cluster default StorageClass.
+  storageClass: ""
+  size: 50Gi
+  accessModes:
+    - ReadWriteMany
+  annotations: {}
+
+# Optional: bot identity. Telegram token slot the server reads when a
+# tiny_ci_bot integration is configured. Empty = no Telegram integration.
+# Real value comes via the same envFromSecretName secret.
+telegram:
+  enabled: false

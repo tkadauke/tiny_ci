@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tiny-ci.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tiny-ci.labels" . | nindent 4 }}
+data:
+  # Server-side runtime config. Loaded by the app at boot. Anything secret
+  # comes via envFromSecretName, not this ConfigMap.
+  runtime.yaml: |
+    runner:
+      namespace: {{ include "tiny-ci.runnerNamespace" . | quote }}
+      defaultResources:
+        cpu: {{ .Values.config.defaultRunnerResources.cpu | quote }}
+        memory: {{ .Values.config.defaultRunnerResources.memory | quote }}
+    storage:
+      cachePath: {{ .Values.config.storage.cachePath | quote }}
+    {{- with .Values.config.extra }}
+    extra:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}

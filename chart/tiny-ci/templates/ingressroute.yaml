@@ -1,0 +1,29 @@
+{{- if .Values.ingressRoute.enabled -}}
+{{- if not .Values.host -}}
+{{- fail "ingressRoute is enabled but .Values.host is not set" -}}
+{{- end -}}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "tiny-ci.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tiny-ci.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+    {{- toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
+  routes:
+    # Dashboard + webhook receiver share the same Service. The webhook lives
+    # at /webhooks/github; the rest of the host is the dashboard.
+    - match: Host(`{{ .Values.host }}`)
+      kind: Rule
+      services:
+        - name: {{ include "tiny-ci.fullname" . }}
+          port: {{ .Values.service.port }}
+  {{- if .Values.ingressRoute.tls.enabled }}
+  tls:
+    {{- if .Values.ingressRoute.tls.certResolver }}
+    certResolver: {{ .Values.ingressRoute.tls.certResolver | quote }}
+    {{- end }}
+  {{- end }}
+{{- end -}}

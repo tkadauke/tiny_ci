@@ -1,0 +1,23 @@
+{{- if .Values.buildCache.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "tiny-ci.fullname" . }}-build-cache
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tiny-ci.labels" . | nindent 4 }}
+    app.kubernetes.io/component: build-cache
+  {{- with .Values.buildCache.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- toYaml .Values.buildCache.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.buildCache.size }}
+  {{- if .Values.buildCache.storageClass }}
+  storageClassName: {{ .Values.buildCache.storageClass | quote }}
+  {{- end }}
+{{- end -}}

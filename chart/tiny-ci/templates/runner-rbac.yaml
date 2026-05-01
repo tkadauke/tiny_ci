@@ -1,0 +1,52 @@
+{{- /*
+RBAC granting the server's ServiceAccount the verbs it needs in the runner
+namespace to drive build Jobs (used by #82). Scoped to the runner namespace
+only — the server should not have cluster-wide privileges.
+*/ -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "tiny-ci.fullname" . }}-runner
+  namespace: {{ include "tiny-ci.runnerNamespace" . }}
+  labels:
+    {{- include "tiny-ci.labels" . | nindent 4 }}
+    app.kubernetes.io/component: runners
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "get", "list", "watch", "delete", "deletecollection"]
+  # Pod read access lets the server stream build logs and detect runner
+  # crashes that don't propagate through the Job status promptly.
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  # Build runners read their config + secrets from these — server creates them
+  # per-Job and tears them down with the Job.
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["create", "get", "list", "delete"]
+  # PVCs (per-Job ephemeral workspace volumes; the shared build cache PVC is
+  # created by Helm, not by the server).
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["create", "get", "list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "tiny-ci.fullname" . }}-runner
+  namespace: {{ include "tiny-ci.runnerNamespace" . }}
+  labels:
+    {{- include "tiny-ci.labels" . | nindent 4 }}
+    app.kubernetes.io/component: runners
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "tiny-ci.fullname" . }}-runner
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "tiny-ci.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
