@@ -1,5 +1,15 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  BREAD_CRUMB_MODELS = {
+    'projects' => Project,
+    'plans'    => Plan,
+    'builds'   => Build,
+    'users'    => User,
+    'slaves'   => Slave
+  }.freeze
+
+  BREAD_CRUMB_ASSOCIATIONS = %w[plans builds].freeze
+
   def duration(dur)
     dur = dur.to_i
     seconds = dur % 60
@@ -29,9 +39,13 @@ module ApplicationHelper
 
       parent_model, link_text = begin
         next_model = if parent_model
-          parent_model.public_send(elements[i - 1]).from_param!(elements[i])
+          assoc = elements[i - 1]
+          raise ArgumentError unless BREAD_CRUMB_ASSOCIATIONS.include?(assoc)
+          parent_model.public_send(assoc).from_param!(elements[i])
         else
-          elements[i - 1].singularize.camelize.constantize.from_param!(elements[i])
+          klass = BREAD_CRUMB_MODELS[elements[i - 1]]
+          raise ArgumentError unless klass
+          klass.from_param!(elements[i])
         end
         [next_model, next_model.to_param]
       rescue StandardError
