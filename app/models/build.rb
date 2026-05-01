@@ -178,6 +178,7 @@ class Build < ApplicationRecord
     if changed.key?("status")
       broadcast_refresh_to("queue")
       TinyCI::Notifier::Base.notify(self) if defined?(TinyCI::Notifier::Base)
+      TinyCI::TelegramBot::Notifier.notify(self) if defined?(TinyCI::TelegramBot::Notifier)
     end
   end
 end

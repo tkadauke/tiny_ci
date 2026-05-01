@@ -5,7 +5,7 @@
 # Rails 2.3-era migrations were removed in #60 (git history preserves them);
 # future schema changes go through new migrations from this baseline.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_01_000003) do
   create_table "builds", force: :cascade do |t|
     t.integer  "plan_id"
     t.integer  "position"
@@ -57,6 +57,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "telegram_chat_id"
+    t.integer  "telegram_thread_id"
   end
 
   create_table "slaves", force: :cascade do |t|
