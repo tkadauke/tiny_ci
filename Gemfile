@@ -21,6 +21,11 @@ gem "turbo-rails"
 gem "importmap-rails"
 gem "propshaft"
 
+# Error tracking. Off when SENTRY_DSN is unset, so dev/test boots don't
+# require an account; production picks up the DSN from env.
+gem "sentry-ruby"
+gem "sentry-rails"
+
 group :development do
   gem "web-console"
   gem "listen"
