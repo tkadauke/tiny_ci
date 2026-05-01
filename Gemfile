@@ -21,6 +21,10 @@ gem "turbo-rails"
 gem "importmap-rails"
 gem "propshaft"
 
+# Single-line structured request logs in production. Default multi-line Rails
+# format stays in dev/test where readability beats parseability.
+gem "lograge"
+
 group :development do
   gem "web-console"
   gem "listen"

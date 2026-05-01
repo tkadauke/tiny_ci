@@ -76,4 +76,14 @@ class ApplicationController < ActionController::Base
   def not_found
     render template: "errors/404", status: :not_found, layout: "plain"
   end
+
+  # Surface request_id, remote_ip, and user_id onto the controller log
+  # payload so lograge can render them. Default Rails payload omits them;
+  # without this hook those fields would print as nil.
+  def append_info_to_payload(payload)
+    super
+    payload[:request_id] = request.request_id
+    payload[:remote_ip]  = request.remote_ip
+    payload[:user_id]    = current_user.id if logged_in?
+  end
 end
