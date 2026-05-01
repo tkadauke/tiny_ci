@@ -29,5 +29,14 @@ Rails.application.routes.draw do
   get "/help_topics",     to: "help_topics#index", as: :help_topics
   get "/help_topics/*id", to: "help_topics#show",  as: :help_topic
 
+  # Public REST API. Bearer-token auth (TINY_CI_API_TOKEN). Versioned so
+  # that adding /api/v2 later doesn't break existing CLI / MCP clients.
+  namespace :api do
+    namespace :v1 do
+      post "/projects/:project_id/trigger",         to: "projects#trigger", as: :project_trigger
+      get  "/projects/:project_id/builds/:id",      to: "projects#show_build", as: :project_build
+    end
+  end
+
   root to: "start#index"
 end
