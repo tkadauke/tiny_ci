@@ -1,8 +1,8 @@
 module Role::User
   include Role::Base
   
-  allow :create_projects, :create_plans
-  allow :edit_projects, :edit_plans, :edit_plan
+  allow :create_projects
+  allow :edit_projects
   
   def can_edit_account?(user)
     user == self

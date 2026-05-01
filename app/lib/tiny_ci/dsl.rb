@@ -18,7 +18,7 @@ module TinyCI
           update
         end
       end
-      dsl.instance_eval build.plan.steps if build.plan.steps.present?
+      dsl.instance_eval build.plan.steps if build.plan.steps.present? # RCE risk; admin-gated until sandboxed DSL replaces this (modernize.md §3.6)
     end
 
     def initialize(build)

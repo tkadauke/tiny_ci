@@ -77,6 +77,14 @@ class PlansControllerTest < ActionController::TestCase
     assert_redirected_to_login
   end
 
+  test "should not show edit form for regular user" do
+    logout
+    login_with create_user
+    plan = @project.plans.create(name: "some_plan")
+    get :edit, params: { project_id: @project.name, id: plan.name }
+    assert_access_denied
+  end
+
   test "should show child form" do
     plan = @project.plans.create(name: "some_plan")
     get :child, params: { project_id: @project.name, id: plan.name }
@@ -96,6 +104,15 @@ class PlansControllerTest < ActionController::TestCase
     assert_no_difference "Plan.count" do
       post :create, params: { project_id: @project.name, plan: { name: "some_plan" } }
       assert_redirected_to_login
+    end
+  end
+
+  test "should not create plan for regular user" do
+    logout
+    login_with create_user
+    assert_no_difference "Plan.count" do
+      post :create, params: { project_id: @project.name, plan: { name: "some_plan" } }
+      assert_access_denied
     end
   end
 
