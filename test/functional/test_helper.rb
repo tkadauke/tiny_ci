@@ -30,4 +30,9 @@ class ActionController::TestCase
     assert_response :redirect
     assert_equal "You can not do that", flash[:error]
   end
+
+  def assert_redirected_to_login
+    assert_response :redirect
+    assert_redirected_to login_path
+  end
 end

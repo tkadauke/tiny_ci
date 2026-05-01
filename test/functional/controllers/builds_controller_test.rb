@@ -2,6 +2,8 @@ require_relative "../test_helper"
 class BuildsControllerTest < ActionController::TestCase
   def setup
     @project = Project.create(:name => 'default')
+    @user = create_user
+    login_with @user
   end
   
   test "should render index page" do
@@ -25,10 +27,9 @@ class BuildsControllerTest < ActionController::TestCase
   end
   
   test "should show build" do
-    user = create_user
     plan = @project.plans.create(:name => 'some_plan')
-    build = plan.builds.create(:status => 'success', :starter => user)
-    
+    build = plan.builds.create(:status => 'success', :starter => @user)
+
     get :show, params: { project_id: @project.name, plan_id: plan.name, id: build.position }
     assert_response :success
   end
@@ -60,13 +61,10 @@ class BuildsControllerTest < ActionController::TestCase
   end
   
   test "should create build as logged in user" do
-    user = create_user
-    
     plan = @project.plans.create(:name => 'some_plan')
-    
-    login_with user
+
     post :create, params: { project_id: @project.name, plan_id: plan.name }
-    assert_equal user, Build.last.starter
+    assert_equal @user, Build.last.starter
   end
   
   test "should stop build" do
