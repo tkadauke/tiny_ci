@@ -1,0 +1,238 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# tiny-ci-mcp — Model Context Protocol stdio server for tiny_ci.
+#
+# Wraps the tiny_ci REST API as MCP tools so AI assistants (Claude,
+# GPT-4, etc.) can trigger builds, inspect status, tail logs, and
+# cancel runs without needing direct HTTP access.
+#
+# Transport: stdio with LSP-style Content-Length framing.
+#
+# Env:
+#   TINY_CI_URL    — base URL of the server (default: http://localhost:7199)
+#   TINY_CI_TOKEN  — bearer token matching TINY_CI_API_TOKEN (required)
+#
+# Usage (add to claude_desktop_config.json or similar):
+#   {
+#     "mcpServers": {
+#       "tiny-ci": {
+#         "command": "/path/to/tiny_ci/mcp/tiny-ci-mcp",
+#         "env": { "TINY_CI_URL": "https://ci.example.com", "TINY_CI_TOKEN": "..." }
+#       }
+#     }
+#   }
+
+require "json"
+require "net/http"
+require "uri"
+
+# ── API client ────────────────────────────────────────────────────────────────
+
+BASE  = ENV.fetch("TINY_CI_URL",   "http://localhost:7199").chomp("/")
+TOKEN = ENV.fetch("TINY_CI_TOKEN", "")
+
+def api(method, path, body: nil)
+  uri = URI("#{BASE}#{path}")
+  klass = { get: Net::HTTP::Get, post: Net::HTTP::Post }.fetch(method) { raise "unknown method #{method}" }
+  req = klass.new(uri)
+  req["Authorization"] = "Bearer #{TOKEN}"
+  req["Content-Type"]  = "application/json"
+  req.body = JSON.generate(body) if body
+  res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 10, read_timeout: 30) do |h|
+    h.request(req)
+  end
+  [res.code.to_i, JSON.parse(res.body)]
+rescue => e
+  [0, { "error" => e.message }]
+end
+
+# ── Tool registry ─────────────────────────────────────────────────────────────
+
+TOOLS = [
+  {
+    name: "list_projects",
+    description: "List all CI projects known to tiny_ci and the plans they contain.",
+    inputSchema: { type: "object", properties: {}, required: [] }
+  },
+  {
+    name: "list_builds",
+    description: "List recent builds for a project, newest first.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project: { type: "string", description: "Project name / slug" },
+        limit:   { type: "integer", description: "Max builds to return (1–100, default 25)" }
+      },
+      required: ["project"]
+    }
+  },
+  {
+    name: "trigger_build",
+    description: "Trigger a new CI build. Omit plan to trigger all root plans. " \
+                 "Passing sha enables 60-second deduplication so re-triggering the same commit is safe.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project: { type: "string", description: "Project name / slug" },
+        plan:    { type: "string", description: "Plan name (omit to trigger all root plans)" },
+        branch:  { type: "string", description: "Branch name" },
+        sha:     { type: "string", description: "Git commit SHA" }
+      },
+      required: ["project"]
+    }
+  },
+  {
+    name: "get_build",
+    description: "Get status and metadata for a specific build.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project:  { type: "string", description: "Project name / slug" },
+        build_id: { type: "integer", description: "Build ID" }
+      },
+      required: ["project", "build_id"]
+    }
+  },
+  {
+    name: "get_log",
+    description: "Tail the log output of a build. Returns structured log lines with timestamps.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project:  { type: "string", description: "Project name / slug" },
+        build_id: { type: "integer", description: "Build ID" },
+        tail:     { type: "integer", description: "Number of log lines to return (1–5000, default 200)" }
+      },
+      required: ["project", "build_id"]
+    }
+  },
+  {
+    name: "cancel_build",
+    description: "Cancel a running or pending build.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project:  { type: "string", description: "Project name / slug" },
+        build_id: { type: "integer", description: "Build ID" }
+      },
+      required: ["project", "build_id"]
+    }
+  }
+].freeze
+
+# ── Tool dispatch ─────────────────────────────────────────────────────────────
+
+def call_tool(name, args)
+  case name
+  when "list_projects"
+    api(:get, "/api/v1/projects")
+
+  when "list_builds"
+    project = args["project"] or return [400, { "error" => "project required" }]
+    qs = args["limit"] ? "?limit=#{args["limit"].to_i}" : ""
+    api(:get, "/api/v1/projects/#{project}/builds#{qs}")
+
+  when "trigger_build"
+    project = args["project"] or return [400, { "error" => "project required" }]
+    body = { plan_id: args["plan"], branch: args["branch"], sha: args["sha"] }.compact
+    api(:post, "/api/v1/projects/#{project}/trigger", body: body)
+
+  when "get_build"
+    project  = args["project"]  or return [400, { "error" => "project required" }]
+    build_id = args["build_id"] or return [400, { "error" => "build_id required" }]
+    api(:get, "/api/v1/projects/#{project}/builds/#{build_id}")
+
+  when "get_log"
+    project  = args["project"]  or return [400, { "error" => "project required" }]
+    build_id = args["build_id"] or return [400, { "error" => "build_id required" }]
+    qs = args["tail"] ? "?tail=#{args["tail"].to_i}" : ""
+    api(:get, "/api/v1/projects/#{project}/builds/#{build_id}/log#{qs}")
+
+  when "cancel_build"
+    project  = args["project"]  or return [400, { "error" => "project required" }]
+    build_id = args["build_id"] or return [400, { "error" => "build_id required" }]
+    api(:post, "/api/v1/projects/#{project}/builds/#{build_id}/cancel")
+
+  else
+    [404, { "error" => "unknown tool: #{name}" }]
+  end
+end
+
+# ── JSON-RPC dispatch ─────────────────────────────────────────────────────────
+
+def dispatch(req)
+  id     = req["id"]
+  method = req["method"]
+  params = req["params"] || {}
+
+  result =
+    case method
+    when "initialize"
+      {
+        protocolVersion: "2024-11-05",
+        serverInfo:      { name: "tiny-ci-mcp", version: "1.0.0" },
+        capabilities:    { tools: {} }
+      }
+
+    when "notifications/initialized", "ping"
+      return nil  # notifications — no response; pings are silently ignored
+
+    when "tools/list"
+      { tools: TOOLS }
+
+    when "tools/call"
+      tool_name = params["name"].to_s
+      tool_args = params["arguments"] || {}
+      http_status, body = call_tool(tool_name, tool_args)
+      is_error = http_status < 200 || http_status >= 300 || body.key?("error")
+      {
+        content: [{ type: "text", text: JSON.pretty_generate(body) }],
+        isError: is_error
+      }
+
+    else
+      return nil unless id
+      return { jsonrpc: "2.0", id: id, error: { code: -32601, message: "Method not found: #{method}" } }.to_json
+    end
+
+  return nil unless id
+  { jsonrpc: "2.0", id: id, result: result }.to_json
+end
+
+# ── stdio transport (LSP-style Content-Length framing) ────────────────────────
+
+$stdout.sync = true
+warn "tiny-ci-mcp started (TINY_CI_URL=#{BASE})" if $stderr.sync = true
+
+loop do
+  headers = {}
+  while (line = $stdin.gets)
+    line = line.chomp
+    break if line.empty?
+    k, _, v = line.partition(": ")
+    headers[k.downcase] = v.strip
+  end
+
+  break if $stdin.eof?
+
+  len = headers["content-length"]&.to_i
+  next unless len && len > 0
+
+  raw = $stdin.read(len)
+  next if raw.nil? || raw.empty?
+
+  begin
+    req = JSON.parse(raw)
+  rescue JSON::ParserError => e
+    warn "parse error: #{e.message}"
+    next
+  end
+
+  response = dispatch(req)
+  next unless response
+
+  $stdout.print "Content-Length: #{response.bytesize}\r\n\r\n#{response}"
+rescue Errno::EPIPE, EOFError
+  break
+end
