@@ -9,7 +9,12 @@ Rails.application.configure do
 
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-  config.log_level = :info
+  # Force HTTPS in production. Disable via DISABLE_FORCE_SSL=1 for behind-the-LB
+  # deploys where TLS terminates upstream and the Rack request scheme doesn't
+  # reflect the client.
+  config.force_ssl = !ENV["DISABLE_FORCE_SSL"].present?
+
+  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info").to_sym
   config.log_tags = [:request_id]
   config.logger = ActiveSupport::TaggedLogging.new(Logger.new($stdout))
 

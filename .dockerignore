@@ -1,0 +1,32 @@
+.git
+.github
+.gitignore
+.vscode
+.idea
+*.swp
+*.bak
+
+# Test artefacts
+coverage/
+features/
+test/
+tmp/
+log/
+storage/
+node_modules/
+
+# Local env / config that shouldn't bake into the image
+.env
+.env.*
+config/master.key
+config/credentials/*.key
+
+# OS detritus
+.DS_Store
+Thumbs.db
+
+# Build artefacts (regenerated inside the image)
+public/assets
+
+# The chart is for cluster deployment, not the image itself
+chart/

@@ -1,0 +1,76 @@
+# One-command production-like bring-up of tiny_ci.
+#
+#   docker compose up --build
+#
+# Defaults to a self-contained stack (web + scheduler + mysql). Override
+# DATABASE_URL / MYSQL_* env if you want to point at an external db.
+#
+# This is NOT how production is deployed (that's the Helm chart in
+# chart/tiny-ci/) — it's the equivalent of `bin/dev` but for the
+# production image, useful for smoke-testing the build before shipping.
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-tiny_ci_root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-tiny_ci_production}
+      MYSQL_USER: ${MYSQL_USER:-tiny_ci}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-tiny_ci_password}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-tiny_ci_root}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tiny_ci:local
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: "1"
+      RAILS_SERVE_STATIC_FILES: "1"
+      DATABASE_URL: ${DATABASE_URL:-trilogy://tiny_ci:tiny_ci_password@db:3306/tiny_ci_production}
+      # Generate a real value with `bin/rails secret`. The placeholder lets
+      # `docker compose up` boot without ceremony for a quick smoke test;
+      # never use it in front of real users.
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-replace-me-with-rails-secret}
+    ports:
+      - "${WEB_PORT:-7199}:7199"
+    command: ["bin/rails", "server", "-b", "0.0.0.0", "-p", "7199"]
+    # Wait for db, then run migrations before serving requests.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        bundle exec rails db:prepare
+        exec "$$@"
+      - --
+    restart: unless-stopped
+
+  scheduler:
+    image: tiny_ci:local
+    depends_on:
+      db:
+        condition: service_healthy
+      web:
+        condition: service_started
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: "1"
+      DATABASE_URL: ${DATABASE_URL:-trilogy://tiny_ci:tiny_ci_password@db:3306/tiny_ci_production}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-replace-me-with-rails-secret}
+    command: ["bundle", "exec", "rake", "tiny_ci:scheduler"]
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
