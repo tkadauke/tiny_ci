@@ -128,6 +128,28 @@ class BuildTest < ActiveSupport::TestCase
     build.build!
   end
 
+  test "should flush buffered output before saving the stopped status" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate).raises(TinyCI::BuildStopped)
+    build.stubs(:update)
+
+    build.expects(:flush_output!).at_least_once
+    build.build!
+  end
+
+  test "should still call finished hook after a stopped build" do
+    build = Build.new(updated_at: Time.now)
+    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(:create_base_directory)
+    TinyCI::DSL.stubs(:evaluate).raises(TinyCI::BuildStopped)
+    build.stubs(:update)
+
+    build.expects(:finished)
+    build.build!
+  end
+
   test "should stop build" do
     build = Build.new
     TinyCI::Scheduler::Client.expects(:stop).with(build)
