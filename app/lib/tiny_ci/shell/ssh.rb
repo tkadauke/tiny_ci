@@ -3,6 +3,9 @@ require "net/ssh"
 module TinyCI
   module Shell
     class SSH
+      # See Shell::Localhost::STOP_CHECK_INTERVAL — same trade-off applies.
+      STOP_CHECK_INTERVAL = 1.0
+
       def initialize(build)
         @build = build
         @ssh = Net::SSH.start(build.slave.hostname, build.slave.username, password: build.slave.password)
@@ -11,6 +14,7 @@ module TinyCI
       def run(command, parameters, working_dir, environment)
         output = ""
         cmdline = "#{command} #{[parameters].flatten.join(' ')}"
+        last_stop_check = Time.now
         channel = @ssh.open_channel do |ch|
           env = build_environment(environment)
 
@@ -23,6 +27,11 @@ module TinyCI
               lines = output.split("\n")
               output = output[-1..] == "\n" ? "" : lines.pop
               @build.add_to_output(Time.now, command, lines) unless lines.blank?
+
+              if Time.now - last_stop_check >= STOP_CHECK_INTERVAL
+                check_for_stop!
+                last_stop_check = Time.now
+              end
             end
 
             c.on_request("exit-status") do |_, data|
@@ -59,6 +68,13 @@ module TinyCI
       end
 
       private
+
+      def check_for_stop!
+        @build.reload
+        raise TinyCI::BuildStopped if @build.status == "stopping"
+      rescue ActiveRecord::RecordNotFound
+        raise TinyCI::BuildStopped
+      end
 
       def build_environment(environment = {})
         @build.current_environment.merge(environment).collect { |key, value|

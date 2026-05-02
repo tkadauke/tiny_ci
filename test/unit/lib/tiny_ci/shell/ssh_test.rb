@@ -60,4 +60,25 @@ class TinyCI::Shell::SSHTest < ActiveSupport::TestCase
     ssh = TinyCI::Shell::SSH.new(@build)
     assert_equal "some output", ssh.capture("some_command", "/some/path")
   end
+
+  test "should raise BuildStopped from check_for_stop! when build status is stopping" do
+    Net::SSH.expects(:start).returns(mock)
+    @build.expects(:reload).returns(@build)
+    @build.stubs(:status).returns("stopping")
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    assert_raise TinyCI::BuildStopped do
+      ssh.send(:check_for_stop!)
+    end
+  end
+
+  test "should treat a deleted build as a stop in check_for_stop!" do
+    Net::SSH.expects(:start).returns(mock)
+    @build.expects(:reload).raises(ActiveRecord::RecordNotFound)
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    assert_raise TinyCI::BuildStopped do
+      ssh.send(:check_for_stop!)
+    end
+  end
 end

@@ -87,6 +87,9 @@ class Build < ApplicationRecord
       update(status: "success", finished_at: Time.now)
     end
   rescue SignalException
+  rescue TinyCI::BuildStopped
+    flush_output!
+    update(status: "stopped", finished_at: Time.now)
   rescue TinyCI::Shell::CommandExecutionFailed
     flush_output!
     update(status: "failure", finished_at: Time.now)
@@ -98,6 +101,10 @@ class Build < ApplicationRecord
     finished
   end
 
+  # Cooperative stop. There is no separate process to signal — flipping the
+  # build's status to "stopping" is observed by the running shell loop the
+  # next time it polls (see TinyCI::Shell::Localhost#check_for_stop!), which
+  # raises TinyCI::BuildStopped and lets build! finalize as "stopped".
   def stop!
     TinyCI::Scheduler::Client.stop(self)
   end

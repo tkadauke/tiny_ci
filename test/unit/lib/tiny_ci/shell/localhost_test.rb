@@ -86,4 +86,56 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
       localhost.run("some_command", ["parameters"], ".", {})
     end
   end
+
+  test "should raise BuildStopped from check_for_stop! when build status is stopping" do
+    build = mock
+    build.expects(:reload).returns(build)
+    build.stubs(:status).returns("stopping")
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    assert_raise TinyCI::BuildStopped do
+      localhost.send(:check_for_stop!)
+    end
+  end
+
+  test "should not raise from check_for_stop! when build is still running" do
+    build = mock
+    build.expects(:reload).returns(build)
+    build.stubs(:status).returns("running")
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    assert_nothing_raised do
+      localhost.send(:check_for_stop!)
+    end
+  end
+
+  test "should treat a deleted build as a stop in check_for_stop!" do
+    build = mock
+    build.expects(:reload).raises(ActiveRecord::RecordNotFound)
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    assert_raise TinyCI::BuildStopped do
+      localhost.send(:check_for_stop!)
+    end
+  end
+
+  test "should propagate BuildStopped out of run when stop check fires" do
+    build = stub(add_to_output: nil, flush_output!: nil, current_environment: {})
+    stdout = stub(gets: "output")
+    stdout.stubs(:eof?).returns(false).then.returns(false).then.returns(true)
+    IO.expects(:popen).yields(stdout)
+
+    # Advance Time.now past the 1-second cadence so check_for_stop! fires
+    # on the first loop iteration. Sequence: initial last_stop_check, then
+    # add_to_output's call, then the cadence comparison.
+    t0 = Time.now
+    Time.stubs(:now).returns(t0, t0, t0 + 2)
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    localhost.expects(:check_for_stop!).raises(TinyCI::BuildStopped)
+
+    assert_raise TinyCI::BuildStopped do
+      localhost.run("some_command", [], ".", {})
+    end
+  end
 end
