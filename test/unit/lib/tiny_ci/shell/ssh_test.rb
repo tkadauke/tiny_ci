@@ -55,10 +55,88 @@ class TinyCI::Shell::SSHTest < ActiveSupport::TestCase
 
     ssh_session = mock
     Net::SSH.expects(:start).returns(ssh_session)
-    ssh_session.expects(:exec!).with(all_of(regexp_matches(%r{/some/path}), regexp_matches(/KEY="VALUE"/), regexp_matches(/some_command/))).returns("some output")
+    ssh_session.expects(:exec!).with(all_of(regexp_matches(%r{/some/path}), regexp_matches(/KEY=VALUE/), regexp_matches(/some_command/))).returns("some output")
 
     ssh = TinyCI::Shell::SSH.new(@build)
     assert_equal "some output", ssh.capture("some_command", "/some/path")
+  end
+
+  test "should escape working_dir in exists? to block command injection" do
+    ssh_session = mock
+    Net::SSH.expects(:start).returns(ssh_session)
+    ssh_session.expects(:exec!).with do |script|
+      # The literal "; rm -rf /" must NOT survive into the script unescaped.
+      !script.include?("; rm -rf /") && script.include?(Shellwords.escape("/tmp/foo; rm -rf /"))
+    end.returns("0")
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    ssh.exists?("/some/file", "/tmp/foo; rm -rf /")
+  end
+
+  test "should escape path in exists? to block command injection" do
+    ssh_session = mock
+    Net::SSH.expects(:start).returns(ssh_session)
+    ssh_session.expects(:exec!).with do |script|
+      !script.include?("$(whoami)") || script.include?(Shellwords.escape("$(whoami)"))
+    end.returns("0")
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    ssh.exists?("/some/$(whoami)", "/tmp")
+  end
+
+  test "should escape working_dir in capture to block command injection" do
+    @build.stubs(:current_environment).returns({})
+    ssh_session = mock
+    Net::SSH.expects(:start).returns(ssh_session)
+    ssh_session.expects(:exec!).with do |script|
+      !script.include?("; rm -rf /") && script.include?(Shellwords.escape("/tmp/foo; rm -rf /"))
+    end.returns("")
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    ssh.capture("ls", "/tmp/foo; rm -rf /")
+  end
+
+  test "should escape env values to block command injection" do
+    @build.stubs(:current_environment).returns("INJECT" => "$(whoami); rm -rf /")
+    ssh_session = mock
+    Net::SSH.expects(:start).returns(ssh_session)
+    ssh_session.expects(:exec!).with do |script|
+      # Raw "$(whoami)" or "; rm -rf /" must not be passed to the remote shell.
+      !script.include?("$(whoami); rm -rf /") &&
+        script.include?(Shellwords.escape("$(whoami); rm -rf /"))
+    end.returns("")
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    ssh.capture("ls", "/tmp")
+  end
+
+  test "should escape parameters and working_dir in run to block command injection" do
+    @build.stubs(
+      add_to_output: nil,
+      flush_output!: nil,
+      current_environment: {}
+    )
+
+    ssh_session = mock
+    Net::SSH.expects(:start).returns(ssh_session)
+
+    channel = mock
+    channel.stubs(:wait)
+    ch = mock
+    captured_command = nil
+    ch.expects(:exec).with do |cmd|
+      captured_command = cmd
+      true
+    end
+    ssh_session.expects(:open_channel).yields(ch).returns(channel)
+
+    ssh = TinyCI::Shell::SSH.new(@build)
+    ssh.run("git", ["clone", "; rm -rf /"], "/tmp/foo; rm -rf /", {})
+
+    refute_includes captured_command, "clone ; rm -rf /",
+      "raw parameter injection leaked into remote command"
+    refute_includes captured_command, "/tmp/foo; rm -rf /",
+      "raw working_dir injection leaked into remote command"
   end
 
   test "should raise BuildStopped from check_for_stop! when build status is stopping" do

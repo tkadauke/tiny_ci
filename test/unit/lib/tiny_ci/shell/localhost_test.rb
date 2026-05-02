@@ -12,8 +12,12 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should look for file in working dir" do
     working_dir = "/some/dir"
     file_name = "some/file"
-    File.expects(:exist?).with(working_dir).returns(true)
-    File.expects(:exist?).with(file_name).returns(true)
+    # Other gems (e.g. the debug gem's source repository) call File.exist?
+    # for unrelated paths during the test, so stub the catch-all and only
+    # constrain the calls we actually care about.
+    File.stubs(:exist?).returns(false)
+    File.stubs(:exist?).with(working_dir).returns(true)
+    File.stubs(:exist?).with(file_name).returns(true)
     Dir.expects(:chdir).yields.returns(true)
 
     localhost = TinyCI::Shell::Localhost.new(stub)
@@ -28,8 +32,8 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
 
   test "should capture output" do
     localhost = TinyCI::Shell::Localhost.new(stub)
-    localhost.expects(:`)
     Dir.expects(:chdir).with("/some/dir").yields.returns("command output")
+    IO.expects(:popen).with(["sh", "-c", "ls"]).returns("command output")
     assert_equal "command output", localhost.capture("ls", "/some/dir")
   end
 
@@ -48,11 +52,10 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should set environment variables when running commands" do
     build = stub(current_environment: { "BUILD_KEY" => "BUILD_VALUE" })
 
-    IO.expects(:popen).with do |args|
-      env, sh, dash_c, cmd = args
+    IO.expects(:popen).with do |env, argv|
       env["BUILD_KEY"] == "BUILD_VALUE" &&
         env["COMMAND_KEY"] == "COMMAND_VALUE" &&
-        sh == "sh" && dash_c == "-c" && cmd =~ /some_command/
+        argv[0] == "sh" && argv[1] == "-c" && argv[2] =~ /some_command/
     end
 
     localhost = TinyCI::Shell::Localhost.new(build)
@@ -63,16 +66,47 @@ class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should pass nil-valued env vars through to popen so they unset" do
     build = stub(current_environment: { "KEEP_ME" => "yes" })
 
-    IO.expects(:popen).with do |args|
-      env, sh, dash_c, _cmd = args
+    IO.expects(:popen).with do |env, argv|
       env["KEEP_ME"] == "yes" &&
         env.key?("BUNDLE_GEMFILE") && env["BUNDLE_GEMFILE"].nil? &&
-        sh == "sh" && dash_c == "-c"
+        argv[0] == "sh" && argv[1] == "-c"
     end
 
     localhost = TinyCI::Shell::Localhost.new(build)
     localhost.expects(:success?).returns(true)
     localhost.run("some_command", [], ".", { "BUNDLE_GEMFILE" => nil })
+  end
+
+  test "should escape parameters so shell metas in a parameter cannot be reinterpreted" do
+    build = stub(add_to_output: nil, flush_output!: nil, current_environment: {})
+
+    IO.expects(:popen).with do |_env, argv|
+      cmdline = argv.last
+      # The raw injection sequence must NOT survive into the cmdline; only
+      # the escaped form is allowed.
+      !cmdline.include?("; rm -rf /") &&
+        cmdline.include?(Shellwords.escape("; rm -rf /"))
+    end
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    localhost.expects(:success?).returns(true)
+    localhost.run("echo", ["; rm -rf /"], ".", {})
+  end
+
+  test "should pass env values as a hash so shell metas in env are not interpolated" do
+    build = stub(add_to_output: nil, flush_output!: nil, current_environment: {})
+
+    IO.expects(:popen).with do |env, argv|
+      cmdline = argv.last
+      # env value is set via the popen env hash, never inlined into the
+      # shell command, so $(whoami) is just a string here.
+      env["INJECT"] == "$(whoami); rm -rf /" &&
+        !cmdline.include?("$(whoami)")
+    end
+
+    localhost = TinyCI::Shell::Localhost.new(build)
+    localhost.expects(:success?).returns(true)
+    localhost.run("echo", ["hi"], ".", { "INJECT" => "$(whoami); rm -rf /" })
   end
 
   test "should raise exception when command fails" do
