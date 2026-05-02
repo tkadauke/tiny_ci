@@ -37,10 +37,40 @@ class TinyCI::DSLTest < ActiveSupport::TestCase
 
   test "should evaluate steps" do
     build = stub(plan: stub(steps: "rake"), repository_url: "ssh://some/url", workspace_path: "/")
+    TinyCI::BuildConfig.expects(:load).with("/").returns(nil)
     TinyCI::DSL.any_instance.expects(:repository).with(:git)
     TinyCI::DSL.any_instance.expects(:update)
     TinyCI::DSL.any_instance.expects(:rake)
     TinyCI::DSL.evaluate(build)
+  end
+
+  test "should evaluate tiny_ci.yml stages instead of plan steps when present" do
+    config = TinyCI::BuildConfig::Stage.new(name: "test", run: "echo hello")
+    parsed = stub(stages: [config])
+    build = stub(plan: stub(steps: "rake :should_not_run"), repository_url: "ssh://x/y", workspace_path: "/ws")
+    TinyCI::BuildConfig.expects(:load).with("/ws").returns(parsed)
+    TinyCI::DSL.any_instance.expects(:repository).with(:git)
+    TinyCI::DSL.any_instance.expects(:update)
+    TinyCI::DSL.any_instance.expects(:sh).with("echo hello")
+    TinyCI::DSL.any_instance.expects(:rake).never
+    TinyCI::DSL.evaluate(build)
+  end
+
+  test "should fall back to plan steps when tiny_ci.yml is absent" do
+    build = stub(plan: stub(steps: "rake"), repository_url: "ssh://x/y", workspace_path: "/ws")
+    TinyCI::BuildConfig.expects(:load).with("/ws").returns(nil)
+    TinyCI::DSL.any_instance.expects(:repository).with(:git)
+    TinyCI::DSL.any_instance.expects(:update)
+    TinyCI::DSL.any_instance.expects(:rake)
+    TinyCI::DSL.evaluate(build)
+  end
+
+  test "should bubble up build config parse errors" do
+    build = stub(plan: stub(steps: ""), repository_url: "ssh://x/y", workspace_path: "/ws")
+    TinyCI::BuildConfig.expects(:load).with("/ws").raises(TinyCI::BuildConfig::ParseError, "tiny_ci.yml: bad")
+    TinyCI::DSL.any_instance.stubs(:repository)
+    TinyCI::DSL.any_instance.stubs(:update)
+    assert_raises(TinyCI::BuildConfig::ParseError) { TinyCI::DSL.evaluate(build) }
   end
 
   test "should run rake task via the DSL" do

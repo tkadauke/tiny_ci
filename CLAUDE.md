@@ -53,7 +53,7 @@ parallel; the script auto-installs foreman on first run.
 ## Architecture & Conventions
 
 - The scheduler is `TinyCI::Scheduler` (module, not Singleton). `Scheduler.tick` is one stateless pass — pick the next buildable Build, find a free Slave, enqueue a `BuildJob`. `Scheduler.run` is the long-running poller used by the rake task. `BuildJob#perform` calls `Build#build!` and, if the build finished in `waiting` with a plan that has children, kicks off `plan.build_children!`.
-- Build configuration is the DSL in `app/lib/tiny_ci/dsl.rb`. Plan steps are stored as Ruby source in the DB and `instance_eval`'d — that is a documented RCE; replacing with a sandboxed / structured step format is a P0 in `docs/modernize.md` §3.6, and plan editing must remain admin-gated until then.
+- Build configuration: prefer `tiny_ci.yml` at the repo root (parsed by `TinyCI::BuildConfig`). The runner clones the repo at the build's SHA, then `TinyCI::DSL.evaluate` looks for `tiny_ci.yml` in the workspace and runs its stages. If the file is absent, the runner falls back to the legacy plan-DSL: `plan.steps` is Ruby source stored in the DB, AST-validated against an allowlist (see `TinyCI::DSL::Validator`) and `instance_eval`'d. Plan editing is admin-gated (#6); the full migration to declarative-only is tracked in #88.
 - New step types (e.g. `bundle exec rspec`): add a class under `TinyCI::Steps::Builder::*` and a method on `DSL`. No plugin loader.
 - New SCMs: subclass `TinyCI::SourceControl::Base`, expose `update`. `repository :foo` will resolve `TinyCI::SourceControl::Foo`.
 - New notifiers: subclass `TinyCI::Notifier::Base`. The `inherited` hook auto-registers them.

@@ -5,12 +5,15 @@ module TinyCI
   # with literal-only arguments) — see TinyCI::DSL::Validator. That closes
   # the legacy RCE-from-DB (modernize.md §3.6) while still letting
   # existing plans run unchanged. Plan editing should still be admin-gated.
+  #
+  # If the cloned repo contains a `tiny_ci.yml` at its root, that takes
+  # precedence over the legacy plan-DSL — the runner parses it and runs
+  # its stages instead of evaluating `plan.steps`. Migration to the
+  # declarative format is tracked in #88.
   class DSL
     attr_reader :pwd
 
     def self.evaluate(build)
-      Validator.validate!(build.plan.steps) if build.plan.steps.present?
-
       dsl = new(build)
       dsl.instance_eval do
         if build.repository_url
@@ -18,7 +21,14 @@ module TinyCI
           update
         end
       end
-      dsl.instance_eval build.plan.steps if build.plan.steps.present?
+
+      config = TinyCI::BuildConfig.load(dsl.pwd)
+      if config
+        config.stages.each { |stage| dsl.sh(stage.run) }
+      elsif build.plan.steps.present?
+        Validator.validate!(build.plan.steps)
+        dsl.instance_eval build.plan.steps
+      end
     end
 
     def initialize(build)
