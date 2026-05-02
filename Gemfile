@@ -21,6 +21,12 @@ gem "turbo-rails"
 gem "importmap-rails"
 gem "propshaft"
 
+# Prometheus text-format /metrics endpoint. Scraped by the cluster
+# Prometheus over the in-cluster Service. Network-level access control
+# (NetworkPolicy / private Service) gates exposure rather than auth on
+# the route — standard Prometheus pattern.
+gem "prometheus-client"
+
 group :development do
   gem "web-console"
   gem "listen"
