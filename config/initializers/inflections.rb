@@ -4,4 +4,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "DSL"
   inflect.acronym "SSH"
   inflect.acronym "URL"
+  inflect.acronym "GitHub"
 end
