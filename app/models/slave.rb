@@ -18,7 +18,10 @@ class Slave < ApplicationRecord
   has_many :running_builds, -> { where(status: "running") }, class_name: "Build"
 
   scope :least_busy, -> {
-    where.not(offline: true)
+    # `where.not(offline: true)` would generate `offline != TRUE`, which
+    # excludes rows where `offline` IS NULL (SQL three-valued logic).
+    # Match both NULL and false explicitly so newly created slaves count.
+    where(offline: [false, nil])
       .left_joins(:running_builds)
       .group("slaves.id")
       .order(Arel.sql("COUNT(builds.id) ASC"))
