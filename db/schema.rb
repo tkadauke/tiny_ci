@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # This is the authoritative schema for TinyCI on modern Rails (7.2+).
-# The historical migrations under db/migrate/ are preserved for reference,
-# but db:schema:load is the supported way to bootstrap a fresh database.
+# Bootstrap a fresh database with `bin/rails db:schema:load`. The original
+# Rails 2.3-era migrations were removed in #60 (git history preserves them);
+# future schema changes go through new migrations from this baseline.
 
 ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
   create_table "builds", force: :cascade do |t|

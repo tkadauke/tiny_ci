@@ -28,7 +28,7 @@ The repo was migrated from Rails 2.3 to Rails 7.2 in early 2026 (see git log + `
   - `app/views/build_reports/{details,gist}/` holds the report partials rendered by `BuildsHelper#render_report`.
   - `app/mailers/build_mailer.rb` + `app/views/build_mailer/` for the email notifier.
 - `config/` - Rails config. `application.rb`, `routes.rb`, `database.yml`, `puma.rb`, `locales/` (en + de), `initializers/`, `version.rb` (`TINY_CI_VERSION`), `options.yml` and `user_options.yml` consumed by `TinyCI::Config`/`TinyCI::BaseConfig`. `templates/` are ERB-rendered into `config/` by the first-run setup wizard.
-- `db/` - `schema.rb` is the source of truth for fresh installs (`bin/rails db:schema:load`); `db/migrate/` is preserved for reference but not the recommended bootstrap path.
+- `db/` - `schema.rb` is the source of truth for fresh installs (`bin/rails db:schema:load`). `db/migrate/` is empty; future schema changes go through new Rails 7 migrations from this clean baseline (the original Rails 2.3 migrations were removed in #60 — git history is the archive).
 - `lib/tasks/` - Rake tasks, including `tiny_ci:scheduler` (foreground poller) and the legacy `setup` / `dist` / `configuration` tasks (some still need a Rails 7 audit).
 - `bin/` - `rails`, `rake`, `setup`. The Rails 2 `script/*` tree is gone.
 - `test/` - `unit/`, `functional/`, `integration/`, plus `test_helper.rb`. ~320 runs.
