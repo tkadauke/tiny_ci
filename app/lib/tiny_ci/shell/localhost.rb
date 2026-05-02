@@ -1,4 +1,5 @@
 require "fileutils"
+require "shellwords"
 
 module TinyCI
   module Shell
@@ -14,14 +15,18 @@ module TinyCI
       STOP_CHECK_INTERVAL = 1.0
 
       def run(command, parameters, working_dir, environment)
-        cmdline = "#{command} #{[parameters].flatten.join(' ')} 2>&1"
         env = { "RAILS_ENV" => "development" }
               .merge(@build.current_environment)
               .merge(environment)
         env = stringify_env(env)
+        # `command` is itself a shell expression by DSL contract (`sh "echo
+        # hello"` works), so we keep `sh -c`. But each parameter is
+        # Shellwords-escaped so a parameter containing shell metas can't be
+        # reinterpreted by the shell.
+        cmdline = build_cmdline(command, parameters)
 
         Dir.chdir(working_dir) do
-          IO.popen([env, "sh", "-c", cmdline]) do |stdout|
+          IO.popen(env, ["sh", "-c", cmdline]) do |stdout|
             last_stop_check = Time.now
             until stdout.eof?
               line = stdout.gets
@@ -53,11 +58,17 @@ module TinyCI
 
       def capture(command, working_dir)
         Dir.chdir(working_dir) do
-          `#{command}`
+          IO.popen(["sh", "-c", command], &:read)
         end
       end
 
       private
+
+      def build_cmdline(command, parameters)
+        params = Array(parameters).map { |p| Shellwords.escape(p.to_s) }
+        prefix = params.empty? ? command.to_s : "#{command} #{params.join(' ')}"
+        "#{prefix} 2>&1"
+      end
 
       def success?
         $?.success?
