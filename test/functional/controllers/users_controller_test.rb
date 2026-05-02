@@ -5,6 +5,7 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   test "should show user list" do
+    login_with @user
     get :index
     assert_response :success
   end
@@ -44,9 +45,9 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal 'alice2@example.com', User.find_by!(login: 'alice').email
   end
   
-  test "should not update profile for unauthorized user" do
-    post :update, params: { id: @user.login, user: { email: 'alice2@example.com' } }
-    assert_access_denied
+  test "should redirect guest from update to login" do
+    post :update, params: { id: @user.login, user: { email: "alice2@example.com" } }
+    assert_redirected_to_login
   end
   
   test "should show new" do
