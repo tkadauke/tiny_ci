@@ -19,7 +19,7 @@
 
   <p class="form_item">
     <span class="label"><%= f.label :db_password, t('.database_password') %></span>
-    <span class="desc"><%= t('.password_description', :path => "<code>#{Rails.root}/config/database.yml</code>") %></span>
+    <span class="desc"><%= t('.password_description_html', :path => "<code>#{Rails.root}/config/database.yml</code>".html_safe) %></span>
     <%= f.password_field :db_password %>
   </p>
   

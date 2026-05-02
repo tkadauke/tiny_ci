@@ -13,7 +13,7 @@ de:
         database_password: Datenbank-Passwort
         database_username: Datenbank-Benutzername
         db_error: "Konnte keine Verbindung zur Datenbank aufbauen. Folgende Fehlermeldung wurde geliefert:"
-        password_description: "Dieses Passwort wird unverschlüsselt in %{path} gespeichert."
+        password_description_html: "Dieses Passwort wird unverschlüsselt in %{path} gespeichert."
         save_and_restart: "Speichern und neu starten"
         welcome_to_tinyci: "Willkommen zu TinyCI"
     slaves: 
