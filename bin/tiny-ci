@@ -1,0 +1,89 @@
+#!/usr/bin/env ruby
+# tiny-ci — minimal CLI for the tiny_ci REST API.
+#
+# Usage:
+#   tiny-ci trigger <project> [--branch X | --sha Y] [--plan P]
+#   tiny-ci status  <project> <build-id>
+#
+# Env:
+#   TINY_CI_URL    — base URL of the server (default: http://localhost:7199)
+#   TINY_CI_TOKEN  — bearer token (must match the server's TINY_CI_API_TOKEN)
+#
+# Stays on net/http + json so it has zero gem dependencies and can be
+# vendored / pasted into deploy scripts. Larger UX (tail, list, ANSI
+# pretty-printing) is a follow-up.
+
+require "json"
+require "net/http"
+require "optparse"
+require "uri"
+
+BASE = (ENV["TINY_CI_URL"] || "http://localhost:7199").chomp("/")
+TOKEN = ENV["TINY_CI_TOKEN"].to_s
+
+def die(msg, code = 1)
+  warn "tiny-ci: #{msg}"
+  exit code
+end
+
+die "TINY_CI_TOKEN is not set" if TOKEN.empty?
+
+def request(method, path, body: nil)
+  uri = URI("#{BASE}#{path}")
+  req = case method
+        when :post then Net::HTTP::Post.new(uri)
+        when :get  then Net::HTTP::Get.new(uri)
+        else die("unsupported HTTP method #{method}")
+        end
+  req["Authorization"] = "Bearer #{TOKEN}"
+  req["Content-Type"]  = "application/json"
+  req.body = JSON.generate(body) if body
+  res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") { |h| h.request(req) }
+  parsed = res.body.empty? ? {} : (JSON.parse(res.body) rescue { "raw" => res.body })
+  [res.code.to_i, parsed]
+end
+
+def cmd_trigger(args)
+  branch = sha = plan = nil
+  parser = OptionParser.new do |o|
+    o.banner = "Usage: tiny-ci trigger <project> [options]"
+    o.on("--branch BRANCH") { |v| branch = v }
+    o.on("--sha SHA")       { |v| sha = v }
+    o.on("--plan PLAN")     { |v| plan = v }
+  end
+  parser.parse!(args)
+  project = args.shift or die(parser.to_s, 2)
+
+  body = { branch: branch, sha: sha, plan_id: plan }.compact
+  status, payload = request(:post, "/api/v1/projects/#{project}/trigger", body: body)
+  die("HTTP #{status}: #{payload["error"] || payload}") unless status == 200
+
+  Array(payload["builds"]).each do |b|
+    puts "#{b["plan"].ljust(20)} build=#{b["id"]} status=#{b["status"]} #{BASE}#{b["url"]}"
+  end
+end
+
+def cmd_status(args)
+  project = args.shift or die("Usage: tiny-ci status <project> <build-id>", 2)
+  build_id = args.shift or die("Usage: tiny-ci status <project> <build-id>", 2)
+  status, payload = request(:get, "/api/v1/projects/#{project}/builds/#{build_id}")
+  die("HTTP #{status}: #{payload["error"] || payload}") unless status == 200
+  puts JSON.pretty_generate(payload)
+end
+
+case ARGV.shift
+when "trigger" then cmd_trigger(ARGV)
+when "status"  then cmd_status(ARGV)
+when nil, "-h", "--help"
+  puts <<~USAGE
+    tiny-ci — REST CLI for tiny_ci
+
+    Commands:
+      trigger <project> [--branch X | --sha Y] [--plan P]
+      status  <project> <build-id>
+
+    Env: TINY_CI_URL (default http://localhost:7199), TINY_CI_TOKEN (required)
+  USAGE
+else
+  die("unknown command — try `tiny-ci --help`", 2)
+end
