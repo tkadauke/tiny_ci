@@ -1,4 +1,5 @@
 require_relative "../../../../test_helper"
+require "net/http"
 
 class TinyCI::TelegramBot::NotifierTest < ActiveSupport::TestCase
   setup do
@@ -64,10 +65,10 @@ class TinyCI::TelegramBot::NotifierTest < ActiveSupport::TestCase
 
   test "message includes project/plan name and dashboard URL" do
     captured_body = nil
-    Net::HTTP.stubs(:post) do |_uri, body, _headers|
+    Net::HTTP.expects(:post).with do |_uri, body, _headers|
       captured_body = JSON.parse(body)
-      stub(body: '{"ok":true}')
-    end
+      true
+    end.returns(stub(body: '{"ok":true}'))
     TinyCI::TelegramBot::Notifier.notify(make_build(status: "failure"))
 
     assert_equal "-100999", captured_body["chat_id"]
@@ -79,10 +80,10 @@ class TinyCI::TelegramBot::NotifierTest < ActiveSupport::TestCase
   test "message includes thread_id when set" do
     @project.update!(telegram_thread_id: 42)
     captured_body = nil
-    Net::HTTP.stubs(:post) do |_uri, body, _headers|
+    Net::HTTP.expects(:post).with do |_uri, body, _headers|
       captured_body = JSON.parse(body)
-      stub(body: '{"ok":true}')
-    end
+      true
+    end.returns(stub(body: '{"ok":true}'))
     TinyCI::TelegramBot::Notifier.notify(make_build(status: "failure"))
     assert_equal 42, captured_body["message_thread_id"]
   end
