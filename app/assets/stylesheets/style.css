@@ -7,16 +7,6 @@
 
 */
 
-@import url('reset.css');
-@import url('misc.css');
-@import url('roundcorners.css');
-@import url('ads.css');
-@import url('typo.css');
-@import url('report.css');
-@import url('plans.css');
-@import url('flash.css');
-@import url('tabs.css');
-
 body {
   padding: 0;
   margin: 0;
@@ -27,12 +17,12 @@ body {
 #wrap {
   width: 860px;
   margin: 30px auto 0 auto; /* Top 30px, left auto, bottom 0 cause it doesn't work, and right auto, the auto is to put it into center. */
-  background: #ffffff url(../images/wrap_corner_left.jpg) top left no-repeat;
+  background: #ffffff url(wrap_corner_left.jpg) top left no-repeat;
   font-size: 1em;
   font-family: Tahoma, Verdana, Arial;
 }
 .wrap_corner_right {
-  background: url(../images/wrap_corner_right.jpg) top right no-repeat;
+  background: url(wrap_corner_right.jpg) top right no-repeat;
 }
 .bottom_space {
   margin-bottom: 30px;
@@ -41,10 +31,10 @@ body {
 padding: 3px 3px 0 3px;
 }
 #header {
-  background: #336699 url(../images/header_corner_left.jpg) top left no-repeat;
+  background: #336699 url(header_corner_left.jpg) top left no-repeat;
 }
 #top_header {
-  background: url(../images/header_corner_right.jpg) top right no-repeat;
+  background: url(header_corner_right.jpg) top right no-repeat;
 }
 
 #header #logo { 
@@ -82,10 +72,10 @@ padding: 3px 3px 0 3px;
 }
 
 #header #center_header #suggestion {
-  background: #2C5783 url(../images/suggestion_corner_left_bottom.jpg) bottom left no-repeat;
+  background: #2C5783 url(suggestion_corner_left_bottom.jpg) bottom left no-repeat;
 }
 .suggestion_corner_right {
-  background: url(../images/suggestion_corner_right_bottom.jpg) bottom right no-repeat;
+  background: url(suggestion_corner_right_bottom.jpg) bottom right no-repeat;
   padding: 10px 10px;
   text-align: center;
 }
@@ -105,7 +95,7 @@ padding: 3px 3px 0 3px;
 #header #menu_container { padding: 10px 20px 0 20px; }
 #header #menu {
   height: 25px;
-  background: #264E75 url(../images/menu_bg.jpg) top right no-repeat;
+  background: #264E75 url(menu_bg.jpg) top right no-repeat;
   font-size: 1.1em;
 }
 #header #menu ul {
@@ -124,14 +114,14 @@ padding: 3px 3px 0 3px;
   height: 25px;
   text-decoration: none;
   line-height: 25px;
-  background: url(../images/menu_bg_separator.jpg) top left no-repeat;
+  background: url(menu_bg_separator.jpg) top left no-repeat;
   padding: 0 10px;
 }
 #header #menu ul li a.active {
-  background: #204264 url(../images/menu_bg_separator.jpg) top left no-repeat;
+  background: #204264 url(menu_bg_separator.jpg) top left no-repeat;
 }
 #header #menu ul li a.first {
-  background: url(../images/menu_bg_leftcorner.jpg) top left no-repeat;
+  background: url(menu_bg_leftcorner.jpg) top left no-repeat;
 }
 #header #menu ul li a:hover {
   text-decoration: underline;
@@ -172,7 +162,7 @@ padding: 3px 3px 0 3px;
 }
 
 #body {
-  background: url(../images/body_bg.jpg) top left repeat-x;
+  background: url(body_bg.jpg) top left repeat-x;
   padding: 25px 20px 0 20px;
   font-size: 1.2em;
 }
@@ -185,7 +175,7 @@ padding: 3px 3px 0 3px;
   width: 405px;
 }
 #body.maintenance {
-  background: url(../images/maintenance.jpg) bottom right no-repeat;
+  background: url(maintenance.jpg) bottom right no-repeat;
 }
 #body h1 {
   font-size: 1.4em;
@@ -219,10 +209,10 @@ padding: 3px 3px 0 3px;
 #body ul.asterisk li,
 .help-content ul li {
   padding: 0 0 5px 15px;
-  background: url(../images/ul_asterisk_li.jpg) 1px 3px no-repeat;
+  background: url(ul_asterisk_li.jpg) 1px 3px no-repeat;
 }
 #body ul.asterisk li.green {
-  background: url(../images/ul_asterisk_li_green.jpg) 1px 3px no-repeat;
+  background: url(ul_asterisk_li_green.jpg) 1px 3px no-repeat;
   color: #00CC00;
 }
 
@@ -287,20 +277,20 @@ padding: 3px 3px 0 3px;
 }
 
 #bottomcontent {
-  background: url(../images/bottomcontent_corner_left.jpg) bottom left no-repeat;
+  background: url(bottomcontent_corner_left.jpg) bottom left no-repeat;
 }
 #bottomcontent .bottomcontent_right {
-  background: url(../images/bottomcontent_corner_right.jpg) bottom right no-repeat;
+  background: url(bottomcontent_corner_right.jpg) bottom right no-repeat;
   padding: 3px;
 }
 #footer {
-  background: #336699 url(../images/footer_corner_left.jpg) bottom left no-repeat;
+  background: #336699 url(footer_corner_left.jpg) bottom left no-repeat;
   border-top: 1px solid #264E75;
   color: #FFFFFF;
   font-size: 1.1em;
 }
 #footer .footer_corner_right {
-  background: url(../images/footer_corner_right.jpg) bottom right no-repeat;
+  background: url(footer_corner_right.jpg) bottom right no-repeat;
 }
 #footer .left,
 #footer .right {
@@ -320,7 +310,7 @@ padding: 3px 3px 0 3px;
   text-decoration: underline;
 }
 #footer .right {
-  background: url(../images/footer_divider.jpg) top left no-repeat;
+  background: url(footer_divider.jpg) top left no-repeat;
   width: 180px;
   float: right;
   padding-left: 15px;

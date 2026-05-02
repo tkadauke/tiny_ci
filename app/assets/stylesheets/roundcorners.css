@@ -11,11 +11,11 @@
 }
 
 .roundtop { 
-	background: url(/images/div_yellow_corner_tright.jpg) no-repeat top right; 
+	background: url(div_yellow_corner_tright.jpg) no-repeat top right; 
 }
 
 .roundbottom {
-	background: url(/images/div_yellow_corner_bright.jpg) no-repeat top right; 
+	background: url(div_yellow_corner_bright.jpg) no-repeat top right; 
 }
 
 img.corner {
