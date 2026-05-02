@@ -12,6 +12,12 @@
 # callback that observes on transition to finished, or a process-level
 # observation cache — both are deliberately a follow-up. This slice only
 # ships gauges so it can land without infra changes.
+
+# prometheus-client autoloads the registry/metric classes through its
+# main require, but the text-format serializer lives at a separate path
+# that callers must require explicitly.
+require "prometheus/client/formats/text"
+
 class MetricsController < ActionController::API
   REGISTRY = Prometheus::Client::Registry.new
 
