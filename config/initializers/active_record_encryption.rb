@@ -29,7 +29,7 @@ if primary_key && deterministic_key && key_derivation_salt
   Rails.application.config.active_record.encryption.primary_key = primary_key
   Rails.application.config.active_record.encryption.deterministic_key = deterministic_key
   Rails.application.config.active_record.encryption.key_derivation_salt = key_derivation_salt
-elsif Rails.env.production?
+elsif Rails.env.production? && !ENV["SECRET_KEY_BASE_DUMMY"]
   raise "Active Record encryption keys are not configured. Set them in credentials " \
         "or via ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY, " \
         "ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY, and " \

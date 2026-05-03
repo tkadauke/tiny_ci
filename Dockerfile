@@ -44,10 +44,11 @@ COPY . .
 
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Asset compilation is a no-op until Propshaft lands (issue #63 / PR #79).
-# JS is wired through importmap-rails which doesn't need precompilation.
-# CSS is currently served from public/stylesheets/ as static files via
-# RAILS_SERVE_STATIC_FILES=1.
+# Propshaft fingerprints CSS and image assets at build time. Importmap'd JS
+# is also pinned through here. SECRET_KEY_BASE_DUMMY=1 satisfies Rails 7's
+# production initializer without leaking the real key into the image — the
+# real RAILS_MASTER_KEY is injected at runtime.
+RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
 # ---- Runtime stage ---------------------------------------------------------
 FROM base
