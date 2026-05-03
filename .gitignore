@@ -28,3 +28,6 @@ config/credentials/*.key
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+# Local-only deploy script (carries kubeconfig paths and namespace names that
+# don't apply to other clones; this is an open-source repo).
+/bin/deploy
