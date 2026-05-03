@@ -24,3 +24,7 @@ config/credentials/*.key
 .claude/settings.local.json
 .claude/worktrees/
 .trackers/
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
