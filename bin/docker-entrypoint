@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+# If running the rails server, prepare the database (idempotent: schema:load
+# on a fresh DB, no-op when already up).
+if [ "${1}" = "./bin/rails" ] && [ "${2}" = "server" ]; then
+  ./bin/rails db:prepare
+fi
+
+exec "${@}"

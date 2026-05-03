@@ -1,0 +1,43 @@
+# Git / VCS
+.git
+.github
+.gitignore
+.gitattributes
+
+# Local dev artifacts
+log/*
+storage/*
+tmp/*
+.bundle
+node_modules
+.byebug_history
+.DS_Store
+
+# Test artifacts
+coverage
+test/coverage
+
+# Editor / IDE
+.idea
+.vscode
+*.swp
+*~
+
+# Bundler vendoring (built fresh inside the container)
+vendor/bundle
+
+# CI / dev tooling that doesn't belong in the image
+docs
+features
+.claude
+.trackers
+README.rdoc
+README.md
+CONTRIBUTING.md
+modernize.md
+
+# Secrets — only credentials.yml.enc + RAILS_MASTER_KEY env var should drive prod secrets
+config/master.key
+config/credentials/*.key
+.env*
+.envrc
