@@ -1,7 +1,13 @@
-<p>Please choose your language</p>
-<p>Bitte wählen Sie Ihre Sprache</p>
+<div class="mx-auto md:w-2/3 w-full">
+  <p class="text-lg">Please choose your language</p>
+  <p class="text-lg text-gray-600">Bitte wählen Sie Ihre Sprache</p>
 
-<%= form_tag({}, :method => :get) do %>
-  <%= select_tag :language, options_for_select([['English', 'en'], ['Deutsch', 'de']]) %>
-  <%= submit_tag 'Ok' %>
-<% end %>
+  <%= form_tag({}, method: :get, class: "contents") do %>
+    <div class="my-5 flex items-center gap-3">
+      <%= select_tag :language, options_for_select([["English", "en"], ["Deutsch", "de"]]),
+            class: "shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2" %>
+      <%= submit_tag "Ok",
+            class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

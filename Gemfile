@@ -20,6 +20,7 @@ gem "acts_as_tree"
 gem "turbo-rails"
 gem "importmap-rails"
 gem "propshaft"
+gem "tailwindcss-rails"
 
 group :development do
   gem "web-console"

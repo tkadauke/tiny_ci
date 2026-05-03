@@ -1,30 +1,45 @@
-<h2><%= t('.create_new_account') %></h2>
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl"><%= t(".create_new_account") %></h1>
 
-<%= form_for @user do |f| %>
-  <%= f.error_messages %>
+  <%= form_for @user, html: { class: "contents" } do |f| %>
+    <% if @user.errors.any? %>
+      <div class="my-5 py-2 px-3 bg-red-50 text-red-700 rounded-lg">
+        <ul class="list-disc list-inside text-sm">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-  <p class="form_item">
-    <span class="label"><%= f.label :login, t('.login_name') %></span>
-    <span class="desc"><%= t('.the_nick_name_used_for_logins') %></span>
-    <%= f.text_field :login %>
-  </p>
-  
-  <p class="form_item">
-    <span class="label"><%= f.label :email, t('.email_address') %></span>
-    <span class="desc"><%= t('.the_email_address_is_used_for_notifications') %></span>
-    <%= f.text_field :email %>
-  </p>
-  
-  <p class="form_item">
-    <span class="label"><%= f.label :password, t('.password') %></span>
-    <%= f.password_field :password %>
-  </p>
-  
-  <p class="form_item">
-    <span class="label"><%= f.label :password_confirmation, t('.password_confirmation') %></span>
-    <span class="desc"><%= t('.please_repeat_the_password_exactly_as_above') %></span>
-    <%= f.password_field :password_confirmation %>
-  </p>
-  
-  <%= f.submit t('.create_account') %>
-<% end %>
+    <div class="my-5">
+      <%= f.label :login, t(".login_name"), class: "block text-sm font-medium text-gray-700" %>
+      <p class="text-xs text-gray-500 mt-1"><%= t(".the_nick_name_used_for_logins") %></p>
+      <%= f.text_field :login,
+            class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= f.label :email, t(".email_address"), class: "block text-sm font-medium text-gray-700" %>
+      <p class="text-xs text-gray-500 mt-1"><%= t(".the_email_address_is_used_for_notifications") %></p>
+      <%= f.email_field :email,
+            class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= f.label :password, t(".password"), class: "block text-sm font-medium text-gray-700" %>
+      <%= f.password_field :password,
+            class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= f.label :password_confirmation, t(".password_confirmation"), class: "block text-sm font-medium text-gray-700" %>
+      <p class="text-xs text-gray-500 mt-1"><%= t(".please_repeat_the_password_exactly_as_above") %></p>
+      <%= f.password_field :password_confirmation,
+            class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <%= f.submit t(".create_account"),
+          class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  <% end %>
+</div>

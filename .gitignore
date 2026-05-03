@@ -24,3 +24,6 @@ config/credentials/*.key
 .claude/settings.local.json
 .claude/worktrees/
 .trackers/
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

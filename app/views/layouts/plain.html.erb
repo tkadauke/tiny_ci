@@ -1,102 +1,26 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>TinyCI</title>
-    <%= stylesheet_link_tag "reset", "misc", "roundcorners", "ads", "typo", "report", "plans", "flash", "tabs", "style", "ie", "data-turbo-track": "reload" %>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body>
-    <!-- wrap start -->
-    <div id="wrap">
-    <div class="wrap_corner_right">
 
-      <!-- topcontent -->
-      <div id="topcontent">
+  <body class="bg-gray-50 text-gray-900">
+    <header class="bg-white border-b border-gray-200">
+      <nav class="container mx-auto px-5 py-4 flex items-center justify-between">
+        <%= link_to "TinyCI", root_path, class: "font-bold text-xl text-gray-900 hover:text-blue-600" %>
+        <span class="text-sm text-gray-500"><%= t("layouts.subtitle") %></span>
+      </nav>
+    </header>
 
-        <!-- header start -->
-        <div id="header">
-
-          <!-- topheader start -->
-          <div id="top_header">
-            <div id="logo">
-              <h1><a href="/">TinyCI</a></h1>
-              <p><%= t('layouts.subtitle') %></p>
-            </div>
-            <div id="center_header">
-              <div id="suggestion">
-                <div class="suggestion_corner_right">
-                  <span><%= t('layouts.report_bugs_html', :report_link => link_to(t('layouts.report_link_text'), "http://github.com/tkadauke/tiny_ci/issues")) %></span>
-                </div>
-              </div>
-            </div>
-            <div class="clearer"></div>
-          </div>
-          <!-- topheader end -->
-
-          <!-- menu start -->
-          <div id="menu_container">
-            <div id="menu">
-              <ul>
-                <% if setup? %>
-                  <li><a href="/admin/setup" class="first"><%= t('layouts.setup') %></a></li>
-                  <li>&nbsp;</li>
-                <% else %>
-                  <li><a href="/" class="first"><%= t('layouts.home') %></a></li>
-                  <li><a href="/projects"><%= t('layouts.projects') %></a></li>
-                  <li><a href="/users"><%= t('layouts.users') %></a></li>
-                  <li><a href="/help_topics"><%= t('layouts.help') %></a></li>
-                <% end %>
-              </ul>
-            </div>
-            <div class="clearer"></div>
-          </div>
-          <!-- menu end -->
-
-        </div>
-        <!-- header end -->
-
-      <!-- body start -->
-
-      <div id="body">
-        <%= yield %>
-      <div class="clearer"></div>
-
-      </div>
-      <!-- body end -->
-
-      </div>
-      <!-- topcontent end -->
-
-      <!-- footer start -->
-      <div id="bottomcontent">
-      <div class="bottomcontent_right">
-        <div id="footer">
-        <div class="footer_corner_right">
-          <div class="left">
-          <a href="/"><%= t('layouts.home') %></a> | 
-          <a href="/projects"><%= t('layouts.projects') %></a> |
-          <a href="/users"><%= t('layouts.users') %></a>
-          </div>
-          <div class="clearer"></div>
-        </div>
-        </div>
-      </div>
-      </div>
-      <!-- footer end -->
-
-    </div>
-    </div>
-    <!-- wrap end -->
-
-    <div class="bottom_space">
-      <div id="ads_page_end">
-        <h1><%= t('layouts.quick_links') %></h1>
-        <div id="links">
-          <a href="http://github.com/tkadauke/tiny_ci"><%= t('layouts.github_project_page') %></a>
-        </div>
-      </div>
-    </div>
+    <main class="container mx-auto mt-10 px-5 pb-16">
+      <%= yield %>
+    </main>
   </body>
 </html>
