@@ -30,6 +30,8 @@ class Build < ApplicationRecord
   after_update :update_stats_if_neccessary
   after_create_commit  :broadcast_queue_update
   after_update_commit  :broadcast_realtime_updates
+  after_create_commit  :report_to_github
+  after_update_commit  :report_to_github_on_status_change
 
   def cleanup_for_background
     @shell = nil
@@ -179,5 +181,14 @@ class Build < ApplicationRecord
       broadcast_refresh_to("queue")
       TinyCI::Notifier::Base.notify(self) if defined?(TinyCI::Notifier::Base)
     end
+  end
+
+  def report_to_github
+    TinyCI::GitHub::CheckRunReporter.report(self) if defined?(TinyCI::GitHub::CheckRunReporter)
+  end
+
+  def report_to_github_on_status_change
+    return unless (previous_changes_for_observer || {}).key?("status")
+    TinyCI::GitHub::CheckRunReporter.report(self) if defined?(TinyCI::GitHub::CheckRunReporter)
   end
 end

@@ -21,6 +21,13 @@ gem "turbo-rails"
 gem "importmap-rails"
 gem "propshaft"
 
+# GitHub App auth + Checks API for status reporting (#84). Octokit
+# handles REST + retries; jwt mints the App-level bearer that we exchange
+# for an installation token. Both no-op until GITHUB_APP_ID +
+# GITHUB_APP_PRIVATE_KEY are set, so dev/test boots without GitHub.
+gem "octokit", "~> 9.0"
+gem "jwt",     "~> 2.8"
+
 group :development do
   gem "web-console"
   gem "listen"

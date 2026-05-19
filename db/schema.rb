@@ -5,7 +5,7 @@
 # Rails 2.3-era migrations were removed in #60 (git history preserves them);
 # future schema changes go through new migrations from this baseline.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_01_000002) do
   create_table "builds", force: :cascade do |t|
     t.integer  "plan_id"
     t.integer  "position"
@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.integer  "starter_id"
+    t.bigint   "github_check_run_id"
     t.index    ["plan_id"]
     t.index    ["parent_id"]
   end
@@ -57,6 +58,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_27_000001) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.bigint   "github_installation_id"
+    t.string   "github_repo_full_name"
   end
 
   create_table "slaves", force: :cascade do |t|
