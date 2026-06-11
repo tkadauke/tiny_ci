@@ -9,6 +9,7 @@ let csrfToken: string | undefined;
 
 export class ApiError extends Error {
   response: Response;
+  status: number;
   body: unknown;
   errors: string[];
 
@@ -16,6 +17,7 @@ export class ApiError extends Error {
     super(message);
     this.name = "ApiError";
     this.response = response;
+    this.status = response.status;
     this.body = body;
     this.errors = isErrorBody(body) ? body.errors : [];
   }
@@ -24,7 +26,6 @@ export class ApiError extends Error {
 export function setQueryClient(client: QueryClientLike): void {
   queryClient = client;
 }
-
 async function getCsrfToken(): Promise<string> {
   if (csrfToken) {
     return csrfToken;
@@ -73,7 +74,7 @@ async function request<TResponse>(
   }
 
   if (!response.ok) {
-    throw new ApiError(`API request failed: ${response.status}`, response, responseBody);
+    throw new ApiError(errorMessage(response.status, responseBody), response, responseBody);
   }
 
   if (response.status === 204) {
@@ -81,6 +82,19 @@ async function request<TResponse>(
   }
 
   return responseBody as TResponse;
+}
+
+function errorMessage(status: number, body: unknown): string {
+  if (
+    typeof body === "object" &&
+    body !== null &&
+    "error" in body &&
+    typeof (body as { error?: unknown }).error === "string"
+  ) {
+    return (body as { error: string }).error;
+  }
+
+  return `API request failed: ${status}`;
 }
 
 function isErrorBody(body: unknown): body is { errors: string[] } {

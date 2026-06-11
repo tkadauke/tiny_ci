@@ -33,6 +33,12 @@ const guestUser: CurrentUser = {
   can_destroy_plans: false,
 };
 
+export type LoggedInCurrentUser = CurrentUser & {
+  guest: false;
+  login: string;
+  email: string;
+};
+
 export function useCurrentUser() {
   return useQuery({
     queryKey: ["currentUser"],

@@ -3,9 +3,14 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import RequireAuth from "@/components/auth/RequireAuth";
 import { FlashProvider, useFlash } from "@/components/ui/FlashMessage";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import type { CurrentUser, LoggedInCurrentUser } from "@/hooks/useCurrentUser";
 import { setQueryClient } from "@/lib/api";
 import LoginPage from "@/pages/auth/LoginPage";
 import SignupPage from "@/pages/auth/SignupPage";
+import EditUserPage from "@/pages/users/EditUserPage";
+import UserProfilePage from "@/pages/users/UserProfilePage";
+import UsersPage from "@/pages/users/UsersPage";
 
 const queryClient = new QueryClient();
 setQueryClient(queryClient);
@@ -15,9 +20,9 @@ const routes = [
   { path: "/login", title: "Login", element: <LoginRoute /> },
   { path: "/signup", title: "Signup", element: <SignupRoute /> },
   { path: "/settings", title: "Settings", requireAuth: true },
-  { path: "/users", title: "Users", requireAuth: true },
-  { path: "/users/:login", title: "User Profile" },
-  { path: "/users/:login/edit", title: "Edit User", requireAuth: true },
+  { path: "/users", title: "Users", element: <UsersRoute />, requireAuth: true },
+  { path: "/users/:login", title: "User Profile", element: <UserProfileRoute /> },
+  { path: "/users/:login/edit", title: "Edit User", element: <EditUserRoute />, requireAuth: true },
   { path: "/plans", title: "Plans" },
   { path: "/projects", title: "Projects" },
   { path: "/projects/new", title: "New Project", requireAuth: true },
@@ -37,6 +42,10 @@ const routes = [
   { path: "/admin/setup", title: "Setup" },
   { path: "/help_topics/*", title: "Help" },
 ];
+
+function isLoggedIn(currentUser: CurrentUser): currentUser is LoggedInCurrentUser {
+  return !currentUser.guest;
+}
 
 export default function App() {
   return (
@@ -84,6 +93,40 @@ function SignupRoute() {
 
   return (
     <SignupPage
+      onFlash={(message, type = "notice") => {
+        setFlash({ message, type });
+      }}
+    />
+  );
+}
+
+function UsersRoute() {
+  const { data: currentUser } = useCurrentUser();
+
+  if (!isLoggedIn(currentUser)) {
+    return null;
+  }
+
+  return <UsersPage currentUser={currentUser} />;
+}
+
+function UserProfileRoute() {
+  const { data: currentUser } = useCurrentUser();
+
+  return <UserProfilePage currentUser={currentUser} />;
+}
+
+function EditUserRoute() {
+  const { data: currentUser } = useCurrentUser();
+  const { setFlash } = useFlash();
+
+  if (!isLoggedIn(currentUser)) {
+    return null;
+  }
+
+  return (
+    <EditUserPage
+      currentUser={currentUser}
       onFlash={(message, type = "notice") => {
         setFlash({ message, type });
       }}

@@ -15,13 +15,6 @@ Rails.application.routes.draw do
     get  "setup/redirect", to: "setup#redirect_me", as: :setup_redirect
   end
 
-  namespace :api do
-    get "me", to: "me#show"
-    get "csrf", to: "csrf#token"
-    resource :session, only: [:create, :destroy]
-    resources :users, param: :login, only: [:index, :create, :show, :update]
-  end
-
   get "/plans", to: "plans#full_index", as: :all_plans
 
   resources :projects do
