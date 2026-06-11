@@ -1,16 +1,9 @@
-<h1><%= t('.listing_plans') %></h1>
-
-<ul class="action-list">
-  <li><%= link_to t('.details'), project_plans_path(@project, :report => 'list') %></li>
-  <li><%= link_to t('.overview'), project_plans_path(@project, :report => 'overview') %></li>
-</ul>
-
 <%= turbo_stream_from "queue" %>
 <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-<div id="plans">
-  <%= render :partial => @report, :locals => { :plans => @plans } %>
-</div>
-
-<% if current_user.can_create_plans? %>
-  <p><%= link_to t('.new_plan'), new_project_plan_path(@project) %></p>
-<% end %>
+<div
+  id="react-project-plans-page"
+  data-endpoint="<%= api_plans_path(project_id: @project) %>"
+  data-base-path="<%= project_plans_path(@project) %>"
+  data-can-create-plans="<%= current_user.can_create_plans? %>"
+  data-new-plan-path="<%= new_project_plan_path(@project) %>"
+></div>
