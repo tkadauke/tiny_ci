@@ -48,7 +48,9 @@ class Api::Admin::SlavesController < Api::BaseController
       capabilities: slave.capabilities,
       max_builds: slave.max_builds,
       username: slave.username,
-      base_path: slave.base_path,
+      password: slave.password,
+      base_path: slave.base_path(true),
+      default_base_path: slave.default_base_path,
       environment_variables: slave.environment_variables
     }
   end

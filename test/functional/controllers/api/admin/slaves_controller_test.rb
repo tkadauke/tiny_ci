@@ -33,7 +33,9 @@ class Api::Admin::SlavesControllerTest < ActionController::TestCase
         "capabilities" => "ruby,linux",
         "max_builds" => 2,
         "username" => "ci",
+        "password" => nil,
         "base_path" => "/var/builds",
+        "default_base_path" => TinyCI::Config.base_path,
         "environment_variables" => { "0" => { "key" => "RAILS_ENV", "value" => "test" } }
       },
       payload.first
@@ -47,6 +49,9 @@ class Api::Admin::SlavesControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_equal "builder", response.parsed_body["name"]
+    assert_nil response.parsed_body["password"]
+    assert_nil response.parsed_body["base_path"]
+    assert_equal TinyCI::Config.base_path, response.parsed_body["default_base_path"]
   end
 
   test "should create slave" do
