@@ -32,7 +32,7 @@ export function buildPath(projectId: string, planId: string, buildId: string) {
   return `/api/projects/${encodeURIComponent(projectId)}/plans/${encodeURIComponent(planId)}/builds/${encodeURIComponent(buildId)}`
 }
 
-function shareOutputRows(oldRows: OutputRow[] = [], newRows: OutputRow[]) {
+function shareOutputRows(oldRows: OutputRow[] = [], newRows: OutputRow[] = []) {
   return newRows.map((row, index) => {
     const oldRow = oldRows[index]
     return oldRow &&
