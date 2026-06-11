@@ -65,6 +65,7 @@ module Api
       render json: { errors: ["Access denied"] }, status: :forbidden
     end
 
+<<<<<<< HEAD
     def current_user_payload
       {
         guest: !logged_in?,
