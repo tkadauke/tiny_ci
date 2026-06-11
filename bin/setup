@@ -11,6 +11,9 @@ FileUtils.chdir APP_ROOT do
   puts "== Installing dependencies =="
   system("bundle check") || system!("bundle install")
 
+  puts "\n== Installing npm packages =="
+  system! "npm install"
+
   puts "\n== Preparing database =="
   system! "bin/rails db:prepare"
 
