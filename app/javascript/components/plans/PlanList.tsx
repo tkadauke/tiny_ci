@@ -3,7 +3,27 @@ import { WeatherIcon } from "@/components/plans/WeatherIcon"
 
 const h = React.createElement
 
-function statusIcon(status, size) {
+export type PlanListMode = "list" | "overview"
+
+export type PlanSummary = {
+  name: string
+  description?: string | null
+  status?: string | null
+  weather?: number | string | null
+  last_build_time?: number | string | null
+  last_success_at?: string | null
+  last_failure_at?: string | null
+  project: {
+    name: string
+  }
+}
+
+type PlanListProps = {
+  plans: PlanSummary[]
+  mode: PlanListMode
+}
+
+function statusIcon(status: string | null | undefined, size: "small" | "large") {
   if (!status) return null
 
   return h("img", {
@@ -13,12 +33,12 @@ function statusIcon(status, size) {
   })
 }
 
-function truncate(text, length) {
+function truncate(text: string | null | undefined, length: number) {
   if (!text) return ""
   return text.length > length ? `${text.slice(0, length - 3)}...` : text
 }
 
-function duration(seconds) {
+function duration(seconds: number | string | null | undefined) {
   if (seconds === null || seconds === undefined || seconds === "") return "unknown"
 
   let remaining = Number(seconds)
@@ -30,17 +50,18 @@ function duration(seconds) {
   remaining %= 3600
   const minutes = Math.floor(remaining / 60)
   const secs = Math.floor(remaining % 60)
-  const parts = [
+  const units = [
     [days, "days"],
     [hours, "hours"],
     [minutes, "minutes"],
     [secs, "seconds"]
-  ].filter(([value]) => value !== 0)
+  ] as const
+  const parts = units.filter(([value]) => value !== 0)
 
   return parts.length ? parts.map(([value, unit]) => `${value} ${unit}`).join(", ") : "0 seconds"
 }
 
-function timeAgo(value) {
+function timeAgo(value: string | null | undefined) {
   if (!value) return "unknown"
 
   const time = new Date(value).getTime()
@@ -54,7 +75,7 @@ function timeAgo(value) {
     [86400, "day"],
     [3600, "hour"],
     [60, "minute"]
-  ]
+  ] as const
 
   for (const [unitSeconds, label] of units) {
     if (seconds >= unitSeconds) {
@@ -66,15 +87,15 @@ function timeAgo(value) {
   return "less than a minute ago"
 }
 
-function planPath(plan) {
+function planPath(plan: PlanSummary) {
   return `/projects/${encodeURIComponent(plan.project.name)}/plans/${encodeURIComponent(plan.name)}`
 }
 
-function projectPath(plan) {
+function projectPath(plan: PlanSummary) {
   return `/projects/${encodeURIComponent(plan.project.name)}`
 }
 
-function planName(plan) {
+function planName(plan: PlanSummary) {
   return h(
     React.Fragment,
     null,
@@ -84,7 +105,7 @@ function planName(plan) {
   )
 }
 
-function listRows(plans) {
+function listRows(plans: PlanSummary[]) {
   return plans.map((plan) =>
     h(
       "tr",
@@ -100,7 +121,7 @@ function listRows(plans) {
   )
 }
 
-function PlanTable({ plans }) {
+function PlanTable({ plans }: { plans: PlanSummary[] }) {
   return h(
     "table",
     { className: "list" },
@@ -123,7 +144,7 @@ function PlanTable({ plans }) {
   )
 }
 
-function PlanOverview({ plans }) {
+function PlanOverview({ plans }: { plans: PlanSummary[] }) {
   return h(
     React.Fragment,
     null,
@@ -149,6 +170,6 @@ function PlanOverview({ plans }) {
   )
 }
 
-export function PlanList({ plans, mode }) {
+export function PlanList({ plans, mode }: PlanListProps) {
   return mode === "overview" ? h(PlanOverview, { plans }) : h(PlanTable, { plans })
 }

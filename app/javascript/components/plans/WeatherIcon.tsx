@@ -1,6 +1,11 @@
 import React from "react"
 
-export function WeatherIcon({ weather, size = "small" }) {
+type WeatherIconProps = {
+  weather?: number | string | null
+  size?: "small" | "large"
+}
+
+export function WeatherIcon({ weather, size = "small" }: WeatherIconProps) {
   if (weather === null || weather === undefined || weather === "") {
     return null
   }

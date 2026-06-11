@@ -1,26 +1,38 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { createRoot } from "react-dom/client"
-import { PlanList } from "@/components/plans/PlanList"
+import { PlanList, type PlanListMode, type PlanSummary } from "@/components/plans/PlanList"
+import { useChannel } from "@/hooks/useChannel"
 
 const h = React.createElement
-const VALID_MODES = ["list", "overview"]
 
-function modeFromLocation() {
-  const report = new URLSearchParams(window.location.search).get("report")
-  return VALID_MODES.includes(report) ? report : "list"
+type PlansPageProps = {
+  heading: string
+  endpoint: string
+  basePath: string
+  canCreatePlans?: boolean
+  newPlanPath?: string | null
 }
 
-function preserveScroll(callback) {
+function isPlanListMode(value: string | null): value is PlanListMode {
+  return value === "list" || value === "overview"
+}
+
+function modeFromLocation(): PlanListMode {
+  const report = new URLSearchParams(window.location.search).get("report")
+  return isPlanListMode(report) ? report : "list"
+}
+
+function preserveScroll(callback: () => void) {
   const scrollX = window.scrollX
   const scrollY = window.scrollY
   callback()
   requestAnimationFrame(() => window.scrollTo(scrollX, scrollY))
 }
 
-function usePlans(endpoint) {
-  const [plans, setPlans] = useState([])
+function usePlans(endpoint: string) {
+  const [plans, setPlans] = useState<PlanSummary[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<Error | null>(null)
 
   const refresh = useCallback(() => {
     return fetch(endpoint, {
@@ -29,7 +41,7 @@ function usePlans(endpoint) {
     })
       .then((response) => {
         if (!response.ok) throw new Error(`Request failed with ${response.status}`)
-        return response.json()
+        return response.json() as Promise<PlanSummary[]>
       })
       .then((data) => {
         preserveScroll(() => {
@@ -39,7 +51,7 @@ function usePlans(endpoint) {
         })
       })
       .catch((fetchError) => {
-        setError(fetchError)
+        setError(fetchError instanceof Error ? fetchError : new Error("Could not load plans."))
         setLoading(false)
       })
   }, [endpoint])
@@ -48,10 +60,12 @@ function usePlans(endpoint) {
     refresh()
   }, [refresh])
 
+  useChannel("QueueChannel", {}, refresh)
+
   useEffect(() => {
     const interval = window.setInterval(refresh, 15000)
-    const onStreamRender = (event) => {
-      const stream = event.target
+    const onStreamRender = (event: Event) => {
+      const stream = event.target instanceof Element ? event.target : null
       if (stream?.getAttribute("action") === "refresh") refresh()
     }
 
@@ -66,7 +80,7 @@ function usePlans(endpoint) {
   return { plans, loading, error, refresh }
 }
 
-function ModeToggle({ mode, basePath }) {
+function ModeToggle({ mode, basePath }: { mode: PlanListMode; basePath: string }) {
   return h(
     "ul",
     { className: "action-list" },
@@ -75,7 +89,7 @@ function ModeToggle({ mode, basePath }) {
   )
 }
 
-export function PlansPage({ heading, endpoint, basePath, canCreatePlans = false, newPlanPath = null }) {
+export function PlansPage({ heading, endpoint, basePath, canCreatePlans = false, newPlanPath = null }: PlansPageProps) {
   const [mode, setMode] = useState(modeFromLocation)
   const { plans, loading, error } = usePlans(endpoint)
 
@@ -86,12 +100,13 @@ export function PlansPage({ heading, endpoint, basePath, canCreatePlans = false,
   }, [])
 
   useEffect(() => {
-    const onClick = (event) => {
-      const link = event.target.closest?.("a[href]")
+    const onClick = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target : null
+      const link = target?.closest<HTMLAnchorElement>("a[href]")
       if (!link || link.origin !== window.location.origin || link.pathname !== basePath) return
 
       const report = new URL(link.href).searchParams.get("report")
-      if (!VALID_MODES.includes(report)) return
+      if (!isPlanListMode(report)) return
 
       event.preventDefault()
       window.history.pushState({}, "", link.href)
@@ -118,7 +133,7 @@ export function PlansPage({ heading, endpoint, basePath, canCreatePlans = false,
   )
 }
 
-export function mountPlansPage(element, props) {
+export function mountPlansPage(element: HTMLElement, props: PlansPageProps) {
   if (element.dataset.reactMounted === "true") return
   element.dataset.reactMounted = "true"
 
