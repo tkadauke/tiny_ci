@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { mountBuildDetailPage } from "@/pages/builds/BuildDetailPage";
 import { mountBuildHistoryPage } from "@/pages/builds/BuildHistoryPage";
+import { mountAllPlansPage } from "@/pages/plans/AllPlansPage";
+import { mountProjectPlansPage } from "@/pages/plans/ProjectPlansPage";
 import ProjectsPage from "@/pages/projects/ProjectsPage";
 import NewProjectPage from "@/pages/projects/NewProjectPage";
 import EditProjectPage from "@/pages/projects/EditProjectPage";
@@ -32,6 +34,12 @@ function mountReactPages() {
     element.dataset.reactMounted = "true";
     createRoot(element).render(React.createElement(Page, parseProps(element)));
   });
+
+  const allPlansRoot = document.getElementById("react-all-plans-page");
+  if (allPlansRoot) mountAllPlansPage(allPlansRoot);
+
+  const projectPlansRoot = document.getElementById("react-project-plans-page");
+  if (projectPlansRoot) mountProjectPlansPage(projectPlansRoot);
 }
 
 function showStoredFlash() {

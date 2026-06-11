@@ -86,6 +86,7 @@ module Api
         weather: plan.weather,
         project: reference_json(plan.project),
         last_build_at: last_finished_build&.finished_at,
+        last_build_time: plan.last_build_time,
         last_success_at: plan.last_successful_build&.finished_at || plan.last_succeeded_at,
         last_failure_at: plan.last_failed_build&.finished_at || plan.last_failed_at,
         previous_plan: reference_json(plan.previous),
