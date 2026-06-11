@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   namespace :api do
     resource :me, only: :show, controller: "me"
     resource :session, only: :destroy
+    get "csrf", to: "csrf#token"
   end
 
   namespace :admin do
