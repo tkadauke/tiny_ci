@@ -42,11 +42,11 @@ module Api
 
     test "returns build found by plan-local position with output rows" do
       output = CSV.generate_line([1.5, "rake", "first line"]) + CSV.generate_line([2.5, "rake", "second line"])
-      slave = Slave.create!(name: "worker-1", protocol: "localhost")
+      worker = Worker.create!(name: "worker-1", protocol: "localhost")
       build = @plan.builds.create!(
         status: "success",
         revision: "abc123",
-        slave: slave,
+        worker: worker,
         starter: @user,
         output: output
       )
@@ -61,7 +61,7 @@ module Api
       assert_equal build.position, body["position"]
       assert_equal "Success", body["status_text"]
       assert_equal "abc123", body["revision"]
-      assert_equal "worker-1", body["slave"]["name"]
+      assert_equal "worker-1", body["worker"]["name"]
       assert_equal @user.id, body["starter_id"]
       assert_equal @user.login, body["starter_login"]
       assert_equal @user.login, body["starter"]["login"]

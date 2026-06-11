@@ -1,9 +1,9 @@
-import { csrfToken } from "./useSlaves"
+import { csrfToken } from "./useWorkers"
 
-export function useDeleteSlave(name: string) {
+export function useDeleteWorker(name: string) {
   return {
-    deleteSlave: async () => {
-      const response = await fetch(`/api/admin/slaves/${encodeURIComponent(name)}`, {
+    deleteWorker: async () => {
+      const response = await fetch(`/api/admin/workers/${encodeURIComponent(name)}`, {
         method: "DELETE",
         credentials: "same-origin",
         headers: {

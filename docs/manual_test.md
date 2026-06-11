@@ -20,7 +20,7 @@ rm -f storage/development.sqlite3*
 bin/rails db:schema:load
 ```
 
-**Pick a builds workspace.** TinyCI's `Slave#base_path` is where it clones
+**Pick a builds workspace.** TinyCI's `Worker#base_path` is where it clones
 repos and runs commands. Pick somewhere outside this repo so we don't
 recurse:
 ```bash
@@ -49,9 +49,9 @@ In the browser:
    (twice), submit.
 3. You should be logged in and have full admin permissions.
 
-## 3. Configure a localhost slave
+## 3. Configure a localhost worker
 
-1. Top nav → **Slaves** → **New slave**.
+1. Top nav → **Workers** → **New worker**.
 2. Fill in:
    - **Name:** `localhost`
    - **Protocol:** `localhost`
@@ -88,7 +88,7 @@ In the browser:
 1. From the plan page → **Builds** → **Build now** (or POST to
    `/projects/tiny_ci/plans/test/builds`).
 2. The build appears with status `pending`. Within ~0.5s the scheduler
-   should pick it up: status flips to `running`, slave assigned, page
+   should pick it up: status flips to `running`, worker assigned, page
    auto-refreshes via Turbo Streams.
 3. Watch the output stream. Expected sequence:
    - `git clone …` → workspace created at `/tmp/tinyci-builds/tiny_ci/test`
@@ -124,7 +124,7 @@ In the browser:
   The `env "BUNDLE_GEMFILE" => nil, …` line above unsets the leaky vars
   at the DSL level. Without it `bundle install` inside the build will
   get confused about which Gemfile is "yours."
-- **Wrong Ruby on the slave.** The scheduler shells out using whatever
+- **Wrong Ruby on the worker.** The scheduler shells out using whatever
   Ruby the scheduler process is using. Run `bin/dev` under
   `rbenv shell 3.2.3` (or have a `.ruby-version` rbenv-shim picks up — we
   have one).
@@ -133,9 +133,9 @@ In the browser:
   changes won't ship. Commit (locally — no need to push) before each
   build, or set `Repository URL` to the GitHub remote once you push.
 - **Build appears stuck in `pending`.** Means the scheduler isn't running,
-  or no slave matches. Check that `bin/dev` is showing `scheduler` lines,
-  and that the slave isn't `offline: true`. `bin/rails console` →
-  `Build.pending; Slave.least_busy.to_a` to inspect.
+  or no worker matches. Check that `bin/dev` is showing `scheduler` lines,
+  and that the worker isn't `offline: true`. `bin/rails console` →
+  `Build.pending; Worker.least_busy.to_a` to inspect.
 - **Build appears stuck in `running`.** ActiveJob's `:async` adapter loses
   jobs if the process dies; if you killed `bin/dev` mid-build, the
   build's status didn't get cleaned up. `bin/rails console` →
@@ -160,7 +160,7 @@ If a build of `tiny_ci` on `tiny_ci` reaches `success`, you've exercised:
 - `Build#build!` lifecycle (pending → running → success)
 - `BuildJob` enqueue + perform via ActiveJob
 - `TinyCI::Scheduler.tick` polling, `Build.pending`,
-  `Slave.find_free_slave_for`
+  `Worker.find_free_worker_for`
 - `TinyCI::Shell::Localhost` real subprocess + working-dir + env handling
 - `TinyCI::SourceControl::Git` real clone + workspace creation
 - `TinyCI::DSL::Validator` accepting a real plan
@@ -172,5 +172,5 @@ If a build of `tiny_ci` on `tiny_ci` reaches `success`, you've exercised:
 - Plan stats update after build finishes (`Plan#update_build_stats!`)
 
 That's everything important except remote SSH builds. To exercise that
-path: add a second slave with `protocol: ssh`, point at a host you
+path: add a second worker with `protocol: ssh`, point at a host you
 control, and trigger again.

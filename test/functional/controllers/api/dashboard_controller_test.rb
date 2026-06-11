@@ -19,8 +19,8 @@ class Api::DashboardControllerTest < ActionController::TestCase
     plan = project.plans.create!(name: "some_plan")
     pending = plan.builds.create!(status: "pending", starter: @user)
     finished = plan.builds.create!(status: "success", started_at: 5.seconds.ago, finished_at: Time.current)
-    slave = Slave.create!(name: "worker-1", protocol: "localhost")
-    running = plan.builds.create!(status: "running", slave: slave)
+    worker = Worker.create!(name: "worker-1", protocol: "localhost")
+    running = plan.builds.create!(status: "running", worker: worker)
 
     get :show
 
@@ -28,8 +28,8 @@ class Api::DashboardControllerTest < ActionController::TestCase
     body = JSON.parse(response.body)
 
     assert_equal [pending.id], body["queue"].map { |build| build["id"] }
-    assert_equal ["worker-1"], body["slaves"].map { |item| item["name"] }
-    assert_equal [running.id], body["slaves"].first["running_builds"].map { |build| build["id"] }
+    assert_equal ["worker-1"], body["workers"].map { |item| item["name"] }
+    assert_equal [running.id], body["workers"].first["running_builds"].map { |build| build["id"] }
     assert_equal [finished.id], body["recent_builds"].map { |build| build["id"] }
 
     build = body["queue"].first

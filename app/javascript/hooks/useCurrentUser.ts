@@ -7,7 +7,7 @@ export type CurrentUser = {
   email: string | null;
   role: string;
   initial_admin: boolean;
-  can_configure_slaves: boolean;
+  can_configure_workers: boolean;
   can_configure_system_variables: boolean;
   can_create_accounts: boolean;
   can_create_projects: boolean;
@@ -23,7 +23,7 @@ const guestUser: CurrentUser = {
   email: null,
   role: "guest",
   initial_admin: false,
-  can_configure_slaves: false,
+  can_configure_workers: false,
   can_configure_system_variables: false,
   can_create_accounts: false,
   can_create_projects: false,

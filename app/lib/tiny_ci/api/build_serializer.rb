@@ -19,7 +19,7 @@ module TinyCI
           finished_at: build.finished_at,
           duration: build.duration,
           revision: build.revision,
-          slave: slave_json,
+          worker: worker_json,
           starter_id: build.starter_id,
           starter_login: build.starter&.login,
           starter: starter_json,
@@ -49,11 +49,11 @@ module TinyCI
         }
       end
 
-      def slave_json
-        return nil unless build.slave
+      def worker_json
+        return nil unless build.worker
 
         {
-          name: build.slave.name
+          name: build.worker.name
         }
       end
 

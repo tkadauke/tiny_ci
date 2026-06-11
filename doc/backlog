@@ -3,7 +3,7 @@ login area
   - per-user configuration of notifications
   - ldap
   - personal builds
-  - personal slaves
+  - personal workers
 experimental plans
 per-project/per-plan notification config
 command line client
@@ -17,4 +17,4 @@ trends
 test statistics
 visual step workflow
 manage build queue
-slave/plan matrix
+worker/plan matrix

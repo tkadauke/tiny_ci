@@ -13,7 +13,7 @@ class Build < ApplicationRecord
   delegate :name, :repository_url, :requirements, :needed_resources, :project, to: :plan
 
   belongs_to :plan
-  belongs_to :slave, optional: true
+  belongs_to :worker, optional: true
   belongs_to :starter, class_name: "User", optional: true
   acts_as_list scope: :plan_id
   acts_as_tree
@@ -45,11 +45,11 @@ class Build < ApplicationRecord
   end
 
   def current_environment
-    slave.current_environment.merge(environment)
+    worker.current_environment.merge(environment)
   end
 
-  def assign_to!(slave)
-    update(slave: slave)
+  def assign_to!(worker)
+    update(worker: worker)
   end
 
   def buildable?
@@ -123,7 +123,7 @@ class Build < ApplicationRecord
   end
 
   def workspace_path
-    "#{slave.base_path}/#{project.name}/#{name}"
+    "#{worker.base_path}/#{project.name}/#{name}"
   end
 
   def build_output
@@ -163,7 +163,7 @@ class Build < ApplicationRecord
   private
 
   def create_base_directory
-    @shell.mkdir(slave.base_path)
+    @shell.mkdir(worker.base_path)
   end
 
   def broadcast_queue_update

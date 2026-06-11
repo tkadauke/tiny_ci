@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (and similar coding agents) when work
 
 ## Project Overview
 
-TinyCI is a continuous integration server. It schedules and runs builds across local and remote build slaves, supports chained and parallel (child) builds, and exposes a web UI on port 7199. While intended primarily for Rails projects using Git and Test::Unit, builds can be configured for any language. New build steps, SCMs, and notifiers are plain classes under `app/lib/tiny_ci/` plus a method on `TinyCI::DSL`.
+TinyCI is a continuous integration server. It schedules and runs builds across local and remote build workers, supports chained and parallel (child) builds, and exposes a web UI on port 7199. While intended primarily for Rails projects using Git and Test::Unit, builds can be configured for any language. New build steps, SCMs, and notifiers are plain classes under `app/lib/tiny_ci/` plus a method on `TinyCI::DSL`.
 
 The repo was migrated from Rails 2.3 to Rails 7.2 in early 2026 (see git log + `docs/modernize.md`). When in doubt about a pattern, copy what the rest of the modern code does — do not reach for Rails 2 idioms.
 
@@ -15,7 +15,7 @@ The repo was migrated from Rails 2.3 to Rails 7.2 in early 2026 (see git log + `
 - Trilogy / MySQL in production, SQLite in dev/test
 - `has_secure_password` for authentication (no Authlogic)
 - ActiveJob (default `:async` adapter) for the build scheduler
-- net-ssh for remote build slave communication
+- net-ssh for remote build worker communication
 - Test::Unit + Mocha for unit/functional tests; legacy Cucumber `.feature` files under `features/` are kept as a behavior spec for the eventual Capybara/Cuprite system-test port (§3.3 of the roadmap) but do not run today
 - RedCloth for help-topic rendering
 
@@ -52,7 +52,7 @@ parallel; the script auto-installs foreman on first run.
 
 ## Architecture & Conventions
 
-- The scheduler is `TinyCI::Scheduler` (module, not Singleton). `Scheduler.tick` is one stateless pass — pick the next buildable Build, find a free Slave, enqueue a `BuildJob`. `Scheduler.run` is the long-running poller used by the rake task. `BuildJob#perform` calls `Build#build!` and, if the build finished in `waiting` with a plan that has children, kicks off `plan.build_children!`.
+- The scheduler is `TinyCI::Scheduler` (module, not Singleton). `Scheduler.tick` is one stateless pass — pick the next buildable Build, find a free Worker, enqueue a `BuildJob`. `Scheduler.run` is the long-running poller used by the rake task. `BuildJob#perform` calls `Build#build!` and, if the build finished in `waiting` with a plan that has children, kicks off `plan.build_children!`.
 - Build configuration is the DSL in `app/lib/tiny_ci/dsl.rb`. Plan steps are stored as Ruby source in the DB and `instance_eval`'d — that is a documented RCE; replacing with a sandboxed / structured step format is a P0 in `docs/modernize.md` §3.6, and plan editing must remain admin-gated until then.
 - New step types (e.g. `bundle exec rspec`): add a class under `TinyCI::Steps::Builder::*` and a method on `DSL`. No plugin loader.
 - New SCMs: subclass `TinyCI::SourceControl::Base`, expose `update`. `repository :foo` will resolve `TinyCI::SourceControl::Foo`.
@@ -67,7 +67,7 @@ parallel; the script auto-installs foreman on first run.
 - `test/test_helper.rb` requires `rails/test_help` and `mocha/minitest`. `test/functional/test_helper.rb` adds session-based `login_with`/`logout` helpers.
 - Integration tests live in `test/integration/` (legacy `test/functional/models/` was renamed to avoid class-name collisions).
 - 3 expected skips: 2 SSH tests use `Net::SSH::Test`'s scripted-channel API which is broken on net-ssh 7.x; 1 source_control_base_test only constructs an object with no assertions.
-- **Naming convention:** test names use the imperative `should X` form to match the existing suite (e.g. `test "should validate"`, `test "should clone slave"`). Don't drift to `test "saves X"` or `test "regression for Y"` — match what's around the file you're touching.
+- **Naming convention:** test names use the imperative `should X` form to match the existing suite (e.g. `test "should validate"`, `test "should clone worker"`). Don't drift to `test "saves X"` or `test "regression for Y"` — match what's around the file you're touching.
 
 ## Notes / Gotchas
 

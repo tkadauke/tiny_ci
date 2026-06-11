@@ -104,7 +104,7 @@ class ApiSessionsUsersTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "admin", json_response["login"]
     assert_equal "admin", json_response["role"]
-    assert_equal true, json_response["can_configure_slaves"]
+    assert_equal true, json_response["can_configure_workers"]
     assert_equal true, json_response["can_configure_system_variables"]
     assert_equal true, json_response["can_create_accounts"]
   end

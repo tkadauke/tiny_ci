@@ -3,7 +3,7 @@
 [![CI](https://github.com/tkadauke/tiny_ci/actions/workflows/ci.yml/badge.svg)](https://github.com/tkadauke/tiny_ci/actions/workflows/ci.yml)
 
 TinyCI is a small, opinionated continuous integration server. It schedules
-and runs builds across local and remote build slaves, supports chained and
+and runs builds across local and remote build workers, supports chained and
 parallel (child) builds, and exposes a web UI on port 7199. It is intended
 primarily for Ruby on Rails projects using Git and Test::Unit, but builds
 can be configured for any language.
@@ -22,7 +22,7 @@ no longer a `modules/` plugin loader.
 - Trilogy / MySQL in production, SQLite in development and test
 - Test::Unit + Mocha for the test suite
 - ActiveJob (default `:async` adapter) for the build scheduler
-- net-ssh for remote build slave communication
+- net-ssh for remote build worker communication
 
 ## Quickstart
 

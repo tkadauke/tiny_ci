@@ -9,7 +9,7 @@ Inventory source: `UserSessionsController`, `UsersController`, `Admin::SetupCont
 - [ ] [guest,user,admin,initial_admin] Keep role checks method-driven: unknown `can_*?` permissions default false through `Role::Base`; `Role::Admin` returns true for every `can_*?`.
 - [ ] [user] Allow normal users to create and edit projects and edit only their own account.
 - [ ] [admin] Allow admins to create accounts, assign roles, and pass every `can_*?` permission gate.
-- [ ] [initial_admin] Allow the first visitor before any user exists to create accounts, configure slaves/system variables, and create/edit/destroy projects and plans; this visitor is not a persisted user until signup succeeds.
+- [ ] [initial_admin] Allow the first visitor before any user exists to create accounts, configure workers/system variables, and create/edit/destroy projects and plans; this visitor is not a persisted user until signup succeeds.
 - [ ] [guest] Redirect unauthenticated access to protected actions through `require_user`, set `flash.notice.login_required`, and store `session[:return_to] = request.original_fullpath`.
 
 > **SPA note:** Authentication is cookie-session based. React requests that mutate state must include Rails CSRF protection, and client auth state should be derived from a server session/current-user endpoint rather than local storage.
@@ -21,7 +21,7 @@ Inventory source: `UserSessionsController`, `UsersController`, `Admin::SetupCont
 - [ ] [guest] Header shows `Welcome, Guest!`, `Login`, and `Signup`; it hides `Settings` and `Logout`.
 - [ ] [user,admin] Header shows `Welcome, %{login}!`, `Settings`, and `Logout`; it hides `Login` and `Signup`.
 - [ ] [guest,user,admin,initial_admin] Main application menu always shows `Home`, `All Plans`, `Projects`, `Users`, and `Help`.
-- [ ] [initial_admin,admin] Main menu shows `Slaves` when `can_configure_slaves?` is true.
+- [ ] [initial_admin,admin] Main menu shows `Workers` when `can_configure_workers?` is true.
 - [ ] [initial_admin,admin] Main menu shows `Configuration` when `can_configure_system_variables?` is true.
 - [ ] [setup] Plain setup layout shows only the `Setup` menu item while `ENV["SETUP"] == "true"`.
 - [ ] [guest,user,admin,initial_admin] Flash UI displays either `flash[:error]` or `flash[:notice]` with a close link.

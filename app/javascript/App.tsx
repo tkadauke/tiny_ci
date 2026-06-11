@@ -8,10 +8,10 @@ import type { CurrentUser, LoggedInCurrentUser } from "@/hooks/useCurrentUser";
 import { setQueryClient } from "@/lib/api";
 import { DashboardPage } from "@/pages/DashboardPage";
 import AdminConfigPage from "@/pages/admin/AdminConfigPage";
-import EditSlavePage from "@/pages/admin/EditSlavePage";
-import NewSlavePage from "@/pages/admin/NewSlavePage";
-import SlaveShowPage from "@/pages/admin/SlaveShowPage";
-import SlavesPage from "@/pages/admin/SlavesPage";
+import EditWorkerPage from "@/pages/admin/EditWorkerPage";
+import NewWorkerPage from "@/pages/admin/NewWorkerPage";
+import WorkerShowPage from "@/pages/admin/WorkerShowPage";
+import WorkersPage from "@/pages/admin/WorkersPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import SignupPage from "@/pages/auth/SignupPage";
 import { BuildDetailPage } from "@/pages/builds/BuildDetailPage";
@@ -55,10 +55,10 @@ const routes = [
   { path: "/projects/:projectId/plans/:planId/child", title: "Convert to Child", element: <SelectParentPage />, requireAuth: true },
   { path: "/projects/:projectId/plans/:planId/builds", title: "Builds", element: <BuildHistoryRoute /> },
   { path: "/projects/:projectId/plans/:planId/builds/:buildId", title: "Build", element: <BuildDetailRoute /> },
-  { path: "/admin/slaves", title: "Slaves", element: <SlavesPage />, requireAuth: true },
-  { path: "/admin/slaves/new", title: "New Slave", element: <NewSlavePage />, requireAuth: true },
-  { path: "/admin/slaves/:name", title: "Slave", element: <SlaveShowRoute />, requireAuth: true },
-  { path: "/admin/slaves/:name/edit", title: "Edit Slave", element: <EditSlaveRoute />, requireAuth: true },
+  { path: "/admin/workers", title: "Workers", element: <WorkersPage />, requireAuth: true },
+  { path: "/admin/workers/new", title: "New Worker", element: <NewWorkerPage />, requireAuth: true },
+  { path: "/admin/workers/:name", title: "Worker", element: <WorkerShowRoute />, requireAuth: true },
+  { path: "/admin/workers/:name/edit", title: "Edit Worker", element: <EditWorkerRoute />, requireAuth: true },
   { path: "/admin/configuration", title: "Configuration", element: <AdminConfigPage />, requireAuth: true },
   { path: "/admin/setup", title: "Setup", element: <SetupWizardApp /> },
   { path: "/help_topics/*", title: "Help", element: <HelpTopicPage /> },
@@ -216,16 +216,16 @@ function BuildDetailRoute() {
   return <BuildDetailPage projectId={projectId} planId={planId} buildId={buildId} />;
 }
 
-function SlaveShowRoute() {
+function WorkerShowRoute() {
   const { name = "" } = useParams();
 
-  return <SlaveShowPage name={name} />;
+  return <WorkerShowPage name={name} />;
 }
 
-function EditSlaveRoute() {
+function EditWorkerRoute() {
   const { name = "" } = useParams();
 
-  return <EditSlavePage name={name} />;
+  return <EditWorkerPage name={name} />;
 }
 
 function NotFound() {

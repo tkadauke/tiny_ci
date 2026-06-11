@@ -24,7 +24,7 @@ describe("Navigation", () => {
 
     const adminRender = renderWithProviders(<Navigation />);
 
-    expect(await screen.findByRole("link", { name: "Slaves" })).toHaveAttribute("href", "/admin/slaves");
+    expect(await screen.findByRole("link", { name: "Workers" })).toHaveAttribute("href", "/admin/workers");
     expect(screen.getByRole("link", { name: "Configuration" })).toHaveAttribute("href", "/admin/configuration");
     adminRender.unmount();
 
@@ -32,7 +32,7 @@ describe("Navigation", () => {
     renderWithProviders(<Navigation />);
 
     expect(await screen.findByRole("link", { name: "Home" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Slaves" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Workers" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Configuration" })).not.toBeInTheDocument();
   });
 });

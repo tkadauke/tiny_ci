@@ -100,7 +100,7 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
     <>
       <h1>
         Build output of <a href={planPath}>{build.plan.name}</a> #{build.position}
-        {build.slave ? ` on slave ${build.slave.name}` : ""}
+        {build.worker ? ` on worker ${build.worker.name}` : ""}
       </h1>
       <dl>
         <dt>Status</dt>

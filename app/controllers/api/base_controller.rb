@@ -72,7 +72,7 @@ module Api
         email: logged_in? ? current_user.email : nil,
         role: current_role,
         initial_admin: current_user.initial_admin?,
-        can_configure_slaves: current_user.can_configure_slaves?,
+        can_configure_workers: current_user.can_configure_workers?,
         can_configure_system_variables: current_user.can_configure_system_variables?,
         can_create_accounts: current_user.can_create_accounts?,
         can_create_projects: current_user.can_create_projects?,

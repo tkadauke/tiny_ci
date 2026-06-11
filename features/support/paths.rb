@@ -27,14 +27,14 @@ module NavigationHelpers
     when /the builds page of plan "([^\"]*)" in project "([^\"]*)"/
       project = Project.find_by_name!($2)
       project_plan_builds_path(project, project.plans.find_by_name!($1))
-    when /the new slaves page/
-      new_admin_slave_path
-    when /the slaves page/
-      admin_slaves_path
-    when /the page of slave "([^\"]*)"/
-      admin_slave_path(Slave.find_by_name!($1))
-    when /the edit page of slave "([^\"]*)"/
-      edit_admin_slave_path(Slave.find_by_name!($1))
+    when /the new workers page/
+      "/admin/workers/new"
+    when /the workers page/
+      "/admin/workers"
+    when /the page of worker "([^\"]*)"/
+      "/admin/workers/#{Worker.find_by_name!($1).to_param}"
+    when /the edit page of worker "([^\"]*)"/
+      "/admin/workers/#{Worker.find_by_name!($1).to_param}/edit"
     when /the configuration page/
       '/admin/configuration'
     when /the help page of topic "([^\"]*)"/

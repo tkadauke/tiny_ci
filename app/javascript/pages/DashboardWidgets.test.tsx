@@ -17,7 +17,7 @@ describe("Dashboard widgets", () => {
             { ...buildFixture, id: 101, position: 1, status: "pending", children: [child] },
             { ...buildFixture, id: 102, position: 3, status: "success", children: [] },
           ],
-          slaves: [],
+          workers: [],
           recent_builds: [],
         }),
       ),
@@ -40,7 +40,7 @@ describe("Dashboard widgets", () => {
       http.get("/api/dashboard", () =>
         HttpResponse.json({
           queue: [],
-          slaves: [],
+          workers: [],
           recent_builds: [
             { ...buildFixture, id: 201, position: 7, duration: 120 },
             { ...buildFixture, id: 202, position: 8, duration: null },
@@ -58,13 +58,13 @@ describe("Dashboard widgets", () => {
     expect(within(recent).queryByRole("button", { name: /Stop/ })).not.toBeInTheDocument();
   });
 
-  it("renders slave status states", async () => {
+  it("renders worker status states", async () => {
     server.use(
       http.get("/api/me", () => HttpResponse.json(adminUser)),
       http.get("/api/dashboard", () =>
         HttpResponse.json({
           queue: [],
-          slaves: [
+          workers: [
             { name: "offline-worker", offline: true, running_builds: [] },
             { name: "idle-worker", offline: false, running_builds: [] },
             { name: "busy-worker", offline: false, running_builds: [{ ...buildFixture, status: "running" }] },
@@ -77,7 +77,7 @@ describe("Dashboard widgets", () => {
     renderWithProviders(<DashboardPage />);
 
     expect(await screen.findByText("offline-worker")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Configure" })).toHaveAttribute("href", "/admin/slaves/offline-worker/edit");
+    expect(screen.getByRole("link", { name: "Configure" })).toHaveAttribute("href", "/admin/workers/offline-worker/edit");
     expect(screen.getByText("idle-worker").closest("li")).toHaveTextContent("No builds");
     expect(screen.getByText("busy-worker").closest("li")).toHaveTextContent("running");
   });
@@ -98,18 +98,18 @@ describe("Dashboard widgets", () => {
     renderWithProviders(<DashboardPage />);
     expect(await screen.findByRole("link", { name: "Sign up" })).toHaveAttribute("href", "/users/new");
     const projectLinks = screen.getAllByRole("link", { name: "Create a project" });
-    const slaveLinks = screen.getAllByRole("link", { name: "Manage build slaves" });
+    const workerLinks = screen.getAllByRole("link", { name: "Manage build workers" });
     expect(projectLinks[projectLinks.length - 1]).toHaveAttribute("href", "/projects/new");
-    expect(slaveLinks[slaveLinks.length - 1]).toHaveAttribute("href", "/admin/slaves");
+    expect(workerLinks[workerLinks.length - 1]).toHaveAttribute("href", "/admin/workers");
   });
 
   it("renders empty states for dashboard widgets", async () => {
-    server.use(http.get("/api/dashboard", () => HttpResponse.json({ queue: [], slaves: [], recent_builds: [] })));
+    server.use(http.get("/api/dashboard", () => HttpResponse.json({ queue: [], workers: [], recent_builds: [] })));
 
     renderWithProviders(<DashboardPage />);
 
     await waitFor(() => expect(screen.getAllByText("No builds")).toHaveLength(2));
-    expect(screen.getByText(/No slaves configured/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Configure them now" })).toHaveAttribute("href", "/admin/slaves");
+    expect(screen.getByText(/No workers configured/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Configure them now" })).toHaveAttribute("href", "/admin/workers");
   });
 });

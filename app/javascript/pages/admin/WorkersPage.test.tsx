@@ -3,11 +3,11 @@ import { http, HttpResponse } from "msw";
 import { screen } from "@/test/test-utils";
 import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/test-utils";
-import SlavesPage from "./SlavesPage";
+import WorkersPage from "./WorkersPage";
 
-describe("SlavesPage", () => {
+describe("WorkersPage", () => {
   it("renders a row per worker from the fixture", async () => {
-    renderWithProviders(<SlavesPage />);
+    renderWithProviders(<WorkersPage />);
 
     expect(await screen.findByRole("link", { name: "builder-1" })).toBeInTheDocument();
     expect(screen.getByText("ssh")).toBeInTheDocument();
@@ -15,10 +15,10 @@ describe("SlavesPage", () => {
   });
 
   it("shows the add-first-worker link for the empty state", async () => {
-    server.use(http.get("/api/admin/slaves", () => HttpResponse.json([])));
+    server.use(http.get("/api/admin/workers", () => HttpResponse.json([])));
 
-    renderWithProviders(<SlavesPage />);
+    renderWithProviders(<WorkersPage />);
 
-    expect(await screen.findByRole("link", { name: "Add the first slave" })).toHaveAttribute("href", "/admin/slaves/new");
+    expect(await screen.findByRole("link", { name: "Add the first worker" })).toHaveAttribute("href", "/admin/workers/new");
   });
 });

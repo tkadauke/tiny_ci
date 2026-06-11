@@ -8,10 +8,10 @@ Feature: Recently Finished Builds
     Then I should see "No builds"
 
   Scenario: There is one recently finished build
-    Given a slave "localhost"
+    Given a worker "localhost"
     And a project "some_project"
     And a plan "some_plan" in project "some_project"
-    And a successfully finished build of plan "some_plan" in project "some_project" on slave "localhost"
+    And a successfully finished build of plan "some_plan" in project "some_project" on worker "localhost"
     When I am on the dashboard
     Then I should see "some_plan"
     And I should see "Success"

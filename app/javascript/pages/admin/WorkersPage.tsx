@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react"
-import { useCreateSlave } from "../../hooks/admin/useCreateSlave"
-import { useSlaves } from "../../hooks/admin/useSlaves"
+import { useCreateWorker } from "../../hooks/admin/useCreateWorker"
+import { useWorkers } from "../../hooks/admin/useWorkers"
 
 function statusIcon(offline: boolean) {
   const status = offline ? "offline" : "online"
@@ -12,9 +12,9 @@ function statusIcon(offline: boolean) {
   )
 }
 
-export default function SlavesPage() {
-  const { slaves, loading, error } = useSlaves()
-  const { createSlave } = useCreateSlave()
+export default function WorkersPage() {
+  const { workers, loading, error } = useWorkers()
+  const { createWorker } = useCreateWorker()
   const [quickCreateError, setQuickCreateError] = useState<string | null>(null)
 
   async function createLocalhost(event: FormEvent<HTMLFormElement>) {
@@ -22,10 +22,10 @@ export default function SlavesPage() {
     setQuickCreateError(null)
 
     try {
-      const slave = await createSlave({ name: "localhost", protocol: "localhost" })
-      window.location.assign(`/admin/slaves/${encodeURIComponent(slave.name)}?flash=${encodeURIComponent("Successfully created slave")}`)
+      const worker = await createWorker({ name: "localhost", protocol: "localhost" })
+      window.location.assign(`/admin/workers/${encodeURIComponent(worker.name)}?flash=${encodeURIComponent("Successfully created worker")}`)
     } catch (err) {
-      setQuickCreateError(err instanceof Error ? err.message : "Unable to create slave")
+      setQuickCreateError(err instanceof Error ? err.message : "Unable to create worker")
     }
   }
 
@@ -34,19 +34,19 @@ export default function SlavesPage() {
 
   return (
     <>
-      <h1>Listing Slaves</h1>
+      <h1>Listing Workers</h1>
 
-      {slaves.length === 0 ? (
+      {workers.length === 0 ? (
         <>
-          <p>There are no slaves configured yet.</p>
+          <p>There are no workers configured yet.</p>
           <p>
-            <a href="/admin/slaves/new">Add the first slave</a> <strong>or</strong>
+            <a href="/admin/workers/new">Add the first worker</a> <strong>or</strong>
           </p>
           {quickCreateError ? <div className="errorExplanation">{quickCreateError}</div> : null}
           <form onSubmit={createLocalhost}>
             <input type="hidden" name="name" value="localhost" />
             <input type="hidden" name="protocol" value="localhost" />
-            <input type="submit" value="Use localhost as the first slave" />
+            <input type="submit" value="Use localhost as the first worker" />
           </form>
         </>
       ) : (
@@ -61,21 +61,21 @@ export default function SlavesPage() {
               </tr>
             </thead>
             <tbody>
-              {slaves.map((slave) => (
-                <tr key={slave.name}>
-                  <td>{statusIcon(slave.offline)}</td>
-                  <td>{slave.protocol}</td>
+              {workers.map((worker) => (
+                <tr key={worker.name}>
+                  <td>{statusIcon(worker.offline)}</td>
+                  <td>{worker.protocol}</td>
                   <td>
-                    <a href={`/admin/slaves/${encodeURIComponent(slave.name)}`}>{slave.name}</a>
+                    <a href={`/admin/workers/${encodeURIComponent(worker.name)}`}>{worker.name}</a>
                   </td>
-                  <td>{slave.hostname}</td>
+                  <td>{worker.hostname}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           <p>
-            <a href="/admin/slaves/new">New Slave</a>
+            <a href="/admin/workers/new">New Worker</a>
           </p>
         </>
       )}

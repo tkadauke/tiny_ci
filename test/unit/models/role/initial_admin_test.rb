@@ -8,7 +8,7 @@ class Role::InitialAdminTest < ActiveSupport::TestCase
   test "should allow things" do
     admin = TestInitialAdmin.new
     
-    assert admin.can_configure_slaves?
+    assert admin.can_configure_workers?
     assert admin.can_configure_system_variables?
     assert admin.can_create_accounts?
     assert admin.can_create_projects?

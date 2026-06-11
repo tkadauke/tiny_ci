@@ -104,14 +104,14 @@ Inventory source: `ProjectsController`, `PlansController`, `BuildsController`, p
   - `description` textarea with 5 rows.
   - `repository_url` text field.
   - `steps` textarea with 10 rows and plan help link.
-  - `requirements` textarea with 3 rows and slaves help link.
+  - `requirements` textarea with 3 rows and workers help link.
   - `previous_plan_id` select under `Run this plan after`, only when the plan has no parent.
 - [ ] `previous_plan_id` select options are the project's root plans except the current plan, with a blank option.
 - [ ] Submit label is `Create`.
 - [ ] On success, flash `Successfully created plan` and redirect to the plan show page.
 - [ ] On validation failure, re-render new with errors and status 422.
 - [ ] Steps editing/creation must remain admin-only by route gate because plan steps are Ruby DSL source and remain an RCE-sensitive surface even with the validator.
-- [ ] There are no plan-form environment override fields in the current UI. Environment can be affected by manual build POST parameters, global/slave config, and the plan steps DSL `env`.
+- [ ] There are no plan-form environment override fields in the current UI. Environment can be affected by manual build POST parameters, global/worker config, and the plan steps DSL `env`.
 - [ ] The shared `config_options` form is not rendered on plan pages today.
 
 ## `GET /projects/:project_id/plans/:id/edit`, `PUT/PATCH /projects/:project_id/plans/:id` - Edit Plan
@@ -267,7 +267,7 @@ Inventory source: `ProjectsController`, `PlansController`, `BuildsController`, p
   - `growl_host`: string.
 - [ ] Config values save through `TinyCI::BaseConfig#update`, which writes YAML-serialized values to `config_options` by `key` and optional `user_id`.
 - [ ] Global build environment comes from `TinyCI::Config.environment`, but the Hash option is skipped in the current config form.
-- [ ] Slave-level environment variables are configured on slave forms and merge over global environment.
+- [ ] Worker-level environment variables are configured on worker forms and merge over global environment.
 - [ ] Build-level environment overrides come from manual build POST parameters and the plan DSL `env` method, then merge into command execution.
 
 ## Turbo / Remote Behavior To Preserve

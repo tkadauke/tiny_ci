@@ -26,14 +26,14 @@ class Api::HelpTopicsControllerTest < ActionController::TestCase
 
   test "should rewrite internal textile links and preserve http links" do
     HelpTopic.any_instance.stubs(:title).returns("Links")
-    HelpTopic.any_instance.stubs(:text).returns(%{See "Slaves":slaves and "Example":http://example.com})
+    HelpTopic.any_instance.stubs(:text).returns(%{See "Workers":workers and "Example":http://example.com})
     HelpTopic.any_instance.stubs(:load).returns(["Links", "body"])
 
     get :show, params: { id: "test" }, format: :json
 
     assert_response :success
     html = response.parsed_body["html"]
-    assert_match(%r{href="/help_topics/slaves"}, html)
+    assert_match(%r{href="/help_topics/workers"}, html)
     assert_match(%r{href="http://example.com"}, html)
     assert_no_match(%r{/help_topics/http}, html)
   end

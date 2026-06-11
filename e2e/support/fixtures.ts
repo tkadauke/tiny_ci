@@ -17,7 +17,7 @@ type SeededFixture = {
     finished: { position: number };
     running: { position: number };
   };
-  slave: { name: string };
+  worker: { name: string };
 };
 
 type Fixtures = {

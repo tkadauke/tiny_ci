@@ -64,8 +64,8 @@
                 <li><a href="/plans"><%= t('layouts.all_plans') %></a></li>
                 <li><a href="/projects"><%= t('layouts.projects') %></a></li>
                 <li><a href="/users"><%= t('layouts.users') %></a></li>
-                <% if current_user.can_configure_slaves? %>
-                  <li><a href="/admin/slaves"><%= t('layouts.slaves') %></a></li>
+                <% if current_user.can_configure_workers? %>
+                  <li><a href="/admin/workers"><%= t('layouts.workers') %></a></li>
                 <% end %>
                 <% if current_user.can_configure_system_variables? %>
                   <li><a href="/admin/configuration"><%= t('layouts.configuration') %></a></li>

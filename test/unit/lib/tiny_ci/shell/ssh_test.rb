@@ -6,7 +6,7 @@ class TinyCI::Shell::SSHTest < ActiveSupport::TestCase
 
   setup do
     @build = stub(
-      slave: stub(hostname: "localhost", username: "username", password: "password"),
+      worker: stub(hostname: "localhost", username: "username", password: "password"),
       current_environment: {}
     )
   end

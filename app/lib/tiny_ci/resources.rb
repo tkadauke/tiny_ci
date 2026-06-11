@@ -1,9 +1,9 @@
 module TinyCI
-  # Resource matching for the scheduler. A slave's `capabilities` and a
+  # Resource matching for the scheduler. A worker's `capabilities` and a
   # plan's `requirements` are comma-separated strings such as
   # "linux, 2 gb ram, 4 cpus". Only the numbered entries ("2 gb ram") feed
   # into resource arithmetic; bare tokens ("linux") are matched separately
-  # by Slave#unnumbered_resources.
+  # by Worker#unnumbered_resources.
   module Resources
     def self.parse(string)
       Parser.parse(string)

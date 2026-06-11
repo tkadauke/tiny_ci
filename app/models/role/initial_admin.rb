@@ -1,7 +1,7 @@
 module Role::InitialAdmin
   include Role::Base
   
-  allow :configure_slaves, :configure_system_variables
+  allow :configure_workers, :configure_system_variables
   
   allow :create_accounts
   allow :create_projects, :create_plans

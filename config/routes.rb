@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     get "csrf", to: "csrf#token"
 
     namespace :admin do
-      resources :slaves, param: :name
+      resources :workers, param: :name
       resource :configuration, only: [] do
         collection do
           get :options
