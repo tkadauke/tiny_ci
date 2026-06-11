@@ -1,38 +1,42 @@
-<h1><%= t('.welcome_to_tinyci') %></h1>
+<div id="react-root"></div>
 
-<%= render :partial => 'config_info' %>
+<noscript>
+  <h1><%= t('.welcome_to_tinyci') %></h1>
 
-<h2><%= t('.database_configuration') %></h2>
+  <%= render :partial => 'config_info' %>
 
-<%= form_with model: @config, scope: :config, url: '/admin/setup', method: :post, local: true do |f| %>
-  <% if @config.error_message %>
-    <div class="errorExplanation">
-      <p><%= t('.db_error') %></p>
-      <p><strong><%= @config.error_message %></strong></p>
-    </div>
+  <h2><%= t('.database_configuration') %></h2>
+
+  <%= form_with model: @config, scope: :config, url: '/admin/setup', method: :post, local: true do |f| %>
+    <% if @config.error_message %>
+      <div class="errorExplanation">
+        <p><%= t('.db_error') %></p>
+        <p><strong><%= @config.error_message %></strong></p>
+      </div>
+    <% end %>
+
+    <p class="form_item">
+      <span class="label"><%= f.label :db_user, t('.database_username') %></span>
+      <%= f.text_field :db_user %>
+    </p>
+
+    <p class="form_item">
+      <span class="label"><%= f.label :db_password, t('.database_password') %></span>
+      <span class="desc"><%= t('.password_description', :path => "<code>#{Rails.root}/config/database.yml</code>") %></span>
+      <%= f.password_field :db_password %>
+    </p>
+
+    <p class="form_item">
+      <span class="label"><%= f.label :db_name, t('.database_name') %></span>
+      <span class="desc"><%= t('.database_name_description') %></span>
+      <%= f.text_field :db_name %>
+    </p>
+
+    <p class="form_item">
+      <span class="label"><%= f.label :db_host, t('.database_host') %></span>
+      <%= f.text_field :db_host %>
+    </p>
+
+    <%= f.submit t('.save_and_restart') %>
   <% end %>
-  
-  <p class="form_item">
-    <span class="label"><%= f.label :db_user, t('.database_username') %></span>
-    <%= f.text_field :db_user %>
-  </p>
-
-  <p class="form_item">
-    <span class="label"><%= f.label :db_password, t('.database_password') %></span>
-    <span class="desc"><%= t('.password_description', :path => "<code>#{Rails.root}/config/database.yml</code>") %></span>
-    <%= f.password_field :db_password %>
-  </p>
-  
-  <p class="form_item">
-    <span class="label"><%= f.label :db_name, t('.database_name') %></span>
-    <span class="desc"><%= t('.database_name_description') %></span>
-    <%= f.text_field :db_name %>
-  </p>
-  
-  <p class="form_item">
-    <span class="label"><%= f.label :db_host, t('.database_host') %></span>
-    <%= f.text_field :db_host %>
-  </p>
-  
-  <%= f.submit t('.save_and_restart') %>
-<% end %>
+</noscript>
