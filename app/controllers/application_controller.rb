@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :setup_redirect
-  before_action :set_language unless Rails.env.test?
+  before_action :set_language
 
   helper_method :setup?, :current_user, :logged_in?
 

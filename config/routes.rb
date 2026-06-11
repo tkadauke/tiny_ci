@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
     resource :me, only: :show, controller: "me"
-    resource :session, only: :destroy
+    resource :session, only: [:create, :destroy]
+    resources :users, param: :login, only: [:index, :create, :show, :update]
     get "csrf", to: "csrf#token"
   end
 
@@ -31,6 +32,7 @@ Rails.application.routes.draw do
   get  "/login",  to: "user_sessions#new",     as: :login
   post "/login",  to: "user_sessions#create"
   delete "/logout", to: "user_sessions#destroy", as: :logout
+  get "/signup", to: "react#index", as: :signup
 
   get "/help_topics",     to: "help_topics#index", as: :help_topics
   get "/help_topics/*id", to: "help_topics#show",  as: :help_topic

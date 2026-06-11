@@ -5,11 +5,11 @@
 
 <ul class="asterisk">
   <% if current_user.initial_admin? %>
-    <li><%= link_to t('.create_admin_account'), new_user_path %></li>
+    <li><%= link_to t('.create_admin_account'), signup_path %></li>
   <% elsif logged_in? && current_user.can_create_accounts? %>
-    <li><%= link_to t('.create_accounts'), new_user_path %></li>
+    <li><%= link_to t('.create_accounts'), signup_path %></li>
   <% else %>
-    <li><%= link_to t('.sign_up'), new_user_path %></li>
+    <li><%= link_to t('.sign_up'), signup_path %></li>
   <% end %>
   <li><%= link_to t('.create_a_project'), new_project_path %></li>
   <li><%= link_to t('.manage_build_slaves'), admin_slaves_path %></li>

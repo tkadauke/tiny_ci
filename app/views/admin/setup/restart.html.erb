@@ -1,3 +1,5 @@
-<%= render :partial => 'restart_message' %>
+<div id="react-root"></div>
 
-<%= periodically_call_remote :url => '/admin/setup/redirect_me', :method => 'get', :frequency => 5 %>
+<noscript>
+  <%= render :partial => 'restart_message' %>
+</noscript>
