@@ -1,4 +1,8 @@
-<%= form_for :config, :url => admin_configuration_path do |f| %>
-  <%= render :partial => "/config_options/form", :locals => { :config => @config, :f => f } %>
-  <%= f.submit t('.update') %>
-<% end %>
+<div id="admin-configuration-root"></div>
+
+<div id="admin-configuration-fallback">
+  <%= form_for :config, :url => admin_configuration_path do |f| %>
+    <%= render :partial => "/config_options/form", :locals => { :config => @config, :f => f } %>
+    <%= f.submit t('.update') %>
+  <% end %>
+</div>
