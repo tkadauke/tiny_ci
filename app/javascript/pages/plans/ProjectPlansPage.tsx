@@ -1,11 +1,20 @@
-import { mountPlansPage } from "@/pages/plans/plansPageRuntime"
+import { useParams } from "react-router-dom"
+import { PlansPage } from "@/pages/plans/plansPageRuntime"
+import { useCurrentUser } from "@/hooks/useCurrentUser"
 
-export function mountProjectPlansPage(element) {
-  mountPlansPage(element, {
-    heading: "Listing Plans",
-    endpoint: element.dataset.endpoint,
-    basePath: element.dataset.basePath,
-    canCreatePlans: element.dataset.canCreatePlans === "true",
-    newPlanPath: element.dataset.newPlanPath
-  })
+export default function ProjectPlansPage() {
+  const { projectId = "" } = useParams()
+  const { data: currentUser } = useCurrentUser()
+  const encodedProjectId = encodeURIComponent(projectId)
+  const basePath = `/projects/${encodedProjectId}/plans`
+
+  return (
+    <PlansPage
+      heading="Listing Plans"
+      endpoint={`/api/projects/${encodedProjectId}/plans`}
+      basePath={basePath}
+      canCreatePlans={currentUser.can_create_plans}
+      newPlanPath={`${basePath}/new`}
+    />
+  )
 }

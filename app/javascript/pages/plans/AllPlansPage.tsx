@@ -1,9 +1,5 @@
-import { mountPlansPage } from "@/pages/plans/plansPageRuntime"
+import { PlansPage } from "@/pages/plans/plansPageRuntime"
 
-export function mountAllPlansPage(element) {
-  mountPlansPage(element, {
-    heading: "Listing All Plans",
-    endpoint: "/api/plans",
-    basePath: "/plans"
-  })
+export default function AllPlansPage() {
+  return <PlansPage heading="Listing All Plans" endpoint="/api/plans" basePath="/plans" />
 }

@@ -1,7 +1,22 @@
 import { createElement as h, useState } from "react"
 import { useCreateProject } from "hooks/projects/useCreateProject"
+import type { ChangeEvent, FormEvent } from "react"
+import type { Project } from "hooks/projects/useProjects"
 
-function showFlash(message) {
+declare global {
+  interface Window {
+    Turbo?: { visit: (path: string) => void }
+  }
+}
+
+type ProjectFormProps = {
+  project: Partial<Project>
+  submitLabel: string
+  onSubmit: (project: Partial<Project>) => void
+  errors: string[]
+}
+
+function showFlash(message: string) {
   window.sessionStorage?.setItem("tinyci.flash.notice", message)
 
   let flash = document.getElementById("flash")
@@ -14,7 +29,7 @@ function showFlash(message) {
   flash.textContent = message
 }
 
-function ErrorSummary({ errors }) {
+function ErrorSummary({ errors }: { errors: string[] }) {
   if (!errors.length) return null
 
   return h(
@@ -25,11 +40,11 @@ function ErrorSummary({ errors }) {
   )
 }
 
-function ProjectForm({ project, submitLabel, onSubmit, errors }) {
+function ProjectForm({ project, submitLabel, onSubmit, errors }: ProjectFormProps) {
   const [name, setName] = useState(project.name || "")
   const [description, setDescription] = useState(project.description || "")
 
-  function handleSubmit(event) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     onSubmit({ name, description })
   }
@@ -52,7 +67,7 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }) {
         name: "project[name]",
         type: "text",
         value: name,
-        onChange: (event) => setName(event.target.value)
+        onChange: (event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)
       })
     ),
     h(
@@ -64,7 +79,7 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }) {
         name: "project[description]",
         rows: 5,
         value: description,
-        onChange: (event) => setDescription(event.target.value)
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)
       })
     ),
     h("input", { type: "submit", value: submitLabel })
@@ -74,13 +89,13 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }) {
 export { ProjectForm, showFlash }
 
 export default function NewProjectPage() {
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState<string[]>([])
   const { createProject } = useCreateProject()
 
-  async function handleSubmit(project) {
+  async function handleSubmit(project: Partial<Project>) {
     const result = await createProject(project)
     if (!result.ok) {
-      setErrors(result.errors)
+      setErrors(result.errors ?? [])
       return
     }
 

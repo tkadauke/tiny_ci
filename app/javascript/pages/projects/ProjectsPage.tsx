@@ -1,14 +1,15 @@
 import { createElement as h } from "react"
 import { useProjects } from "hooks/projects/useProjects"
+import type { Project } from "hooks/projects/useProjects"
 
-function truncateDescription(description) {
+function truncateDescription(description?: string | null) {
   const value = description || ""
   if (value.length <= 40) return value
 
   return `${value.slice(0, 37)}...`
 }
 
-function ProjectRow({ project }) {
+function ProjectRow({ project }: { project: Project }) {
   return h(
     "tr",
     { key: project.id || project.name },
@@ -18,7 +19,7 @@ function ProjectRow({ project }) {
   )
 }
 
-export default function ProjectsPage({ can_create_projects }) {
+export default function ProjectsPage({ can_create_projects }: { can_create_projects?: boolean }) {
   const { projects, loading, errors } = useProjects()
 
   return h(

@@ -15,7 +15,7 @@ type BuildHistoryPageProps = {
 
 const queryClient = new QueryClient()
 
-function BuildHistoryContent({ projectId, planId, planName, stopIconPath }: BuildHistoryPageProps) {
+export function BuildHistoryPage({ projectId, planId, planName, stopIconPath }: BuildHistoryPageProps) {
   const buildsQuery = useBuilds(projectId, planId)
   const queryClient = useQueryClient()
   const planPath = `/projects/${projectId}/plans/${planId}`
@@ -50,21 +50,15 @@ function BuildHistoryContent({ projectId, planId, planName, stopIconPath }: Buil
   )
 }
 
-export function BuildHistoryPage(props: BuildHistoryPageProps) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BuildHistoryContent {...props} />
-    </QueryClientProvider>
-  )
-}
-
 export function mountBuildHistoryPage(element: HTMLElement) {
   createRoot(element).render(
-    <BuildHistoryPage
-      projectId={element.dataset.projectId || ""}
-      planId={element.dataset.planId || ""}
-      planName={element.dataset.planName || ""}
-      stopIconPath={element.dataset.stopIconPath}
-    />
+    <QueryClientProvider client={queryClient}>
+      <BuildHistoryPage
+        projectId={element.dataset.projectId || ""}
+        planId={element.dataset.planId || ""}
+        planName={element.dataset.planName || ""}
+        stopIconPath={element.dataset.stopIconPath}
+      />
+    </QueryClientProvider>
   )
 }

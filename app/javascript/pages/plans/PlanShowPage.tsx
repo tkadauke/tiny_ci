@@ -1,4 +1,5 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 
 type Reference = {
   id: number;
@@ -72,15 +73,6 @@ function planPath(projectId: string, planName: string) {
 
 function buildPath(projectId: string, planName: string, position: number) {
   return `${planPath(projectId, planName)}/builds/${position}`;
-}
-
-function parseRouteParams(): Required<PlanShowPageProps> {
-  const match = window.location.pathname.match(/^\/projects\/([^/]+)\/plans\/([^/]+)/);
-
-  return {
-    projectId: match ? decodeURIComponent(match[1]) : "",
-    planId: match ? decodeURIComponent(match[2]) : "",
-  };
 }
 
 async function parseJsonResponse<T>(response: Response): Promise<T> {
@@ -178,9 +170,9 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
 }
 
 export default function PlanShowPage(props: PlanShowPageProps) {
-  const routeParams = useMemo(() => parseRouteParams(), []);
-  const projectId = props.projectId ?? routeParams.projectId;
-  const planId = props.planId ?? routeParams.planId;
+  const routeParams = useParams();
+  const projectId = props.projectId ?? routeParams.projectId ?? "";
+  const planId = props.planId ?? routeParams.planId ?? "";
   const [plan, setPlan] = useState<PlanDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

@@ -3,12 +3,12 @@ import { BuildQueueWidget } from "components/dashboard/BuildQueueWidget"
 import { QuickLinks } from "components/dashboard/QuickLinks"
 import { RecentBuildsWidget } from "components/dashboard/RecentBuildsWidget"
 import { SlaveStatusWidget } from "components/dashboard/SlaveStatusWidget"
-import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useCurrentUser } from "hooks/useCurrentUser"
 import { useChannel } from "lib/useChannel"
 import { h } from "lib/h"
 
 const dashboardQueryKey = ["dashboard"]
-const dashboardClient = new QueryClient()
 
 async function fetchDashboard() {
   const response = await fetch("/api/dashboard", {
@@ -20,7 +20,13 @@ async function fetchDashboard() {
   return response.json()
 }
 
-function DashboardContent({ currentUser }) {
+export function DashboardPage() {
+  const { data: currentUser } = useCurrentUser()
+  const quickLinksUser = {
+    loggedIn: !currentUser.guest,
+    initialAdmin: currentUser.initial_admin,
+    canCreateAccounts: currentUser.can_create_accounts,
+  }
   const queryClient = useQueryClient()
   const onQueueMessage = React.useCallback(() => {
     queryClient.invalidateQueries(dashboardQueryKey)
@@ -28,7 +34,7 @@ function DashboardContent({ currentUser }) {
   const { data, error, isLoading } = useQuery({
     queryKey: dashboardQueryKey,
     queryFn: fetchDashboard,
-    enabled: currentUser.loggedIn,
+    enabled: !currentUser.guest,
     initialData: { queue: [], slaves: [], recent_builds: [] },
   })
 
@@ -37,7 +43,7 @@ function DashboardContent({ currentUser }) {
   return h(
     React.Fragment,
     null,
-    h(QuickLinks, { currentUser }),
+    h(QuickLinks, { currentUser: quickLinksUser }),
     error ? h("p", null, "Dashboard data could not be loaded.") : null,
     isLoading ? h("p", null, "Loading...") : null,
     h(
@@ -47,13 +53,5 @@ function DashboardContent({ currentUser }) {
       h(SlaveStatusWidget, { slaves: data?.slaves || [] }),
       h(RecentBuildsWidget, { builds: data?.recent_builds || [] })
     )
-  )
-}
-
-export function DashboardPage({ currentUser }) {
-  return h(
-    QueryClientProvider,
-    { client: dashboardClient },
-    h(DashboardContent, { currentUser })
   )
 }

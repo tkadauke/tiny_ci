@@ -3,7 +3,23 @@ import { WeatherIcon } from "@/components/plans/WeatherIcon"
 
 const h = React.createElement
 
-function statusIcon(status, size) {
+type Reference = {
+  name: string
+}
+
+export type PlanListPlan = {
+  id?: number
+  name: string
+  description?: string | null
+  status?: string | null
+  weather?: number | string | null
+  project: Reference
+  last_build_time?: number | string | null
+  last_success_at?: string | null
+  last_failure_at?: string | null
+}
+
+function statusIcon(status: string | null | undefined, size: "small" | "large") {
   if (!status) return null
 
   return h("img", {
@@ -13,12 +29,12 @@ function statusIcon(status, size) {
   })
 }
 
-function truncate(text, length) {
+function truncate(text: string | null | undefined, length: number) {
   if (!text) return ""
   return text.length > length ? `${text.slice(0, length - 3)}...` : text
 }
 
-function duration(seconds) {
+function duration(seconds: number | string | null | undefined) {
   if (seconds === null || seconds === undefined || seconds === "") return "unknown"
 
   let remaining = Number(seconds)
@@ -35,19 +51,19 @@ function duration(seconds) {
     [hours, "hours"],
     [minutes, "minutes"],
     [secs, "seconds"]
-  ].filter(([value]) => value !== 0)
+  ].filter(([value]) => value !== 0) as Array<[number, string]>
 
   return parts.length ? parts.map(([value, unit]) => `${value} ${unit}`).join(", ") : "0 seconds"
 }
 
-function timeAgo(value) {
+function timeAgo(value: string | null | undefined) {
   if (!value) return "unknown"
 
   const time = new Date(value).getTime()
   if (!Number.isFinite(time)) return "unknown"
 
   const seconds = Math.max(0, Math.floor((Date.now() - time) / 1000))
-  const units = [
+  const units: Array<[number, string]> = [
     [31536000, "year"],
     [2592000, "month"],
     [604800, "week"],
@@ -66,15 +82,15 @@ function timeAgo(value) {
   return "less than a minute ago"
 }
 
-function planPath(plan) {
+function planPath(plan: PlanListPlan) {
   return `/projects/${encodeURIComponent(plan.project.name)}/plans/${encodeURIComponent(plan.name)}`
 }
 
-function projectPath(plan) {
+function projectPath(plan: PlanListPlan) {
   return `/projects/${encodeURIComponent(plan.project.name)}`
 }
 
-function planName(plan) {
+function planName(plan: PlanListPlan) {
   return h(
     React.Fragment,
     null,
@@ -84,7 +100,7 @@ function planName(plan) {
   )
 }
 
-function listRows(plans) {
+function listRows(plans: PlanListPlan[]) {
   return plans.map((plan) =>
     h(
       "tr",
@@ -100,7 +116,7 @@ function listRows(plans) {
   )
 }
 
-function PlanTable({ plans }) {
+function PlanTable({ plans }: { plans: PlanListPlan[] }) {
   return h(
     "table",
     { className: "list" },
@@ -123,7 +139,7 @@ function PlanTable({ plans }) {
   )
 }
 
-function PlanOverview({ plans }) {
+function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
   return h(
     React.Fragment,
     null,
@@ -149,6 +165,6 @@ function PlanOverview({ plans }) {
   )
 }
 
-export function PlanList({ plans, mode }) {
+export function PlanList({ plans, mode }: { plans: PlanListPlan[]; mode: "list" | "overview" }) {
   return mode === "overview" ? h(PlanOverview, { plans }) : h(PlanTable, { plans })
 }

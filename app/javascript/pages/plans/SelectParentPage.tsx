@@ -1,4 +1,5 @@
-import React, { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Reference } from "../../components/plans/PlanForm";
 
 type SelectParentPageProps = {
@@ -20,15 +21,6 @@ type ApiError = {
 
 function encodePathPart(value: string) {
   return encodeURIComponent(value);
-}
-
-function parseRouteParams(): Required<SelectParentPageProps> {
-  const match = window.location.pathname.match(/^\/projects\/([^/]+)\/plans\/([^/]+)\/child/);
-
-  return {
-    projectId: match ? decodeURIComponent(match[1]) : "",
-    planId: match ? decodeURIComponent(match[2]) : "",
-  };
 }
 
 function apiHeaders() {
@@ -60,9 +52,9 @@ function storeNotice(message: string) {
 }
 
 export default function SelectParentPage(props: SelectParentPageProps) {
-  const routeParams = useMemo(() => parseRouteParams(), []);
-  const projectId = props.projectId ?? routeParams.projectId;
-  const planId = props.planId ?? routeParams.planId;
+  const routeParams = useParams();
+  const projectId = props.projectId ?? routeParams.projectId ?? "";
+  const planId = props.planId ?? routeParams.planId ?? "";
   const [plan, setPlan] = useState<PlanPayload | null>(null);
   const [parentId, setParentId] = useState<number | null>(null);
   const [rootPlanOptions, setRootPlanOptions] = useState<Reference[]>([]);

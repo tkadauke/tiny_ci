@@ -1,23 +1,16 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
 import { mountBuildDetailPage } from "@/pages/builds/BuildDetailPage";
 import { mountBuildHistoryPage } from "@/pages/builds/BuildHistoryPage";
-import { mountAllPlansPage } from "@/pages/plans/AllPlansPage";
-import { mountProjectPlansPage } from "@/pages/plans/ProjectPlansPage";
 import ProjectsPage from "@/pages/projects/ProjectsPage";
 import NewProjectPage from "@/pages/projects/NewProjectPage";
 import EditProjectPage from "@/pages/projects/EditProjectPage";
-import { HelpTopicPage } from "@/pages/help/HelpTopicPage";
 import SetupWizardApp from "@/pages/setup/SetupWizardApp";
 import "./lib/dashboard_mount";
 import "./styles/application.css";
 
-const helpTopicQueryClient = new QueryClient();
-
-const pages = {
+const pages: Record<string, React.ComponentType<any>> = {
   ProjectsPage,
   NewProjectPage,
   EditProjectPage
@@ -40,25 +33,6 @@ function mountReactPages() {
     createRoot(element).render(React.createElement(Page, parseProps(element)));
   });
 
-  const allPlansRoot = document.getElementById("react-all-plans-page");
-  if (allPlansRoot) mountAllPlansPage(allPlansRoot);
-
-  const projectPlansRoot = document.getElementById("react-project-plans-page");
-  if (projectPlansRoot) mountProjectPlansPage(projectPlansRoot);
-
-  const helpTopicRoot = document.getElementById("react-help-topic-root");
-  if (helpTopicRoot && !helpTopicRoot.dataset.reactMounted) {
-    helpTopicRoot.dataset.reactMounted = "true";
-    createRoot(helpTopicRoot).render(
-      <QueryClientProvider client={helpTopicQueryClient}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/help_topics/*" element={<HelpTopicPage />} />
-          </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>
-    );
-  }
 }
 
 function showStoredFlash() {

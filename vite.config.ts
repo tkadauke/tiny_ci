@@ -19,7 +19,6 @@ export default defineConfig({
       "hooks": new URL("./app/javascript/hooks", import.meta.url).pathname,
       "lib": new URL("./app/javascript/lib", import.meta.url).pathname,
       "pages": new URL("./app/javascript/pages", import.meta.url).pathname
-    },
-    extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"]
+    }
   }
 });

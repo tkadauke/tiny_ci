@@ -1,4 +1,5 @@
-import React, { FormEvent, useEffect, useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import PlanForm, { Reference, emptyPlanFormValues, PlanFormValues } from "../../components/plans/PlanForm";
 
 type NewPlanPageProps = {
@@ -22,11 +23,6 @@ type ApiError = {
 
 function encodePathPart(value: string) {
   return encodeURIComponent(value);
-}
-
-function parseProjectId() {
-  const match = window.location.pathname.match(/^\/projects\/([^/]+)\/plans\/new/);
-  return match ? decodeURIComponent(match[1]) : "";
 }
 
 function apiHeaders() {
@@ -62,8 +58,8 @@ function planPath(projectId: string, planName: string) {
 }
 
 export default function NewPlanPage(props: NewPlanPageProps) {
-  const routeProjectId = useMemo(() => parseProjectId(), []);
-  const projectId = props.projectId ?? routeProjectId;
+  const routeParams = useParams();
+  const projectId = props.projectId ?? routeParams.projectId ?? "";
   const [values, setValues] = useState<PlanFormValues>(emptyPlanFormValues());
   const [rootPlanOptions, setRootPlanOptions] = useState<Reference[]>([]);
   const [canEditPlans, setCanEditPlans] = useState(false);

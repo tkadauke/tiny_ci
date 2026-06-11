@@ -1,11 +1,12 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { DashboardPage } from "@/pages/DashboardPage.js"
+import { setQueryClient } from "@/lib/api"
 import { setStatusIcons } from "@/lib/assets.js"
 
-function booleanData(root, name) {
-  return root.dataset[name] === "true"
-}
+const queryClient = new QueryClient()
+setQueryClient(queryClient)
 
 function mountDashboard() {
   const root = document.getElementById("dashboard-root")
@@ -14,13 +15,9 @@ function mountDashboard() {
   root.reactRoot ||= createRoot(root)
   setStatusIcons(JSON.parse(root.dataset.statusIcons || "{}"))
 
-  const currentUser = {
-    loggedIn: booleanData(root, "loggedIn"),
-    initialAdmin: booleanData(root, "initialAdmin"),
-    canCreateAccounts: booleanData(root, "canCreateAccounts"),
-  }
-
-  root.reactRoot.render(React.createElement(DashboardPage, { currentUser }))
+  root.reactRoot.render(
+    React.createElement(QueryClientProvider, { client: queryClient }, React.createElement(DashboardPage))
+  )
 }
 
 document.addEventListener("turbo:load", mountDashboard)
