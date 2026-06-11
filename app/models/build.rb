@@ -168,15 +168,18 @@ class Build < ApplicationRecord
 
   def broadcast_queue_update
     broadcast_refresh_to("queue")
+    ActionCable.server.broadcast("queue", TinyCI::Api::DashboardPayload.new.as_json)
   end
 
   def broadcast_realtime_updates
     changed = previous_changes_for_observer || {}
     if changed.key?("output") || changed.key?("status")
       broadcast_refresh_to("build_#{name}_#{position}")
+      ActionCable.server.broadcast("build_#{name}_#{position}", TinyCI::Api::BuildSerializer.new(self, include_output: true).as_json)
     end
     if changed.key?("status")
       broadcast_refresh_to("queue")
+      ActionCable.server.broadcast("queue", TinyCI::Api::DashboardPayload.new.as_json)
       TinyCI::Notifier::Base.notify(self) if defined?(TinyCI::Notifier::Base)
     end
   end

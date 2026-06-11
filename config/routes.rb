@@ -26,6 +26,17 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :api do
+    get "dashboard", to: "dashboard#show"
+    resources :projects, only: [] do
+      resources :plans, only: [] do
+        resources :builds, param: :id, only: [:index, :show] do
+          member { post :stop }
+        end
+      end
+    end
+  end
+
   resources :users
   resource :settings, controller: "configurations"
 
