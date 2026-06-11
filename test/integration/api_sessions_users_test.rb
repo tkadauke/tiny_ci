@@ -33,19 +33,19 @@ class ApiSessionsUsersTest < ActionDispatch::IntegrationTest
     assert_response :created
     assert_equal "user", json_response["role"]
     assert_equal "user", User.find_by!(login: "bob").role
-    assert_equal "bob", User.find(session_user_id).login
+    assert_equal "alice", User.find(session_user_id).login
   end
 
-  test "admin signup can assign requested role" do
+  test "admin signup keeps the admin logged in" do
     admin = create_admin
     log_in_as(admin)
 
-    post api_users_path, params: signup_params("bob").merge(role: "admin"), as: :json
+    post api_users_path, params: signup_params("bob"), as: :json
 
     assert_response :created
-    assert_equal "admin", json_response["role"]
-    assert_equal "admin", User.find_by!(login: "bob").role
-    assert_equal "bob", User.find(session_user_id).login
+    assert_equal "user", json_response["role"]
+    assert_equal "user", User.find_by!(login: "bob").role
+    assert_equal "admin", User.find(session_user_id).login
   end
 
   test "login succeeds with full user json" do

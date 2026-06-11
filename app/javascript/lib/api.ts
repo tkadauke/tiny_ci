@@ -7,6 +7,20 @@ export let queryClient: QueryClientLike | undefined;
 
 let csrfToken: string | undefined;
 
+export class ApiError extends Error {
+  response: Response;
+  body: unknown;
+  errors: string[];
+
+  constructor(message: string, response: Response, body: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.response = response;
+    this.body = body;
+    this.errors = isErrorBody(body) ? body.errors : [];
+  }
+}
+
 export function setQueryClient(client: QueryClientLike): void {
   queryClient = client;
 }
@@ -51,20 +65,31 @@ async function request<TResponse>(
   }
 
   const response = await fetch(path, options);
+  const text = await response.text();
+  const responseBody = text ? JSON.parse(text) : undefined;
 
   if (response.status === 401) {
     queryClient?.invalidateQueries({ queryKey: ["currentUser"] });
   }
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+    throw new ApiError(`API request failed: ${response.status}`, response, responseBody);
   }
 
   if (response.status === 204) {
     return undefined as TResponse;
   }
 
-  return response.json();
+  return responseBody as TResponse;
+}
+
+function isErrorBody(body: unknown): body is { errors: string[] } {
+  return (
+    typeof body === "object" &&
+    body !== null &&
+    "errors" in body &&
+    Array.isArray((body as { errors?: unknown }).errors)
+  );
 }
 
 export const api = {

@@ -4,7 +4,7 @@
   <p><%= t('.there_are_no_user_accounts_yet') %></p>
   
   <% if current_user.can_create_accounts? %>
-    <p><%= link_to t('.create_first_administrator_account'), new_user_path %></p>
+    <p><%= link_to t('.create_first_administrator_account'), signup_path %></p>
   <% end %>
 <% else %>
   <table class="list">
@@ -25,6 +25,6 @@
   </table>
 
   <% if current_user.can_create_accounts? %>
-    <p><%= link_to t('.new_account'), new_user_path %></p>
+    <p><%= link_to t('.new_account'), signup_path %></p>
   <% end %>
 <% end %>

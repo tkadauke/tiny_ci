@@ -5,6 +5,7 @@ import RequireAuth from "@/components/auth/RequireAuth";
 import { FlashProvider, useFlash } from "@/components/ui/FlashMessage";
 import { setQueryClient } from "@/lib/api";
 import LoginPage from "@/pages/auth/LoginPage";
+import SignupPage from "@/pages/auth/SignupPage";
 
 const queryClient = new QueryClient();
 setQueryClient(queryClient);
@@ -12,7 +13,7 @@ setQueryClient(queryClient);
 const routes = [
   { path: "/", title: "Home" },
   { path: "/login", title: "Login", element: <LoginRoute /> },
-  { path: "/signup", title: "Signup" },
+  { path: "/signup", title: "Signup", element: <SignupRoute /> },
   { path: "/settings", title: "Settings", requireAuth: true },
   { path: "/users", title: "Users", requireAuth: true },
   { path: "/users/:login", title: "User Profile" },
@@ -71,6 +72,18 @@ function LoginRoute() {
 
   return (
     <LoginPage
+      onFlash={(message, type = "notice") => {
+        setFlash({ message, type });
+      }}
+    />
+  );
+}
+
+function SignupRoute() {
+  const { setFlash } = useFlash();
+
+  return (
+    <SignupPage
       onFlash={(message, type = "notice") => {
         setFlash({ message, type });
       }}
