@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query"
 import { createRoot } from "react-dom/client"
+import { DetailsReport } from "@/components/builds/reports/DetailsReport"
+import { GistReport } from "@/components/builds/reports/GistReport"
+import { RawOutput } from "@/components/builds/reports/RawOutput"
 import { api } from "@/lib/api"
 import { useBuild, type OutputRow } from "@/hooks/useBuild"
 import { useChannel } from "@/hooks/useChannel"
@@ -46,15 +49,6 @@ function duration(seconds: number | null) {
   return parts.filter(([value]) => value !== 0).map(([value, label]) => `${value} ${label}`).join(", ")
 }
 
-function timeText(timestamp: number) {
-  return new Date(Number(timestamp) * 1000).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  })
-}
-
 function normalizeReportMode(value: string | null) {
   return value === "gist" || value === "details" ? value : "raw"
 }
@@ -78,40 +72,9 @@ function useReportMode() {
   return [mode, updateMode] as const
 }
 
-function RawOutput({ rows }: { rows: OutputRow[] }) {
-  let lastCommand: string | undefined
-  let lastTimestamp: number | undefined
-
-  return (
-    <div className="raw-output">
-      <table>
-        <tbody>
-          {rows.map((row) => {
-            const timestamp = Math.trunc(Number(row.timestamp))
-            const showTimestamp = timestamp !== lastTimestamp
-            const showCommand = row.command !== lastCommand
-            lastTimestamp = timestamp
-            lastCommand = row.command
-
-            return (
-              <tr key={row.index}>
-                <td className="row">{row.index}</td>
-                <td className="timestamp">{showTimestamp ? timeText(row.timestamp) : ""}</td>
-                <td className="command">{showCommand ? row.command : ""}</td>
-                <td className="line">{row.line}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 function ReportBody({ mode, rows }: { mode: string; rows: OutputRow[] }) {
-  if (!rows.length) return <p>No output (yet)</p>
-  if (mode === "gist") return <p>Gist report placeholder</p>
-  if (mode === "details") return <p>Details report placeholder</p>
+  if (mode === "gist") return rows.length ? <GistReport rows={rows} /> : <p>No output (yet)</p>
+  if (mode === "details") return rows.length ? <DetailsReport rows={rows} /> : <p>No output (yet)</p>
   return <RawOutput rows={rows} />
 }
 

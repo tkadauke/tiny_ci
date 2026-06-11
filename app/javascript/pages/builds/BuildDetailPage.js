@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/reac
 import { fetchJson } from "lib/api"
 import { useBuild } from "hooks/useBuild"
 import { useChannel } from "hooks/useChannel"
+import { RawOutput } from "components/builds/reports/RawOutput"
+import { DetailsReport } from "components/builds/reports/DetailsReport"
+import { GistReport } from "components/builds/reports/GistReport"
 
 const h = React.createElement
 const FINISHED_STATUSES = new Set(["success", "error", "failure", "canceled", "stopped"])
@@ -45,15 +48,6 @@ function duration(seconds) {
   return parts.filter(([value]) => value !== 0).map(([value, label]) => `${value} ${label}`).join(", ")
 }
 
-function timeText(timestamp) {
-  return new Date(Number(timestamp) * 1000).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  })
-}
-
 function normalizeReportMode(value) {
   return ["raw", "gist", "details"].includes(value) ? value : "raw"
 }
@@ -77,44 +71,9 @@ function useReportMode() {
   return [mode, updateMode]
 }
 
-function RawOutput({ rows }) {
-  let lastCommand
-  let lastTimestamp
-
-  return h("div", { className: "raw-output" },
-    h("table", null,
-      h("tbody", null,
-        rows.map((row) => {
-          const timestamp = Math.trunc(Number(row.timestamp))
-          const showTimestamp = timestamp !== lastTimestamp
-          const showCommand = row.command !== lastCommand
-          lastTimestamp = timestamp
-          lastCommand = row.command
-
-          return h("tr", { key: row.index },
-            h("td", { className: "row" }, row.index),
-            h("td", { className: "timestamp" }, showTimestamp ? timeText(row.timestamp) : ""),
-            h("td", { className: "command" }, showCommand ? row.command : ""),
-            h("td", { className: "line" }, row.line),
-          )
-        })
-      )
-    )
-  )
-}
-
-function GistReport() {
-  return h("p", null, "Gist report placeholder")
-}
-
-function DetailsReport() {
-  return h("p", null, "Details report placeholder")
-}
-
 function ReportBody({ mode, rows }) {
-  if (!rows.length) return h("p", null, "No output (yet)")
-  if (mode === "gist") return h(GistReport)
-  if (mode === "details") return h(DetailsReport)
+  if (mode === "gist") return rows.length ? h(GistReport, { rows }) : h("p", null, "No output (yet)")
+  if (mode === "details") return rows.length ? h(DetailsReport, { rows }) : h("p", null, "No output (yet)")
   return h(RawOutput, { rows })
 }
 
