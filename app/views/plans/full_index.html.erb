@@ -1,12 +1,3 @@
-<h1><%= t('.listing_all_plans') %></h1>
-
-<ul class="action-list">
-  <li><%= link_to t('.details'), all_plans_path(:report => 'list') %></li>
-  <li><%= link_to t('.overview'), all_plans_path(:report => 'overview') %></li>
-</ul>
-
 <%= turbo_stream_from "queue" %>
 <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-<div id="plans">
-  <%= render :partial => @report, :locals => { :plans => @plans } %>
-</div>
+<div id="react-all-plans-page"></div>
