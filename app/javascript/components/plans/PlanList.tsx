@@ -166,5 +166,7 @@ function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
 }
 
 export function PlanList({ plans, mode }: { plans: PlanListPlan[]; mode: "list" | "overview" }) {
+  if (plans.length === 0) return h("p", null, "No plans")
+
   return mode === "overview" ? h(PlanOverview, { plans }) : h(PlanTable, { plans })
 }

@@ -14,13 +14,13 @@ describe("AllPlansPage", () => {
     expect(screen.getByTitle("4 of the last 5 builds were successful")).toBeInTheDocument();
   });
 
-  it("renders an empty table when no plans exist", async () => {
+  it("renders an empty state when no plans exist", async () => {
     server.use(http.get("/api/plans", () => HttpResponse.json([])));
 
     renderWithProviders(<AllPlansPage />, { route: "/plans" });
 
     await waitFor(() => expect(screen.queryByText("Loading...")).not.toBeInTheDocument());
     expect(screen.queryByRole("link", { name: "main" })).not.toBeInTheDocument();
-    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("No plans")).toBeInTheDocument();
   });
 });

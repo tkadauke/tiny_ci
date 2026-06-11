@@ -101,13 +101,75 @@ class RowCursor {
   }
 }
 
+export function parseOutputRows(csv: string): OutputRow[] {
+  return parseCsvRows(csv).map(([timestamp, command, line], index) => ({
+    index,
+    timestamp: Number(timestamp),
+    command: command || "",
+    line: line || "",
+  }))
+}
+
 export function parseReports(rows: OutputRow[]): Report[] {
   return splitByCommand(rows).flatMap<Report>((part) => {
-    const command = part[0]?.command
-    if (command === "rake") return [parseRake(part)]
-    if (command === "cap") return [parseCapistrano(part)]
+    const command = commandParts(part[0]?.command || "")
+    if (command.tool === "rake") return [parseRake(part, command.targets)]
+    if (command.tool === "cap") return [parseCapistrano(part, command.targets)]
     return []
   })
+}
+
+function parseCsvRows(csv: string): string[][] {
+  const rows: string[][] = []
+  let row: string[] = []
+  let field = ""
+  let quoted = false
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const char = csv[index]
+    const next = csv[index + 1]
+
+    if (quoted) {
+      if (char === '"' && next === '"') {
+        field += '"'
+        index += 1
+      } else if (char === '"') {
+        quoted = false
+      } else {
+        field += char
+      }
+    } else if (char === '"') {
+      quoted = true
+    } else if (char === ",") {
+      row.push(field)
+      field = ""
+    } else if (char === "\n") {
+      row.push(field)
+      rows.push(row)
+      row = []
+      field = ""
+    } else if (char !== "\r") {
+      field += char
+    }
+  }
+
+  if (field || row.length) {
+    row.push(field)
+    rows.push(row)
+  }
+
+  return rows
+}
+
+function commandParts(command: string) {
+  const parts = command.trim().split(/\s+/).filter(Boolean)
+  const rakeIndex = parts.lastIndexOf("rake")
+  if (rakeIndex >= 0) return { tool: "rake", targets: parts.slice(rakeIndex + 1).join(" ") }
+
+  const capIndex = parts.lastIndexOf("cap")
+  if (capIndex >= 0) return { tool: "cap", targets: parts.slice(capIndex + 1).join(" ") }
+
+  return { tool: command, targets: "" }
 }
 
 function splitByCommand(rows: OutputRow[]) {
@@ -130,9 +192,9 @@ function splitByCommand(rows: OutputRow[]) {
   return parts
 }
 
-function parseRake(rows: OutputRow[]): BuildReport {
+function parseRake(rows: OutputRow[], targets = ""): BuildReport {
   const cursor = new RowCursor(rows)
-  const report: BuildReport = { type: "build", buildTool: "rake", targets: "", tasks: [], rawOutput: [] }
+  const report: BuildReport = { type: "build", buildTool: "rake", targets, tasks: [], rawOutput: [] }
 
   while (!cursor.empty()) {
     const line = cursor.consume()?.line || ""
@@ -268,9 +330,9 @@ function parseTestFailure(cursor: RowCursor, testsByName: Map<string, Test>) {
   }
 }
 
-function parseCapistrano(rows: OutputRow[]): DeployReport {
+function parseCapistrano(rows: OutputRow[], targets = ""): DeployReport {
   const cursor = new RowCursor(rows)
-  const report: DeployReport = { type: "deploy", deployTool: "cap", targets: "", tasks: [], rawOutput: [] }
+  const report: DeployReport = { type: "deploy", deployTool: "cap", targets, tasks: [], rawOutput: [] }
 
   while (!cursor.empty()) {
     const line = cursor.consume()?.line || ""

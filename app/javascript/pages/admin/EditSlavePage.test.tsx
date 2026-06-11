@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
-import { screen, waitFor } from "@/test/test-utils";
+import { fireEvent, screen, waitFor } from "@/test/test-utils";
 import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/test-utils";
 import EditSlavePage from "./EditSlavePage";
@@ -27,8 +27,7 @@ describe("EditSlavePage", () => {
     renderWithProviders(<EditSlavePage name="builder-1" />);
 
     const hostname = await screen.findByLabelText("Host Name");
-    await user.clear(hostname);
-    await user.type(hostname, "new-builder.local");
+    fireEvent.change(hostname, { target: { value: "new-builder.local" } });
     await user.click(screen.getByRole("button", { name: "Update" }));
 
     await waitFor(() => expect(submitted).toMatchObject({ slave: { hostname: "new-builder.local" } }));
