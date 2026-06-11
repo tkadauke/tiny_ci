@@ -3,3 +3,7 @@
 # Add new mime types for use in respond_to blocks:
 # Mime::Type.register "text/richtext", :rtf
 # Mime::Type.register_alias "text/html", :iphone
+Rack::Mime::MIME_TYPES[".ts"] = "application/javascript"
+Rack::Mime::MIME_TYPES[".tsx"] = "application/javascript"
+Mime::Type.register "text/javascript", :ts
+Mime::Type.register "text/javascript", :tsx
