@@ -102,7 +102,10 @@ module Api
         requirements: plan.requirements,
         commit_hook_url: project_plan_builds_url(plan.project, plan),
         children: plan.children.map { |child| plan_json(child) },
-        last_finished_build: build_reference_json(plan.last_finished_build)
+        last_finished_build: build_reference_json(plan.last_finished_build),
+        can_edit_plan: current_user.can_edit_plan?(plan),
+        can_create_plans: current_user.can_create_plans?,
+        can_destroy_plan: current_user.can_destroy_plan?(plan)
       )
     end
 
