@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { Route, Routes } from "react-router-dom";
-import { server } from "@/test/setup";
+import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/renderWithProviders";
 import { HelpTopicPage } from "./HelpTopicPage";
 

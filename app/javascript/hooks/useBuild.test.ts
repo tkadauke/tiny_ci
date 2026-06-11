@@ -11,10 +11,13 @@ function wrapper({ children }: { children: ReactNode }) {
 test("returns build detail including output rows", async () => {
   const { result } = renderHook(() => useBuild("tiny-ci", "main", "1"), { wrapper });
 
-  await waitFor(() => expect(result.current.data?.output_rows).toHaveLength(1));
+  await waitFor(() => expect(result.current.data?.output_rows).toHaveLength(2));
 
   expect(result.current.data).toMatchObject({
-    id: 101,
-    output_rows: [{ command: "npm test", line: "Tests passed" }],
+    id: 100,
+  });
+  expect(result.current.data?.output_rows[0]).toMatchObject({
+    command: "bundle exec rake",
+    line: "Running tests",
   });
 });

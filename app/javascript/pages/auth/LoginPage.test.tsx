@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { vi } from "vitest";
-import { server } from "@/test/setup";
+import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/renderWithProviders";
 import LoginPage from "./LoginPage";
 

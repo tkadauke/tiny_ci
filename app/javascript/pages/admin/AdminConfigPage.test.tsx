@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
-import { screen } from "@/test/test-utils";
+import { screen, waitFor } from "@/test/test-utils";
 import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/test-utils";
 import AdminConfigPage from "./AdminConfigPage";
@@ -10,7 +10,7 @@ describe("AdminConfigPage", () => {
   it("renders config option fields from the fixture", async () => {
     renderWithProviders(<AdminConfigPage />);
 
-    expect(await screen.findByLabelText("Site name")).toHaveValue("Tiny CI");
+    await waitFor(() => expect(screen.getByLabelText("Site name")).toHaveValue("Tiny CI"));
     expect(screen.getByLabelText("Locale")).toHaveValue("en");
   });
 

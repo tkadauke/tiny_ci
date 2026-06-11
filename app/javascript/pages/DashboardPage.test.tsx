@@ -8,6 +8,8 @@ import { server } from "@/test/server";
 
 describe("DashboardPage", () => {
   it("renders the queue, slave status, and recently finished widgets with fixture data", async () => {
+    server.use(http.get("/api/me", () => HttpResponse.json(adminUser)));
+
     renderWithProviders(<DashboardPage />);
 
     expect(await screen.findByRole("heading", { name: "Build queue" })).toBeInTheDocument();
@@ -31,6 +33,7 @@ describe("DashboardPage", () => {
 
   it("shows empty-state messages when dashboard lists are empty", async () => {
     server.use(
+      http.get("/api/me", () => HttpResponse.json(adminUser)),
       http.get("/api/dashboard", () => HttpResponse.json({ queue: [], slaves: [], recent_builds: [] })),
     );
 

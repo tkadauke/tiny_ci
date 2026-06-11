@@ -7,7 +7,7 @@ test("returns the list from the fixture", async () => {
   await waitFor(() => expect(result.current.loading).toBe(false));
 
   expect(result.current.slaves).toEqual([
-    expect.objectContaining({ name: "worker-1", protocol: "localhost" }),
+    expect.objectContaining({ name: "builder-1", protocol: "ssh" }),
   ]);
   expect(result.current.error).toBeNull();
 });

@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import { screen, waitFor } from "@/test/test-utils";
 import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/test-utils";
-import { normalUser } from "@/test/handlers";
+import { adminUser, normalUser } from "@/test/handlers";
 import ProjectPlansPage from "./ProjectPlansPage";
 
 function renderPage(route = "/projects/tiny-ci/plans") {
@@ -18,6 +18,8 @@ function renderPage(route = "/projects/tiny-ci/plans") {
 
 describe("ProjectPlansPage", () => {
   it("renders project plans with detail links and New Plan for permitted users", async () => {
+    server.use(http.get("/api/me", () => HttpResponse.json(adminUser)));
+
     renderPage();
 
     expect(await screen.findByRole("link", { name: "main" })).toHaveAttribute("href", "/projects/tiny-ci/plans/main");

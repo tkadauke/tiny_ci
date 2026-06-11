@@ -10,6 +10,7 @@ describe("Dashboard widgets", () => {
   it("renders build queue rows, stop buttons, finished actions, and child build prefixes", async () => {
     const child = { ...buildFixture, id: 103, position: 2, status: "pending" };
     server.use(
+      http.get("/api/me", () => HttpResponse.json(adminUser)),
       http.get("/api/dashboard", () =>
         HttpResponse.json({
           queue: [
@@ -35,6 +36,7 @@ describe("Dashboard widgets", () => {
 
   it("renders recently finished builds with duration and blank nil duration", async () => {
     server.use(
+      http.get("/api/me", () => HttpResponse.json(adminUser)),
       http.get("/api/dashboard", () =>
         HttpResponse.json({
           queue: [],
@@ -58,6 +60,7 @@ describe("Dashboard widgets", () => {
 
   it("renders slave status states", async () => {
     server.use(
+      http.get("/api/me", () => HttpResponse.json(adminUser)),
       http.get("/api/dashboard", () =>
         HttpResponse.json({
           queue: [],
