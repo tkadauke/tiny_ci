@@ -5,11 +5,16 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>TinyCI</title>
     <%= stylesheet_link_tag "reset", "misc", "roundcorners", "ads", "typo", "report", "plans", "flash", "tabs", "style", "ie", "data-turbo-track": "reload" %>
+    <% unless Rails.env.test? %>
+      <%= vite_stylesheet_tag "application" %>
+      <%= vite_javascript_tag "application" %>
+    <% end %>
     <%= javascript_importmap_tags %>
   </head>
   <body>
+    <div id="root"></div>
     <!-- wrap start -->
-    <div id="wrap">
+    <div id="wrap" data-legacy-shell>
     <div class="wrap_corner_right">
 
       <!-- topcontent -->

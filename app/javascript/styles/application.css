@@ -1,0 +1,42 @@
+body.react-route [data-legacy-shell] {
+  display: none;
+}
+
+.react-shell button {
+  cursor: pointer;
+}
+
+.react-shell #right_header button {
+  background: none;
+  border: 0;
+  color: #6592c6;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.react-page .error {
+  background: #fbe3e4;
+  border: 1px solid #fbc2c4;
+  color: #8a1f11;
+  margin: 0 0 1em;
+  padding: 0.8em;
+}
+
+.react-page form p {
+  margin: 0 0 1em;
+}
+
+.react-page label {
+  display: block;
+  font-weight: bold;
+}
+
+.react-page input[type="text"],
+.react-page input[type="password"] {
+  width: 20em;
+}
+
+.react-page input[type="checkbox"] {
+  margin-right: 0.4em;
+}
