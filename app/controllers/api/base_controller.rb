@@ -4,6 +4,8 @@ module Api
     skip_forgery_protection
     wrap_parameters false
 
+    rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
     protected
 
     def require_user
@@ -49,6 +51,18 @@ module Api
       return true if current_user.can_edit_account?(user)
 
       render_json_auth_error("Access denied", :forbidden)
+    end
+
+    def require_api_user
+      return if logged_in?
+
+      render json: { errors: ["Login required"] }, status: :unauthorized
+    end
+
+    def require_api_permission(permission)
+      return if current_user.public_send("can_#{permission}?")
+
+      render json: { errors: ["Access denied"] }, status: :forbidden
     end
 
     def current_user_payload
@@ -99,6 +113,10 @@ module Api
         email: user.email,
         role: user.role.presence || "user"
       }
+    end
+
+    def render_not_found
+      render json: { errors: ["Not found"] }, status: :not_found
     end
   end
 end

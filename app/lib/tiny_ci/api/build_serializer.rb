@@ -15,16 +15,19 @@ module TinyCI
           status_icon_path: helpers.asset_path("icons/small/#{build.status}.png"),
           status_text: I18n.t("build.status.#{build.status}"),
           created_at: build.created_at,
+          started_at: build.started_at,
           finished_at: build.finished_at,
           duration: build.duration,
           revision: build.revision,
           slave: slave_json,
           starter_id: build.starter_id,
           starter_login: build.starter&.login,
+          starter: starter_json,
           plan: plan_json,
           has_children: build.has_children?,
           children: build.children.map { |child| self.class.new(child).as_json }
         }
+        payload[:output] = build.output if include_output
         payload[:output_rows] = output_rows if include_output
         payload
       end
@@ -51,6 +54,15 @@ module TinyCI
 
         {
           name: build.slave.name
+        }
+      end
+
+      def starter_json
+        return nil unless build.starter
+
+        {
+          id: build.starter.id,
+          login: build.starter.login
         }
       end
 
