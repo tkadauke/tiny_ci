@@ -1,0 +1,50 @@
+prepare:
+  - bundle install --jobs 4
+  - npm ci
+
+grade:
+  - name: zeitwerk
+    description: |
+      Forces Rails.application.eager_load! to surface Zeitwerk
+      duplicate-class and namespace-mismatch errors that lazy autoload
+      in dev/test hides. These only fire at production boot when
+      config.eager_load is true. If this fails, two files likely define
+      the same constant — check for filename/classname mismatches.
+    run: bin/rails zeitwerk:check
+    timeout_minutes: 2
+
+  - name: rails-tests
+    description: |
+      Full Test::Unit suite (~320 tests). Tests are not optional —
+      new behaviour needs new tests, bug fixes need regression tests,
+      and refactors must keep the suite green. db:test:prepare runs
+      first so schema changes in the same branch are picked up before
+      the suite loads.
+    run: bin/rails db:test:prepare && bin/rails test
+    timeout_minutes: 10
+
+  - name: frontend-tests
+    description: |
+      Vitest suite for the React SPA. Runs in non-interactive CI mode
+      (vitest run, not watch). Failures here mean a component, hook,
+      or page regressed against its MSW fixture expectations. Add or
+      update tests whenever React code changes.
+    run: npx vitest run
+    timeout_minutes: 5
+
+  - name: typecheck
+    description: |
+      TypeScript typecheck across the entire app/javascript tree with
+      no emit. Catches type errors that tests may not exercise, such as
+      wrong API response shapes, missing props, or broken imports.
+      Fix errors before asking for review — type errors are not warnings.
+    run: npm run typecheck
+    timeout_minutes: 3
+
+  - name: bundle-audit
+    description: |
+      Checks all gems against the ruby-advisory-db for known CVEs.
+      A failure means a dependency has a published vulnerability — update
+      the affected gem to a patched version before merging.
+    run: bundle exec bundle-audit check --update
+    timeout_minutes: 3
