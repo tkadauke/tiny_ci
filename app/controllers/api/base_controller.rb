@@ -1,6 +1,8 @@
 module Api
   class BaseController < ApplicationController
     skip_before_action :setup_redirect
+    skip_forgery_protection
+    wrap_parameters false
 
     protected
 
@@ -75,6 +77,29 @@ module Api
     def render_json_auth_error(message, status)
       render json: { error: message }, status: status
       false
+    end
+
+    def can_edit_account!(user)
+      return true if current_user.can_edit_account?(user)
+
+      render json: { error: "Access denied" }, status: :forbidden
+      false
+    end
+
+    def user_json(user)
+      {
+        login: user.login,
+        email: user.email,
+        role: user.role.presence || "user"
+      }
+    end
+
+    def full_user_json(user)
+      user_json(user).merge(
+        initial_admin: user.initial_admin?,
+        can_assign_roles: user.can_assign_roles?,
+        can_create_accounts: user.can_create_accounts?
+      )
     end
   end
 end
