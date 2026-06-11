@@ -1,0 +1,2 @@
+export { SlaveStatusWidget } from "./SlaveStatusWidget"
+

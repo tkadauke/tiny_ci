@@ -1,20 +1,11 @@
-<%= turbo_stream_from "queue" %>
-<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-
-<h2><%= t('.quick_links') %></h2>
-
-<ul class="asterisk">
-  <% if current_user.initial_admin? %>
-    <li><%= link_to t('.create_admin_account'), new_user_path %></li>
-  <% elsif logged_in? && current_user.can_create_accounts? %>
-    <li><%= link_to t('.create_accounts'), new_user_path %></li>
-  <% else %>
-    <li><%= link_to t('.sign_up'), new_user_path %></li>
-  <% end %>
-  <li><%= link_to t('.create_a_project'), new_project_path %></li>
-  <li><%= link_to t('.manage_build_slaves'), admin_slaves_path %></li>
-</ul>
-
-<div id="queue">
-  <%= render :partial => "queue" %>
-</div>
+<div
+  id="dashboard-root"
+  data-logged-in="<%= logged_in? %>"
+  data-initial-admin="<%= current_user.initial_admin? %>"
+  data-can-create-accounts="<%= current_user.can_create_accounts? %>"
+  data-status-icons="<%= json_escape(
+    %w[canceled error failure offline pending running stopped stopping success waiting].index_with { |status|
+      asset_path("icons/small/#{status}.png")
+    }.to_json
+  ) %>"
+></div>
