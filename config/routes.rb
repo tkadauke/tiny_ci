@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
   get "/plans", to: "plans#full_index", as: :all_plans
 
+  get "/signup", to: "users#new", as: :signup
   resources :projects do
     resources :plans do
       member { get :child }

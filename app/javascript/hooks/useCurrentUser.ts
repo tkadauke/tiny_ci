@@ -14,6 +14,8 @@ export type CurrentUser =
       can_create_accounts: boolean;
     };
 
+export type LoggedInCurrentUser = Extract<CurrentUser, { guest?: false }>;
+
 export function useCurrentUser() {
   return useQuery({
     queryKey: ["currentUser"],

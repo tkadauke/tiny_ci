@@ -2,6 +2,18 @@ type HttpMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
 let csrfToken: string | undefined;
 
+export class ApiError extends Error {
+  status: number;
+  errors: string[];
+
+  constructor(status: number, message: string, errors: string[] = []) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.errors = errors;
+  }
+}
+
 async function getCsrfToken(): Promise<string> {
   if (csrfToken) {
     return csrfToken;
@@ -44,7 +56,19 @@ async function request<TResponse>(
   const response = await fetch(path, options);
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+    let payload: { error?: string; errors?: string[] } = {};
+
+    try {
+      payload = await response.json();
+    } catch {
+      payload = {};
+    }
+
+    throw new ApiError(
+      response.status,
+      payload.error ?? `API request failed: ${response.status}`,
+      payload.errors ?? [],
+    );
   }
 
   if (response.status === 204) {
