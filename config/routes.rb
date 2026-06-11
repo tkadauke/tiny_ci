@@ -4,6 +4,25 @@ Rails.application.routes.draw do
     resource :session, only: [:create, :destroy]
     resources :users, param: :login, only: [:index, :create, :show, :update]
     get "csrf", to: "csrf#token"
+
+    namespace :admin do
+      resources :slaves, param: :name
+      resource :configuration, only: [] do
+        collection do
+          get :options
+          post "/", to: "configurations#create"
+        end
+      end
+    end
+
+    resource :settings, only: [], controller: "configurations" do
+      collection do
+        get :options
+        post "/", to: "configurations#create"
+      end
+    end
+
+    get "help_topics/*id", to: "help_topics#show"
   end
 
   namespace :admin do

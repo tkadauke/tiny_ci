@@ -100,5 +100,9 @@ module Api
         role: user.role.presence || "user"
       }
     end
+
+    def render_record_errors(record)
+      render json: { errors: record.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 end
