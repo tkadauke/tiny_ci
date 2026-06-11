@@ -100,10 +100,11 @@ export default function NewProjectPage() {
     }
 
     showFlash("Successfully created project")
+    const projectPath = `/projects/${encodeURIComponent(result.project.name)}/plans`
     if (window.Turbo) {
-      window.Turbo.visit("/projects")
+      window.Turbo.visit(projectPath)
     } else {
-      window.location.href = "/projects"
+      window.location.href = projectPath
     }
   }
 
