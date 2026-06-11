@@ -19,8 +19,8 @@ function stableStringify(value: unknown): string {
 }
 
 export function useChannel<T>(
-  channel: string,
-  params: ChannelParams,
+  channel: string | null,
+  params: ChannelParams | null,
   onReceived: (data: T) => void
 ): void {
   const onReceivedRef = useRef(onReceived);
@@ -31,6 +31,10 @@ export function useChannel<T>(
   }, [onReceived]);
 
   useEffect(() => {
+    if (!channel || !params) {
+      return undefined;
+    }
+
     const subscription = cable.subscriptions.create(
       { channel, ...params },
       {

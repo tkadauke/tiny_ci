@@ -1,7 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { mountBuildDetailPage } from "@/pages/builds/BuildDetailPage";
+import { mountBuildHistoryPage } from "@/pages/builds/BuildHistoryPage";
 import SetupWizardApp from "@/pages/setup/SetupWizardApp";
+import "./lib/dashboard_mount";
 import "./styles/application.css";
 
 const rootElement = document.getElementById("root");
@@ -22,4 +25,16 @@ if (setupRootElement && window.location.pathname.startsWith("/admin/setup")) {
       <SetupWizardApp />
     </React.StrictMode>
   );
+}
+
+const buildHistoryPageElement = document.getElementById("build-history-page");
+
+if (buildHistoryPageElement) {
+  mountBuildHistoryPage(buildHistoryPageElement);
+}
+
+const buildDetailPageElement = document.querySelector<HTMLElement>("[data-react-page='build-detail']");
+
+if (buildDetailPageElement) {
+  mountBuildDetailPage(buildDetailPageElement);
 }

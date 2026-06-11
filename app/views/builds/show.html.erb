@@ -1,7 +1,12 @@
 <%= turbo_stream_from "build_#{@build.name}_#{@build.position}" %>
 <%= turbo_refreshes_with method: :morph, scroll: :preserve unless @build.finished? %>
 
-<div id="build">
+<div
+  id="build"
+  data-react-page="build-detail"
+  data-project-id="<%= @project.to_param %>"
+  data-plan-id="<%= @plan.to_param %>"
+  data-build-id="<%= @build.position %>">
   <%= render :partial => "build" %>
 </div>
 
