@@ -74,9 +74,10 @@ module Api
       other_plan.builds.create!(status: "success")
       build = @plan.builds.create!(status: "success")
 
-      assert_raise ActiveRecord::RecordNotFound do
-        get :show, params: { project_id: @project.name, plan_id: @plan.name, id: build.id }
-      end
+      get :show, params: { project_id: @project.name, plan_id: @plan.name, id: build.id }
+
+      assert_response :not_found
+      assert_equal ["Not found"], response.parsed_body["errors"]
     end
 
     test "stops build and returns ok" do
