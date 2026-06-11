@@ -1,6 +1,5 @@
 import React, { useCallback } from "react"
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query"
-import { createRoot } from "react-dom/client"
+import { useQueryClient } from "@tanstack/react-query"
 import { BuildList } from "@/components/BuildList"
 import { RequireAuth } from "@/components/RequireAuth"
 import { buildsQueryKey, useBuilds } from "@/hooks/useBuilds"
@@ -13,9 +12,7 @@ type BuildHistoryPageProps = {
   stopIconPath?: string
 }
 
-const queryClient = new QueryClient()
-
-function BuildHistoryContent({ projectId, planId, planName, stopIconPath }: BuildHistoryPageProps) {
+export function BuildHistoryPage({ projectId, planId, planName, stopIconPath }: BuildHistoryPageProps) {
   const buildsQuery = useBuilds(projectId, planId)
   const queryClient = useQueryClient()
   const planPath = `/projects/${projectId}/plans/${planId}`
@@ -47,24 +44,5 @@ function BuildHistoryContent({ projectId, planId, planName, stopIconPath }: Buil
         <a href={planPath}>Back to Plan</a>
       </p>
     </RequireAuth>
-  )
-}
-
-export function BuildHistoryPage(props: BuildHistoryPageProps) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BuildHistoryContent {...props} />
-    </QueryClientProvider>
-  )
-}
-
-export function mountBuildHistoryPage(element: HTMLElement) {
-  createRoot(element).render(
-    <BuildHistoryPage
-      projectId={element.dataset.projectId || ""}
-      planId={element.dataset.planId || ""}
-      planName={element.dataset.planName || ""}
-      stopIconPath={element.dataset.stopIconPath}
-    />
   )
 }

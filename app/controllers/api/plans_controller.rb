@@ -119,7 +119,7 @@ module Api
         requirements: plan.requirements,
         parent_id: plan.parent_id,
         previous_plan_id: plan.previous_plan_id,
-        commit_hook_url: project_plan_builds_url(plan.project, plan),
+        commit_hook_url: api_builds_url(project_id: plan.project.to_param, plan_id: plan.to_param),
         children: plan.children.map { |child| plan_json(child) },
         last_finished_build: build_reference_json(plan.last_finished_build),
         can_edit_plan: current_user.can_edit_plan?(plan),

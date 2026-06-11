@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react"
 
+export type Project = {
+  id?: number
+  name: string
+  description?: string | null
+}
+
 export function useProjects() {
-  const [projects, setProjects] = useState([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState<string[]>([])
 
   useEffect(() => {
     let active = true

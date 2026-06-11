@@ -1,9 +1,0 @@
-<%= turbo_stream_from "queue" %>
-<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-<div
-  id="react-project-plans-page"
-  data-endpoint="<%= api_plans_path(project_id: @project) %>"
-  data-base-path="<%= project_plans_path(@project) %>"
-  data-can-create-plans="<%= current_user.can_create_plans? %>"
-  data-new-plan-path="<%= new_project_plan_path(@project) %>"
-></div>

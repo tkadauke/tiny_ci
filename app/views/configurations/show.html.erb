@@ -1,8 +1,0 @@
-<div id="user-settings-root"></div>
-
-<div id="user-settings-fallback">
-  <%= form_for :config, :url => settings_path do |f| %>
-    <%= render :partial => "/config_options/form", :locals => { :config => @config, :f => f } %>
-    <%= f.submit t('.update') %>
-  <% end %>
-</div>

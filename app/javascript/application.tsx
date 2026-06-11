@@ -1,65 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
-import { mountBuildDetailPage } from "@/pages/builds/BuildDetailPage";
-import { mountBuildHistoryPage } from "@/pages/builds/BuildHistoryPage";
-import { mountAllPlansPage } from "@/pages/plans/AllPlansPage";
-import { mountProjectPlansPage } from "@/pages/plans/ProjectPlansPage";
-import ProjectsPage from "@/pages/projects/ProjectsPage";
-import NewProjectPage from "@/pages/projects/NewProjectPage";
-import EditProjectPage from "@/pages/projects/EditProjectPage";
-import { HelpTopicPage } from "@/pages/help/HelpTopicPage";
 import SetupWizardApp from "@/pages/setup/SetupWizardApp";
-import "./lib/dashboard_mount";
 import "./styles/application.css";
-
-const helpTopicQueryClient = new QueryClient();
-
-const pages = {
-  ProjectsPage,
-  NewProjectPage,
-  EditProjectPage
-};
-
-function parseProps(element: HTMLElement) {
-  if (!element.dataset.props) return {};
-
-  return JSON.parse(element.dataset.props);
-}
-
-function mountReactPages() {
-  document.querySelectorAll<HTMLElement>("[data-react-page]").forEach((element) => {
-    if (element.dataset.reactMounted) return;
-
-    const Page = pages[element.dataset.reactPage as keyof typeof pages];
-    if (!Page) return;
-
-    element.dataset.reactMounted = "true";
-    createRoot(element).render(React.createElement(Page, parseProps(element)));
-  });
-
-  const allPlansRoot = document.getElementById("react-all-plans-page");
-  if (allPlansRoot) mountAllPlansPage(allPlansRoot);
-
-  const projectPlansRoot = document.getElementById("react-project-plans-page");
-  if (projectPlansRoot) mountProjectPlansPage(projectPlansRoot);
-
-  const helpTopicRoot = document.getElementById("react-help-topic-root");
-  if (helpTopicRoot && !helpTopicRoot.dataset.reactMounted) {
-    helpTopicRoot.dataset.reactMounted = "true";
-    createRoot(helpTopicRoot).render(
-      <QueryClientProvider client={helpTopicQueryClient}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/help_topics/*" element={<HelpTopicPage />} />
-          </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>
-    );
-  }
-}
 
 function showStoredFlash() {
   const message = window.sessionStorage?.getItem("tinyci.flash.notice");
@@ -77,9 +20,7 @@ function showStoredFlash() {
   flash.textContent = message;
 }
 
-document.addEventListener("turbo:load", mountReactPages);
 document.addEventListener("turbo:load", showStoredFlash);
-document.addEventListener("DOMContentLoaded", mountReactPages);
 document.addEventListener("DOMContentLoaded", showStoredFlash);
 
 const rootElement = document.getElementById("root");
@@ -100,16 +41,4 @@ if (setupRootElement && window.location.pathname.startsWith("/admin/setup")) {
       <SetupWizardApp />
     </React.StrictMode>
   );
-}
-
-const buildHistoryPageElement = document.getElementById("build-history-page");
-
-if (buildHistoryPageElement) {
-  mountBuildHistoryPage(buildHistoryPageElement);
-}
-
-const buildDetailPageElement = document.querySelector<HTMLElement>("[data-react-page='build-detail']");
-
-if (buildDetailPageElement) {
-  mountBuildDetailPage(buildDetailPageElement);
 }

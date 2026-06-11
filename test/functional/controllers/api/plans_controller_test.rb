@@ -48,7 +48,7 @@ module Api
       body = response.parsed_body
       assert_equal "git@example/repo", body["repository_url"]
       assert_equal "build", body["steps"]
-      assert_match %r{/projects/default/plans/some_plan/builds\z}, body["commit_hook_url"]
+      assert_match %r{/api/projects/default/plans/some_plan/builds\z}, body["commit_hook_url"]
       assert_equal [{ "id" => child.id, "name" => "child_plan" }], body["children"].map { |item| item.slice("id", "name") }
       assert_equal({ "position" => build.position, "status" => "failure" }, body["last_finished_build"])
       assert_equal true, body["can_edit_plan"]

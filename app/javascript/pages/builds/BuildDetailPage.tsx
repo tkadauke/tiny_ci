@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query"
-import { createRoot } from "react-dom/client"
+import { useQueryClient } from "@tanstack/react-query"
 import { DetailsReport } from "@/components/builds/reports/DetailsReport"
 import { GistReport } from "@/components/builds/reports/GistReport"
 import { RawOutput } from "@/components/builds/reports/RawOutput"
@@ -144,25 +143,5 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
       {FINISHED_STATUSES.has(build.status) ? <p><img src={iconPath("small", build.status)} alt="" /> {build.status_text || statusText(build.status)}</p> : null}
       {build.status === "running" ? <img src="/assets/spinner.gif" alt="Running" /> : null}
     </>
-  )
-}
-
-export const buildDetailQueryClient = new QueryClient()
-
-export function BuildDetailPageProvider(props: Props) {
-  return (
-    <QueryClientProvider client={buildDetailQueryClient}>
-      <BuildDetailPage {...props} />
-    </QueryClientProvider>
-  )
-}
-
-export function mountBuildDetailPage(element: HTMLElement) {
-  createRoot(element).render(
-    <BuildDetailPageProvider
-      projectId={element.dataset.projectId || ""}
-      planId={element.dataset.planId || ""}
-      buildId={element.dataset.buildId || ""}
-    />
   )
 }

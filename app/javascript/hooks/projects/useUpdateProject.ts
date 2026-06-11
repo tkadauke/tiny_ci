@@ -1,9 +1,11 @@
-function normalizeErrors(data) {
-  return Array.isArray(data?.errors) ? data.errors : ["Unable to save project"]
+import type { Project } from "@/hooks/projects/useProjects"
+
+function normalizeErrors(data: { errors?: unknown }): string[] {
+  return Array.isArray(data?.errors) ? data.errors.map(String) : ["Unable to save project"]
 }
 
 export function useUpdateProject() {
-  async function updateProject(projectId, project) {
+  async function updateProject(projectId: string, project: Partial<Project>) {
     const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}`, {
       method: "PATCH",
       headers: {

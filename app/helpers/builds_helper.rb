@@ -5,13 +5,4 @@ module BuildsHelper
   rescue ActionView::MissingTemplate
     ""
   end
-
-  def stop_link(project, plan, build)
-    button_to(
-      image_tag("icons/small/stopped.png") + " Stop",
-      stop_project_plan_build_path(project, plan, build),
-      method: :post,
-      class: "stop-link"
-    )
-  end
 end

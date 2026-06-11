@@ -33,6 +33,6 @@ class ActionController::TestCase
 
   def assert_redirected_to_login
     assert_response :redirect
-    assert_redirected_to login_path
+    assert_redirected_to "/login"
   end
 end

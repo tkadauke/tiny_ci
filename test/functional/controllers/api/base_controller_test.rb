@@ -22,8 +22,7 @@ class Api::BaseControllerTest < ActionController::TestCase
         post "protected", to: "base_controller_test/test#create"
         delete "admin_only", to: "base_controller_test/test#destroy"
       end
-      get "/login", to: "user_sessions#new", as: :login
-      root to: "start#index"
+      root to: "react#index"
     end
   end
 
