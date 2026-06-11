@@ -1,9 +1,11 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import RubyPlugin from "vite-plugin-ruby";
 
+const plugins = process.env.VITEST ? [react()] : [RubyPlugin(), react()];
+
 export default defineConfig({
-  plugins: [RubyPlugin(), react()],
+  plugins,
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
     alias: {
@@ -13,5 +15,11 @@ export default defineConfig({
       "lib": new URL("./app/javascript/lib", import.meta.url).pathname,
       "pages": new URL("./app/javascript/pages", import.meta.url).pathname
     }
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./app/javascript/test/setup.ts"],
+    include: ["app/javascript/**/*.test.{ts,tsx}"]
   }
 });
