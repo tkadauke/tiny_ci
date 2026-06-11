@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 export type CurrentUser = {
   guest: boolean;
   login: string | null;
+  email: string | null;
   role: string;
   initial_admin: boolean;
   can_configure_slaves: boolean;
@@ -18,6 +20,7 @@ export type CurrentUser = {
 const guestUser: CurrentUser = {
   guest: true,
   login: null,
+  email: null,
   role: "guest",
   initial_admin: false,
   can_configure_slaves: false,
@@ -33,17 +36,7 @@ const guestUser: CurrentUser = {
 export function useCurrentUser() {
   return useQuery({
     queryKey: ["currentUser"],
-    queryFn: () =>
-      fetch("/api/me", {
-        headers: { Accept: "application/json" },
-        credentials: "same-origin",
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error("Unable to load current user");
-        }
-
-        return response.json() as Promise<CurrentUser>;
-      }),
+    queryFn: () => api.get<CurrentUser>("/api/me"),
     initialData: guestUser,
   });
 }

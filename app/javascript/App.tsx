@@ -2,13 +2,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import RequireAuth from "@/components/auth/RequireAuth";
-import { FlashProvider } from "@/components/ui/FlashMessage";
+import { FlashProvider, useFlash } from "@/components/ui/FlashMessage";
+import { setQueryClient } from "@/lib/api";
+import LoginPage from "@/pages/auth/LoginPage";
 
 const queryClient = new QueryClient();
+setQueryClient(queryClient);
 
 const routes = [
   { path: "/", title: "Home" },
-  { path: "/login", title: "Login" },
+  { path: "/login", title: "Login", element: <LoginRoute /> },
   { path: "/signup", title: "Signup" },
   { path: "/settings", title: "Settings", requireAuth: true },
   { path: "/users", title: "Users", requireAuth: true },
@@ -47,11 +50,9 @@ export default function App() {
                   path={route.path}
                   element={
                     route.requireAuth ? (
-                      <RequireAuth>
-                        <Placeholder title={route.title} />
-                      </RequireAuth>
+                      <RequireAuth>{route.element ?? <Placeholder title={route.title} />}</RequireAuth>
                     ) : (
-                      <Placeholder title={route.title} />
+                      route.element ?? <Placeholder title={route.title} />
                     )
                   }
                 />
@@ -62,6 +63,18 @@ export default function App() {
         </FlashProvider>
       </BrowserRouter>
     </QueryClientProvider>
+  );
+}
+
+function LoginRoute() {
+  const { setFlash } = useFlash();
+
+  return (
+    <LoginPage
+      onFlash={(message, type = "notice") => {
+        setFlash({ message, type });
+      }}
+    />
   );
 }
 

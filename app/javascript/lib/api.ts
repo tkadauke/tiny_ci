@@ -1,6 +1,6 @@
 type HttpMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 type QueryClientLike = {
-  invalidateQueries: (queryKey: unknown[]) => unknown;
+  invalidateQueries: (filters: { queryKey: unknown[] }) => unknown;
 };
 
 export let queryClient: QueryClientLike | undefined;
@@ -53,7 +53,7 @@ async function request<TResponse>(
   const response = await fetch(path, options);
 
   if (response.status === 401) {
-    queryClient?.invalidateQueries(["currentUser"]);
+    queryClient?.invalidateQueries({ queryKey: ["currentUser"] });
   }
 
   if (!response.ok) {

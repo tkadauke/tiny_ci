@@ -58,6 +58,7 @@ class ApiSessionsUsersTest < ActionDispatch::IntegrationTest
     assert_equal "admin", json_response["role"]
     assert_equal true, json_response["can_assign_roles"]
     assert_equal "admin", User.find(session_user_id).login
+    assert_equal "Successfully logged in", flash[:notice]
   end
 
   test "login failure returns generic 422 error" do
@@ -68,6 +69,32 @@ class ApiSessionsUsersTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_equal({ "error" => "Invalid login or password" }, json_response)
     assert_nil session_user_id
+  end
+
+  test "current user endpoint returns guest state without a session" do
+    create_user(login: "alice")
+
+    get api_me_path, as: :json
+
+    assert_response :success
+    assert_equal true, json_response["guest"]
+    assert_nil json_response["login"]
+    assert_equal "guest", json_response["role"]
+    assert_equal false, json_response["can_create_accounts"]
+  end
+
+  test "current user endpoint returns logged in user capabilities" do
+    admin = create_admin
+    log_in_as(admin)
+
+    get api_me_path, as: :json
+
+    assert_response :success
+    assert_equal "admin", json_response["login"]
+    assert_equal "admin", json_response["role"]
+    assert_equal true, json_response["can_configure_slaves"]
+    assert_equal true, json_response["can_configure_system_variables"]
+    assert_equal true, json_response["can_create_accounts"]
   end
 
   test "logout resets the session" do
@@ -81,6 +108,7 @@ class ApiSessionsUsersTest < ActionDispatch::IntegrationTest
     assert_equal "notice", json_response.dig("flash", "type")
     assert_equal "Successfully logged out", json_response.dig("flash", "message")
     assert_nil session_user_id
+    assert_equal "Successfully logged out", flash[:notice]
   end
 
   test "profile fetch is public" do
