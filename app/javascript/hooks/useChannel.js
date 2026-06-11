@@ -28,5 +28,4 @@ export function useChannel(channel, params = {}, callbacks = {}) {
       subscription.unsubscribe()
     }
   }, [channel, JSON.stringify(params), callbacks.received])
-  }, [channel, JSON.stringify(params), callbacks.received])
 }

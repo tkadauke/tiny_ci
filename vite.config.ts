@@ -12,6 +12,7 @@ export default defineConfig({
     }
   },
   resolve: {
+    extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
     alias: {
       "@": new URL("./app/javascript", import.meta.url).pathname,
       "components": new URL("./app/javascript/components", import.meta.url).pathname,
