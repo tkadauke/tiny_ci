@@ -118,5 +118,9 @@ module Api
     def render_not_found
       render json: { errors: ["Not found"] }, status: :not_found
     end
+
+    def render_record_errors(record)
+      render json: { errors: record.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 end
