@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ComponentType } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { mountBuildDetailPage } from "@/pages/builds/BuildDetailPage";
@@ -10,7 +10,7 @@ import ProjectsPage from "@/pages/projects/ProjectsPage";
 import "./lib/dashboard_mount";
 import "./styles/application.css";
 
-const pages = {
+const pages: Record<string, ComponentType<any>> = {
   ProjectsPage,
   NewProjectPage,
   EditProjectPage,
@@ -27,7 +27,7 @@ function mountReactPages() {
     if (element.dataset.reactMounted) return;
 
     const pageName = element.dataset.reactPage;
-    const Page = pageName ? pages[pageName as keyof typeof pages] : undefined;
+    const Page = pageName ? pages[pageName] : undefined;
     if (!Page) return;
 
     element.dataset.reactMounted = "true";

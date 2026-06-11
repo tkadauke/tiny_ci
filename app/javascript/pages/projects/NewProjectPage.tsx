@@ -1,7 +1,23 @@
-import { createElement as h, useState } from "react"
-import { useCreateProject } from "@/hooks/projects/useCreateProject"
+import { createElement as h, useState, type ChangeEvent, type FormEvent } from "react"
+import { useCreateProject, type ProjectAttributes } from "@/hooks/projects/useCreateProject"
+import type { Project } from "@/hooks/projects/useProjects"
 
-function showFlash(message) {
+type TurboWindow = Window & {
+  Turbo?: {
+    visit: (location: string) => void
+  }
+}
+
+function navigateToProjects() {
+  const turbo = (window as TurboWindow).Turbo
+  if (turbo) {
+    turbo.visit("/projects")
+  } else {
+    window.location.href = "/projects"
+  }
+}
+
+function showFlash(message: string) {
   window.sessionStorage?.setItem("tinyci.flash.notice", message)
 
   let flash = document.getElementById("flash")
@@ -14,22 +30,32 @@ function showFlash(message) {
   flash.textContent = message
 }
 
-function ErrorSummary({ errors }) {
+function ErrorSummary({ errors }: { errors: string[] }) {
   if (!errors.length) return null
 
   return h(
     "div",
     { className: "errorExplanation" },
     h("h2", null, "Project could not be saved"),
-    h("ul", null, errors.map((error) => h("li", { key: error }, error)))
+    h("ul", null, errors.map((error: string) => h("li", { key: error }, error)))
   )
 }
 
-function ProjectForm({ project, submitLabel, onSubmit, errors }) {
+function ProjectForm({
+  project,
+  submitLabel,
+  onSubmit,
+  errors
+}: {
+  project: Partial<Project>
+  submitLabel: string
+  onSubmit: (project: ProjectAttributes) => void
+  errors: string[]
+}) {
   const [name, setName] = useState(project.name || "")
   const [description, setDescription] = useState(project.description || "")
 
-  function handleSubmit(event) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     onSubmit({ name, description })
   }
@@ -52,7 +78,7 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }) {
         name: "project[name]",
         type: "text",
         value: name,
-        onChange: (event) => setName(event.target.value)
+        onChange: (event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)
       })
     ),
     h(
@@ -64,7 +90,7 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }) {
         name: "project[description]",
         rows: 5,
         value: description,
-        onChange: (event) => setDescription(event.target.value)
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)
       })
     ),
     h("input", { type: "submit", value: submitLabel })
@@ -74,10 +100,10 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }) {
 export { ProjectForm, showFlash }
 
 export default function NewProjectPage() {
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState<string[]>([])
   const { createProject } = useCreateProject()
 
-  async function handleSubmit(project) {
+  async function handleSubmit(project: ProjectAttributes) {
     const result = await createProject(project)
     if (!result.ok) {
       setErrors(result.errors)
@@ -85,11 +111,7 @@ export default function NewProjectPage() {
     }
 
     showFlash("Successfully created project")
-    if (window.Turbo) {
-      window.Turbo.visit("/projects")
-    } else {
-      window.location.href = "/projects"
-    }
+    navigateToProjects()
   }
 
   return h("div", null, h("h1", null, "New Project"), h(ProjectForm, { project: {}, submitLabel: "Create", onSubmit: handleSubmit, errors }))
