@@ -6,6 +6,8 @@ test/coverage
 /coverage/
 rerun.txt
 storage/
+node_modules/
+public/vite-assets/
 
 # Local-only config (project tracks the templates above; secrets via ENV)
 config/master.key
@@ -31,3 +33,9 @@ config/credentials/*.key
 # Local-only deploy script (carries kubeconfig paths and namespace names that
 # don't apply to other clones; this is an open-source repo).
 /bin/deploy
+
+# Vite Ruby
+/public/vite*
+# Vite uses dotenv and suggests to ignore local-only env files. See
+# https://vitejs.dev/guide/env-and-mode.html#env-files
+*.local
