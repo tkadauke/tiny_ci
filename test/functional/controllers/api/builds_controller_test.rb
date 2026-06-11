@@ -31,6 +31,7 @@ module Api
       body = response.parsed_body
 
       assert_equal [newer.id, older.id], body.map { |build| build["id"] }
+      assert_equal newer.position, body.first["position"]
       assert_equal "failure", body.first["status"]
       assert_equal @user.login, body.first["starter"]["login"]
       assert_equal true, body.first["has_children"]
