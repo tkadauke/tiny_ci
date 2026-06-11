@@ -36,6 +36,7 @@ class Api::Admin::ConfigurationsControllerTest < ActionController::TestCase
 
     post :create, params: { config: { "base_path" => "/some/path" } }, format: :json
 
-    assert_access_denied
+    assert_response :forbidden
+    assert_equal({ "error" => "Access denied" }, response.parsed_body)
   end
 end
