@@ -17,6 +17,28 @@ Rails.application.routes.draw do
 
   get "/plans", to: "plans#full_index", as: :all_plans
 
+  namespace :api do
+    resources :projects, param: :project_id, only: %i[index create update destroy]
+
+    scope "projects/:project_id" do
+      get    "plans",          to: "plans#project_index"
+      post   "plans",          to: "plans#create"
+      get    "plans/:plan_id", to: "plans#show"
+      patch  "plans/:plan_id", to: "plans#update"
+      put    "plans/:plan_id", to: "plans#update"
+      delete "plans/:plan_id", to: "plans#destroy"
+
+      scope "plans/:plan_id" do
+        resources :builds, param: :id, only: %i[index show] do
+          member { post :stop }
+        end
+        post "builds", to: "plans#create_build", as: :create_build
+      end
+    end
+
+    resources :plans, only: :index
+  end
+
   resources :projects do
     resources :plans do
       member { get :child }
@@ -28,13 +50,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     get "dashboard", to: "dashboard#show"
-    resources :projects, only: [] do
-      resources :plans, only: [] do
-        resources :builds, param: :id, only: [:index, :show] do
-          member { post :stop }
-        end
-      end
-    end
   end
 
   resources :users
