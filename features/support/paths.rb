@@ -42,7 +42,7 @@ module NavigationHelpers
     when /the login page/
       login_path
     when /the signup page/
-      new_user_path
+      signup_path
     when /([^\']*)'s profile page/
       user_path(User.find_by_login!($1))
     when /my settings page/

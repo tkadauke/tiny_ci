@@ -10,7 +10,7 @@ class Api::UsersController < Api::BaseController
     user.role = role_for_create
 
     if user.save
-      session[:user_id] = user.id
+      session[:user_id] = user.id unless logged_in?
       render json: full_user_json(user), status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -56,8 +56,6 @@ class Api::UsersController < Api::BaseController
   def role_for_create
     if current_user.initial_admin?
       "admin"
-    elsif current_user.can_assign_roles? && user_payload[:role].present?
-      user_payload[:role]
     else
       "user"
     end
