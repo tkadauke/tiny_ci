@@ -56,6 +56,8 @@ class Api::UsersController < Api::BaseController
   def role_for_create
     if current_user.initial_admin?
       "admin"
+    elsif current_user.can_assign_roles? && user_payload[:role].present?
+      user_payload[:role]
     else
       "user"
     end
