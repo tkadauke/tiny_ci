@@ -40,13 +40,13 @@
               <% if logged_in? %>
                 <ul class="action-list">
                   <li><%= t('layouts.user_greeter', :user => current_user.login) %></li>
-                  <li><%= link_to t('layouts.settings'), settings_path %></li>
-                  <li><%= link_to t('layouts.logout'), logout_path, :method => :delete %></li>
+                  <li><%= link_to t('layouts.settings'), "/settings" %></li>
+                  <li><%= link_to t('layouts.logout'), "/logout", :method => :delete %></li>
                 </ul>
               <% else %>
                 <ul class="action-list">
                   <li><%= t('layouts.guest_greeter') %></li>
-                  <li><%= link_to t('layouts.login'), login_path %></li>
+                  <li><%= link_to t('layouts.login'), "/login" %></li>
                   <li><%= link_to t('layouts.signup'), signup_path %></li>
                 </ul>
               <% end %>

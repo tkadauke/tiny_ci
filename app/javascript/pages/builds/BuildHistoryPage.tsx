@@ -1,6 +1,5 @@
 import React, { useCallback } from "react"
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query"
-import { createRoot } from "react-dom/client"
+import { useQueryClient } from "@tanstack/react-query"
 import { BuildList } from "@/components/BuildList"
 import { RequireAuth } from "@/components/RequireAuth"
 import { buildsQueryKey, useBuilds } from "@/hooks/useBuilds"
@@ -12,8 +11,6 @@ type BuildHistoryPageProps = {
   planName: string
   stopIconPath?: string
 }
-
-const queryClient = new QueryClient()
 
 export function BuildHistoryPage({ projectId, planId, planName, stopIconPath }: BuildHistoryPageProps) {
   const buildsQuery = useBuilds(projectId, planId)
@@ -47,18 +44,5 @@ export function BuildHistoryPage({ projectId, planId, planName, stopIconPath }: 
         <a href={planPath}>Back to Plan</a>
       </p>
     </RequireAuth>
-  )
-}
-
-export function mountBuildHistoryPage(element: HTMLElement) {
-  createRoot(element).render(
-    <QueryClientProvider client={queryClient}>
-      <BuildHistoryPage
-        projectId={element.dataset.projectId || ""}
-        planId={element.dataset.planId || ""}
-        planName={element.dataset.planName || ""}
-        stopIconPath={element.dataset.stopIconPath}
-      />
-    </QueryClientProvider>
   )
 }

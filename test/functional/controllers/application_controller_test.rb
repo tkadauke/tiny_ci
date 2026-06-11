@@ -13,9 +13,8 @@ class ApplicationControllerTest < ActionController::TestCase
 
   setup do
     Rails.application.routes.draw do
-      get "/login", to: "user_sessions#new", as: :login
       get "user_action", to: "application_controller_test/test#user_action"
-      root to: "start#index"
+      root to: "react#index"
     end
   end
 
@@ -32,5 +31,6 @@ class ApplicationControllerTest < ActionController::TestCase
   test "should redirect if user required but not logged in" do
     get :user_action
     assert_response :redirect
+    assert_redirected_to "/login"
   end
 end

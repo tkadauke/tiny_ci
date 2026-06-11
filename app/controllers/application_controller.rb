@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
     return if logged_in?
     store_location
     flash[:notice] = t("flash.notice.login_required")
-    redirect_to login_url
+    redirect_to "/login"
     false
   end
 
