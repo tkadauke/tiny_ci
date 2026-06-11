@@ -29,6 +29,22 @@ module Api
       render json: plan_detail_json(@plan)
     end
 
+    def new_form
+      require_api_permission(:create_plans)
+
+      plan =
+        if params[:clone]
+          Plan.find_for_cloning!(params[:clone])
+        elsif params[:parent]
+          Plan.new_with_parent(params[:parent])
+        else
+          Plan.new
+        end
+
+      plan.project = @project
+      render json: plan_form_json(plan)
+    end
+
     def create
       plan = @project.plans.build(plan_params)
 
@@ -101,13 +117,41 @@ module Api
         repository_url: plan.repository_url,
         steps: plan.steps,
         requirements: plan.requirements,
+        parent_id: plan.parent_id,
+        previous_plan_id: plan.previous_plan_id,
         commit_hook_url: project_plan_builds_url(plan.project, plan),
         children: plan.children.map { |child| plan_json(child) },
         last_finished_build: build_reference_json(plan.last_finished_build),
         can_edit_plan: current_user.can_edit_plan?(plan),
+        can_edit_plans: current_user.can_edit_plans?,
         can_create_plans: current_user.can_create_plans?,
-        can_destroy_plan: current_user.can_destroy_plan?(plan)
+        can_destroy_plan: current_user.can_destroy_plan?(plan),
+        root_plan_options: root_plan_options_json(plan)
       )
+    end
+
+    def plan_form_json(plan)
+      {
+        plan: {
+          id: plan.id,
+          name: plan.name,
+          description: plan.description,
+          repository_url: plan.repository_url,
+          steps: plan.steps,
+          requirements: plan.requirements,
+          parent_id: plan.parent_id,
+          previous_plan_id: plan.previous_plan_id
+        },
+        can_edit_plans: current_user.can_edit_plans?,
+        root_plan_options: root_plan_options_json(plan)
+      }
+    end
+
+    def root_plan_options_json(plan)
+      @project.root_plans
+              .order(:name)
+              .reject { |root_plan| root_plan.id == plan.id }
+              .map { |root_plan| reference_json(root_plan) }
     end
 
     def reference_json(record)
