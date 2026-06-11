@@ -3,6 +3,7 @@ require_relative "../../../../test_helper"
 class TinyCI::Shell::LocalhostTest < ActiveSupport::TestCase
   test "should return false for exists? if working dir does not exist" do
     working_dir = "/some/dir"
+    File.stubs(:exist?).returns(false)
     File.expects(:exist?).with(working_dir).returns(false)
 
     localhost = TinyCI::Shell::Localhost.new(stub)

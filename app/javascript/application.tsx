@@ -5,7 +5,7 @@ import "./styles/application.css";
 
 const rootElement = document.getElementById("root");
 
-if (rootElement) {
+if (rootElement?.dataset.reactApp === "true") {
   createRoot(rootElement).render(
     <React.StrictMode>
       <App />
