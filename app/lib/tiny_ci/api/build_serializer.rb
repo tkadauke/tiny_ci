@@ -9,12 +9,17 @@ module TinyCI
       def as_json(*)
         payload = {
           id: build.id,
+          name: build.name,
           position: build.position,
           status: build.status,
           status_icon_path: helpers.asset_path("icons/small/#{build.status}.png"),
+          status_text: I18n.t("build.status.#{build.status}"),
           created_at: build.created_at,
           finished_at: build.finished_at,
           duration: build.duration,
+          revision: build.revision,
+          slave: slave_json,
+          starter_id: build.starter_id,
           starter_login: build.starter&.login,
           plan: plan_json,
           has_children: build.has_children?,
@@ -38,6 +43,14 @@ module TinyCI
           project_name: build.project.name,
           project_id: build.project.to_param,
           plan_id: build.plan.to_param
+        }
+      end
+
+      def slave_json
+        return nil unless build.slave
+
+        {
+          name: build.slave.name
         }
       end
 

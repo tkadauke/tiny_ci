@@ -35,8 +35,12 @@ class Api::BuildsControllerTest < ActionController::TestCase
   end
 
   test "returns build found by plan-local position with output rows" do
+    slave = Slave.create!(name: "worker-1", protocol: "localhost")
     build = @plan.builds.create!(
       status: "success",
+      revision: "abc123",
+      slave: slave,
+      starter: @user,
       output: CSV.generate_line([1.5, "rake", "first line"]) + CSV.generate_line([2.5, "rake", "second line"])
     )
 
@@ -46,7 +50,13 @@ class Api::BuildsControllerTest < ActionController::TestCase
     body = JSON.parse(response.body)
 
     assert_equal build.id, body["id"]
+    assert_equal "some_plan", body["name"]
     assert_equal build.position, body["position"]
+    assert_equal "Success", body["status_text"]
+    assert_equal "abc123", body["revision"]
+    assert_equal "worker-1", body["slave"]["name"]
+    assert_equal @user.id, body["starter_id"]
+    assert_equal @user.login, body["starter_login"]
     assert_equal 2, body["output_rows"].size
     assert_equal 0, body["output_rows"].first["index"]
     assert_equal "rake", body["output_rows"].first["command"]
