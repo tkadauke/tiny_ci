@@ -3,6 +3,9 @@ import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/reac
 import { fetchJson } from "lib/api"
 import { useBuild, type OutputRow } from "hooks/useBuild"
 import { useChannel } from "hooks/useChannel"
+import { RawOutput } from "components/builds/reports/RawOutput"
+import { DetailsReport } from "components/builds/reports/DetailsReport"
+import { GistReport } from "components/builds/reports/GistReport"
 
 const FINISHED_STATUSES = new Set(["success", "error", "failure", "canceled", "stopped"])
 const STATUS_TEXT: Record<string, string> = {
@@ -31,40 +34,9 @@ function iconPath(size: "small" | "large", status: string) {
   return `/assets/icons/${size}/${status}.png`
 }
 
-function RawOutput({ rows }: { rows: OutputRow[] }) {
-  let lastCommand: string | undefined
-  let lastTimestamp: number | undefined
-
-  return (
-    <div className="raw-output">
-      <table>
-        <tbody>
-          {rows.map((row) => {
-            const timestamp = Math.trunc(Number(row.timestamp))
-            const showTimestamp = timestamp !== lastTimestamp
-            const showCommand = row.command !== lastCommand
-            lastTimestamp = timestamp
-            lastCommand = row.command
-
-            return (
-              <tr key={row.index}>
-                <td className="row">{row.index}</td>
-                <td className="timestamp">{showTimestamp ? new Date(Number(row.timestamp) * 1000).toLocaleTimeString() : ""}</td>
-                <td className="command">{showCommand ? row.command : ""}</td>
-                <td className="line">{row.line}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 function ReportBody({ mode, rows }: { mode: string; rows: OutputRow[] }) {
-  if (!rows.length) return <p>No output (yet)</p>
-  if (mode === "gist") return <p>Gist report placeholder</p>
-  if (mode === "details") return <p>Details report placeholder</p>
+  if (mode === "gist") return rows.length ? <GistReport rows={rows} /> : <p>No output (yet)</p>
+  if (mode === "details") return rows.length ? <DetailsReport rows={rows} /> : <p>No output (yet)</p>
   return <RawOutput rows={rows} />
 }
 
