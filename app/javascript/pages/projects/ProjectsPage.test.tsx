@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
-import { server } from "@/test/setup";
+import { server } from "@/test/server";
 import { renderWithProviders } from "@/test/renderWithProviders";
 import ProjectsPage from "./ProjectsPage";
 

@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { createElement, type ReactNode } from "react";
-import { server } from "@/test/setup";
+import { server } from "@/test/server";
 import { createTestQueryClient } from "@/test/renderWithProviders";
 import { useCurrentUser } from "./useCurrentUser";
 

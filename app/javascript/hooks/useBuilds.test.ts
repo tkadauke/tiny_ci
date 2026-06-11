@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { createElement, type ReactNode } from "react";
-import { server } from "@/test/setup";
+import { server } from "@/test/server";
 import { createTestQueryClient } from "@/test/renderWithProviders";
 import { useBuilds } from "./useBuilds";
 
@@ -15,7 +15,7 @@ test("returns the list from the MSW fixture", async () => {
 
   await waitFor(() => expect(result.current.data).toHaveLength(1));
 
-  expect(result.current.data?.[0]).toMatchObject({ id: 101, status: "success" });
+  expect(result.current.data?.[0]).toMatchObject({ id: 100, status: "success" });
 });
 
 test("handles an empty array", async () => {

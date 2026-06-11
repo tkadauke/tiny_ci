@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  if ENV["E2E_TEST"] == "1"
+    namespace :api do
+      namespace :e2e do
+        resource :fixture, only: %i[create destroy], controller: "fixtures"
+      end
+    end
+  end
+
   namespace :api do
     resource :me, only: :show, controller: "me"
     resource :session, only: [:create, :destroy]
