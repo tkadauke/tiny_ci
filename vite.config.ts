@@ -13,7 +13,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": "/app/javascript"
+      "@": new URL("./app/javascript", import.meta.url).pathname
     }
   }
 });
