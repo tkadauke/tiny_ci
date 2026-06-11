@@ -25,5 +25,5 @@
       "pages/*": ["app/javascript/pages/*"]
     }
   },
-  "include": ["app/javascript/**/*.ts", "app/javascript/**/*.tsx", "vite.config.ts"]
+  "include": ["app/javascript/**/*.ts", "app/javascript/**/*.tsx", "vite.config.ts", "app/javascript/test/**/*.ts"]
 }

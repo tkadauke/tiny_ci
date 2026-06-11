@@ -1,9 +1,17 @@
 import "@testing-library/jest-dom/vitest";
-import { afterAll, afterEach, beforeAll } from "vitest";
-import { setupServer } from "msw/node";
-import { handlers } from "./handlers";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { cleanup } from "@testing-library/react";
+import { server } from "./server";
 
-export const server = setupServer(...handlers);
+export { server };
+
+vi.mock("@/lib/cable", () => ({
+  default: {
+    subscriptions: {
+      create: vi.fn(() => ({ unsubscribe: vi.fn() })),
+    },
+  },
+}));
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: "error" });
@@ -11,6 +19,9 @@ beforeAll(() => {
 
 afterEach(() => {
   server.resetHandlers();
+  cleanup();
+  window.history.pushState({}, "", "/");
+  window.sessionStorage.clear();
 });
 
 afterAll(() => {
