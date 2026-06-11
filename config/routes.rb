@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
     resource :me, only: :show, controller: "me"
-    resource :session, only: :destroy
+    resource :session, only: [:create, :destroy]
+    resources :users, param: :login, only: [:index, :create, :show, :update]
     get "csrf", to: "csrf#token"
   end
 
