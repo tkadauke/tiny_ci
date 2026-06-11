@@ -58,6 +58,29 @@ module Api
       assert_equal [{ "id" => option.id, "name" => "chain_option" }], body["root_plan_options"]
     end
 
+    test "shows build chain links on plan detail" do
+      previous = @project.plans.create!(name: "previous")
+      current = @project.plans.create!(name: "current", previous: previous)
+      following = @project.plans.create!(name: "following", previous: current)
+
+      get :show, params: { project_id: @project.name, plan_id: current.name }
+
+      assert_response :success
+      body = response.parsed_body
+      assert_equal({ "id" => previous.id, "name" => "previous" }, body["previous_plan"])
+      assert_equal({ "id" => following.id, "name" => "following" }, body["next_plan"])
+    end
+
+    test "excludes current root plan from parent and chain options" do
+      current = @project.plans.create!(name: "current")
+      option = @project.plans.create!(name: "option")
+
+      get :show, params: { project_id: @project.name, plan_id: current.name }
+
+      assert_response :success
+      assert_equal [{ "id" => option.id, "name" => "option" }], response.parsed_body["root_plan_options"]
+    end
+
     test "returns blank new plan form data" do
       option = @project.plans.create!(name: "chain_option")
 
@@ -180,6 +203,58 @@ module Api
       assert_nil response.parsed_body["next_plan"]
       assert_equal parent.id, response.parsed_body["parent"]["id"]
       assert_nil plan.reload.previous
+    end
+
+    test "updates parent from root-level api payload" do
+      plan = @project.plans.create!(name: "some_plan")
+      parent = @project.plans.create!(name: "parent")
+
+      patch :update, params: {
+        project_id: @project.name,
+        plan_id: plan.name,
+        parent_id: parent.id
+      }
+
+      assert_response :success
+      assert_equal parent.id, response.parsed_body["parent_id"]
+      assert_equal parent.id, response.parsed_body["parent"]["id"]
+      assert_equal parent, plan.reload.parent
+    end
+
+    test "clears parent from root-level api payload" do
+      parent = @project.plans.create!(name: "parent")
+      plan = @project.plans.create!(name: "some_plan", parent: parent)
+
+      patch :update, params: {
+        project_id: @project.name,
+        plan_id: plan.name,
+        parent_id: nil
+      }
+
+      assert_response :success
+      assert_nil response.parsed_body["parent_id"]
+      assert_nil response.parsed_body["parent"]
+      assert_nil plan.reload.parent
+    end
+
+    test "child plan detail returns no chain links after parent update" do
+      previous = @project.plans.create!(name: "previous")
+      plan = @project.plans.create!(name: "some_plan", previous: previous)
+      following = @project.plans.create!(name: "following", previous: plan)
+      parent = @project.plans.create!(name: "parent")
+
+      patch :update, params: {
+        project_id: @project.name,
+        plan_id: plan.name,
+        parent_id: parent.id
+      }
+
+      assert_response :success
+      body = response.parsed_body
+      assert_nil body["previous_plan_id"]
+      assert_nil body["previous_plan"]
+      assert_nil body["next_plan"]
+      assert_nil following.reload.previous
     end
 
     test "destroys plan when permitted" do

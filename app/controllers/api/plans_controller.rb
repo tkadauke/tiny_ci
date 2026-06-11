@@ -86,7 +86,7 @@ module Api
     def plan_params
       permitted = %i[name description repository_url requirements parent_id previous_plan_id]
       permitted << :steps if current_user.can_edit_plans?
-      attributes = params.require(:plan).permit(*permitted)
+      attributes = params[:plan].present? ? params.require(:plan).permit(*permitted) : params.permit(*permitted)
       attributes[:previous_plan_id] = nil if attributes[:parent_id].present?
       attributes
     end

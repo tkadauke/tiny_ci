@@ -109,6 +109,10 @@ function apiHeaders() {
   };
 }
 
+function storeNotice(message: string) {
+  window.sessionStorage.setItem("tiny_ci_flash_notice", message);
+}
+
 function statusLabel(status: string) {
   return STATUS_LABELS[status] ?? status;
 }
@@ -182,6 +186,15 @@ export default function PlanShowPage(props: PlanShowPageProps) {
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedNotice = window.sessionStorage.getItem("tiny_ci_flash_notice");
+    if (storedNotice) {
+      setNotice(storedNotice);
+      window.sessionStorage.removeItem("tiny_ci_flash_notice");
+    }
+  }, []);
 
   const loadPlan = useCallback(async () => {
     setLoading(true);
@@ -214,9 +227,11 @@ export default function PlanShowPage(props: PlanShowPageProps) {
       const response = await fetch(`/api/projects/${encodePathPart(projectId)}/plans/${encodePathPart(plan.name)}`, {
         method: "PATCH",
         headers: apiHeaders(),
-        body: JSON.stringify({ plan: { parent_id: null } }),
+        body: JSON.stringify({ parent_id: null }),
       });
-      setPlan(await parseJsonResponse<PlanDetail>(response));
+      const updatedPlan = await parseJsonResponse<PlanDetail>(response);
+      storeNotice("Successfully updated plan");
+      window.location.assign(planPath(updatedPlan.project.name, updatedPlan.name));
     } catch (apiError) {
       setError(apiError instanceof Error ? apiError.message : "Unable to update plan");
     } finally {
@@ -283,6 +298,7 @@ export default function PlanShowPage(props: PlanShowPageProps) {
       </h1>
 
       {error ? <p className="error">{error}</p> : null}
+      {notice ? <div className="notice">{notice}</div> : null}
 
       <ul className="action-list">
         {plan.can_edit_plan ? (
