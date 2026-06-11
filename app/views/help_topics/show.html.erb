@@ -1,5 +1,7 @@
-<h2><%= @help_topic.title %></h2>
+<div id="react-help-topic-root">
+  <h2><%= @help_topic.title %></h2>
 
-<div class="help-content">
-  <%= render_help_text(@help_topic.text) %>
+  <div class="help-content">
+    <%= render_help_text(@help_topic.text) %>
+  </div>
 </div>
