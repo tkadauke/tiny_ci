@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     scope "projects/:project_id" do
       get    "plans",          to: "plans#project_index"
       post   "plans",          to: "plans#create"
+      get    "plans/new",      to: "plans#new_form"
       get    "plans/:plan_id", to: "plans#show"
       patch  "plans/:plan_id", to: "plans#update"
       put    "plans/:plan_id", to: "plans#update"

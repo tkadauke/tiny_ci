@@ -38,6 +38,7 @@ module Api
 
     test "shows plan detail with children and latest finished build" do
       plan = @project.plans.create!(name: "some_plan", steps: "build", repository_url: "git@example/repo")
+      option = @project.plans.create!(name: "chain_option")
       child = @project.plans.create!(name: "child_plan", parent: plan)
       build = plan.builds.create!(status: "failure", finished_at: 1.hour.ago)
 
@@ -51,8 +52,57 @@ module Api
       assert_equal [{ "id" => child.id, "name" => "child_plan" }], body["children"].map { |item| item.slice("id", "name") }
       assert_equal({ "position" => build.position, "status" => "failure" }, body["last_finished_build"])
       assert_equal true, body["can_edit_plan"]
+      assert_equal true, body["can_edit_plans"]
       assert_equal true, body["can_create_plans"]
       assert_equal true, body["can_destroy_plan"]
+      assert_equal [{ "id" => option.id, "name" => "chain_option" }], body["root_plan_options"]
+    end
+
+    test "returns blank new plan form data" do
+      option = @project.plans.create!(name: "chain_option")
+
+      get :new_form, params: { project_id: @project.name }
+
+      assert_response :success
+      body = response.parsed_body
+      assert_nil body["plan"]["id"]
+      assert_nil body["plan"]["name"]
+      assert_nil body["plan"]["parent_id"]
+      assert_equal true, body["can_edit_plans"]
+      assert_equal [{ "id" => option.id, "name" => "chain_option" }], body["root_plan_options"]
+    end
+
+    test "returns clone form data without source name" do
+      previous = @project.plans.create!(name: "previous")
+      source = @project.plans.create!(
+        name: "source",
+        description: "Clone me",
+        repository_url: "git@example/repo",
+        steps: "build",
+        requirements: "linux",
+        previous: previous
+      )
+
+      get :new_form, params: { project_id: @project.name, clone: source.name }
+
+      assert_response :success
+      plan = response.parsed_body["plan"]
+      assert_nil plan["id"]
+      assert_nil plan["name"]
+      assert_equal "Clone me", plan["description"]
+      assert_equal "git@example/repo", plan["repository_url"]
+      assert_equal "build", plan["steps"]
+      assert_equal "linux", plan["requirements"]
+      assert_equal previous.id, plan["previous_plan_id"]
+    end
+
+    test "returns child new plan form data with parent id" do
+      parent = @project.plans.create!(name: "parent")
+
+      get :new_form, params: { project_id: @project.name, parent: parent.name }
+
+      assert_response :success
+      assert_equal parent.id, response.parsed_body["plan"]["parent_id"]
     end
 
     test "requires login for plan index" do
