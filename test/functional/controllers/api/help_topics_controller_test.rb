@@ -10,6 +10,20 @@ class Api::HelpTopicsControllerTest < ActionController::TestCase
     assert_match(/<p>.*Lorem ipsum.*<\/p>/m, payload["html"])
   end
 
+  test "should render index help topic explicitly" do
+    get :show, params: { id: "index" }, format: :json
+
+    assert_response :success
+    assert_equal "Welcome to TinyCI Help", response.parsed_body["title"]
+  end
+
+  test "should render nested help topic" do
+    get :show, params: { id: "plan/chain" }, format: :json
+
+    assert_response :success
+    assert_equal "Chained Plans", response.parsed_body["title"]
+  end
+
   test "should rewrite internal textile links and preserve http links" do
     HelpTopic.any_instance.stubs(:title).returns("Links")
     HelpTopic.any_instance.stubs(:text).returns(%{See "Slaves":slaves and "Example":http://example.com})
