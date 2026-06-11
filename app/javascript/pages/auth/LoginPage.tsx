@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { ApiError } from "@/lib/api";
 import { useLogin } from "../../hooks/useLogin";
 
 type LoginPageProps = {
@@ -23,8 +24,8 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       onFlash("Successfully logged in");
       window.location.assign("/");
-    } catch {
-      setError("Invalid login or password");
+    } catch (error) {
+      setError(error instanceof ApiError ? error.message : "Invalid login or password");
     }
   }
 
