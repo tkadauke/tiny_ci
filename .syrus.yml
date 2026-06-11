@@ -1,5 +1,5 @@
 prepare:
-  - bundle install --jobs 4
+  - export BUNDLE_PATH=.syrus/deps/bundle BUNDLE_APP_CONFIG=.syrus/deps/bundle-config BUNDLE_USER_CACHE=.syrus/deps/bundle-cache BUNDLE_USER_HOME=.syrus/deps/bundle-home; bundle install --jobs 4
   - npm ci
 
 grade:
@@ -10,7 +10,7 @@ grade:
       in dev/test hides. These only fire at production boot when
       config.eager_load is true. If this fails, two files likely define
       the same constant — check for filename/classname mismatches.
-    run: bin/rails zeitwerk:check
+    run: export BUNDLE_PATH=.syrus/deps/bundle BUNDLE_APP_CONFIG=.syrus/deps/bundle-config BUNDLE_USER_CACHE=.syrus/deps/bundle-cache BUNDLE_USER_HOME=.syrus/deps/bundle-home; bin/rails zeitwerk:check
     timeout_minutes: 2
 
   - name: rails-tests
@@ -20,7 +20,7 @@ grade:
       and refactors must keep the suite green. db:test:prepare runs
       first so schema changes in the same branch are picked up before
       the suite loads.
-    run: bin/rails db:test:prepare && bin/rails test
+    run: export BUNDLE_PATH=.syrus/deps/bundle BUNDLE_APP_CONFIG=.syrus/deps/bundle-config BUNDLE_USER_CACHE=.syrus/deps/bundle-cache BUNDLE_USER_HOME=.syrus/deps/bundle-home; bin/rails db:test:prepare && bin/rails test
     timeout_minutes: 10
 
   - name: frontend-tests
@@ -46,5 +46,5 @@ grade:
       Checks all gems against the ruby-advisory-db for known CVEs.
       A failure means a dependency has a published vulnerability — update
       the affected gem to a patched version before merging.
-    run: bundle exec bundle-audit check --update
+    run: export BUNDLE_PATH=.syrus/deps/bundle BUNDLE_APP_CONFIG=.syrus/deps/bundle-config BUNDLE_USER_CACHE=.syrus/deps/bundle-cache BUNDLE_USER_HOME=.syrus/deps/bundle-home; bundle exec bundle-audit check --update
     timeout_minutes: 3
