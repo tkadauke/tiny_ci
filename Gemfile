@@ -18,7 +18,7 @@ gem "acts_as_list"
 gem "acts_as_tree"
 
 gem "turbo-rails"
-gem "importmap-rails"
+gem "vite_rails"
 gem "propshaft"
 
 group :development do

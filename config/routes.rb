@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  namespace :api do
+    resource :me, only: :show, controller: "me"
+    resource :session, only: :destroy
+    get "csrf", to: "csrf#token"
+  end
+
   namespace :admin do
     resources :slaves
     resource :configuration
@@ -30,4 +36,7 @@ Rails.application.routes.draw do
   get "/help_topics/*id", to: "help_topics#show",  as: :help_topic
 
   root to: "start#index"
+
+  get '*path', to: 'react#index',
+    constraints: ->(req) { req.format.html? && !req.path.start_with?('/api/', '/cable', '/admin/setup') }
 end
