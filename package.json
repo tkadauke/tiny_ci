@@ -5,6 +5,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -20,9 +22,16 @@
     "typescript": "^5.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "jsdom": "^29.1.1",
+    "msw": "^2.14.6",
     "vite": "^8.0.16",
-    "vite-plugin-ruby": "^5.2.2"
+    "vite-plugin-ruby": "^5.2.2",
+    "vitest": "^4.1.8"
   }
 }
