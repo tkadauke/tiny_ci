@@ -5,6 +5,8 @@ class ConfigurationsControllerTest < ActionController::TestCase
     
     get :show
     assert_response :success
+    assert_select "#user-settings-root"
+    assert_select "#user-settings-fallback"
   end
   
   test "should update user settings" do
