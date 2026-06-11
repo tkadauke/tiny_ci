@@ -50,6 +50,9 @@ module Api
       assert_match %r{/projects/default/plans/some_plan/builds\z}, body["commit_hook_url"]
       assert_equal [{ "id" => child.id, "name" => "child_plan" }], body["children"].map { |item| item.slice("id", "name") }
       assert_equal({ "position" => build.position, "status" => "failure" }, body["last_finished_build"])
+      assert_equal true, body["can_edit_plan"]
+      assert_equal true, body["can_create_plans"]
+      assert_equal true, body["can_destroy_plan"]
     end
 
     test "requires login for plan index" do
