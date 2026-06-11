@@ -17,7 +17,11 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["app/javascript/*"]
+      "@/*": ["app/javascript/*"],
+      "components/*": ["app/javascript/components/*"],
+      "hooks/*": ["app/javascript/hooks/*"],
+      "lib/*": ["app/javascript/lib/*"],
+      "pages/*": ["app/javascript/pages/*"]
     }
   },
   "include": ["app/javascript/**/*.ts", "app/javascript/**/*.tsx", "vite.config.ts"]
