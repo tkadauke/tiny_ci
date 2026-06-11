@@ -1,10 +1,7 @@
-<%= turbo_stream_from "queue" %>
-<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-
-<h1><%= t('.builds_of_plan_html', :plan_link => link_to(@plan.name, project_plan_path(@project, @plan))) %></h1>
-
-<div id="queue">
-  <%= render :partial => 'list', :locals => { :builds => @builds } %>
-</div>
-
-<p><%= link_to t('.back_to_plan'), project_plan_path(@project, @plan) %></p>
+<div
+  id="build-history-page"
+  data-project-id="<%= @project.to_param %>"
+  data-plan-id="<%= @plan.to_param %>"
+  data-plan-name="<%= @plan.name %>"
+  data-stop-icon-path="<%= asset_path("icons/small/stopped.png") %>"
+></div>
