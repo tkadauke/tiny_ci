@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  namespace :api do
+    get "me", to: "me#show"
+    get "csrf", to: "csrf#token"
+  end
+
   namespace :admin do
     resources :slaves
     resource :configuration
