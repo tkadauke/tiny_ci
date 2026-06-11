@@ -39,6 +39,7 @@ class Api::ConfigurationsControllerTest < ActionController::TestCase
   test "should require user" do
     get :options, format: :json
 
-    assert_redirected_to_login
+    assert_response :unauthorized
+    assert_equal({ "error" => "Not authenticated" }, response.parsed_body)
   end
 end
