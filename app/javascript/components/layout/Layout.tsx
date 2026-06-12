@@ -7,54 +7,25 @@ import FlashMessage from "@/components/ui/FlashMessage";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <>
-      <div id="wrap">
-        <div className="wrap_corner_right">
-          <div id="topcontent">
-            <div id="header">
-              <Header />
-              <Navigation />
-            </div>
-
-            <div id="body">
-              <FlashMessage />
-              <Breadcrumbs />
-              {children}
-              <div className="clearer"></div>
-            </div>
-          </div>
-
-          <div id="bottomcontent">
-            <div className="bottomcontent_right">
-              <div id="footer">
-                <div className="footer_corner_right">
-                  <div className="left">
-                    <LinkList />
-                  </div>
-                  <div className="clearer"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bottom_space">
-        <div id="ads_page_end">
-          <h1>Quick links</h1>
-          <div id="links">
-            <a href="http://github.com/tkadauke/tiny_ci">Github project page</a>
-          </div>
-        </div>
-      </div>
-    </>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Header />
+      <Navigation />
+      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-6">
+        <FlashMessage />
+        <Breadcrumbs />
+        {children}
+      </main>
+      <footer className="border-t border-gray-200 py-4 text-center text-sm text-gray-400">
+        <LinkList />
+      </footer>
+    </div>
   );
 }
 
 function LinkList() {
   return (
     <>
-      <Link to="/">Home</Link> | <Link to="/projects">Projects</Link> | <Link to="/users">Users</Link>
+      <Link to="/">Home</Link> · <Link to="/projects">Projects</Link> · <Link to="/users">Users</Link>
     </>
   );
 }
