@@ -14,7 +14,7 @@ describe("BuildDetailPage", () => {
     expect(await screen.findByRole("heading", { name: /Build output of main #7/ })).toBeInTheDocument();
     expect(screen.getByText("abc123")).toBeInTheDocument();
     expect(screen.getByText("2 minutes")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "admin" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "admin" })).toHaveAttribute("href", "/users/admin");
     expect(screen.getByText("bundle exec rake")).toBeInTheDocument();
     expect(screen.getByText("Running tests")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Stop/ })).not.toBeInTheDocument();
