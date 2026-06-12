@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { MouseEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useFlash } from "@/components/ui/FlashMessage";
 
@@ -13,6 +14,7 @@ export default function Header() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { setFlash } = useFlash();
+  const { t } = useTranslation();
 
   const logout = async (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -28,7 +30,7 @@ export default function Header() {
     });
 
     if (!response.ok) {
-      setFlash({ type: "error", message: "Unable to log out" });
+      setFlash({ type: "error", message: t("spa.flash.error.unable_to_log_out") });
       return;
     }
 
@@ -37,7 +39,7 @@ export default function Header() {
     };
 
     await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    setFlash(body.flash ?? { type: "notice", message: "Successfully logged out" });
+    setFlash(body.flash ?? { type: "notice", message: t("flash.notice.logged_out") });
     navigate("/");
   };
 
@@ -47,13 +49,14 @@ export default function Header() {
         <h1>
           <Link to="/">TinyCI</Link>
         </h1>
-        <p>Continuous Integration for Ruby on Rails</p>
+        <p>{t("layouts.subtitle")}</p>
       </div>
       <div id="center_header">
         <div id="suggestion">
           <div className="suggestion_corner_right">
             <span>
-              Found a bug? <a href="http://github.com/tkadauke/tiny_ci/issues">Report it!</a>
+              {t("spa.layout.report_bugs_prefix")}{" "}
+              <a href="http://github.com/tkadauke/tiny_ci/issues">{t("layouts.report_link_text")}</a>
             </span>
           </div>
         </div>
@@ -61,23 +64,23 @@ export default function Header() {
       <div id="right_header">
         {currentUser.guest ? (
           <ul className="action-list">
-            <li>Welcome, Guest!</li>
+            <li>{t("layouts.guest_greeter")}</li>
             <li>
-              <Link to="/login">Login</Link>
+              <Link to="/login">{t("layouts.login")}</Link>
             </li>
             <li>
-              <Link to="/signup">Signup</Link>
+              <Link to="/signup">{t("layouts.signup")}</Link>
             </li>
           </ul>
         ) : (
           <ul className="action-list">
-            <li>Welcome, {currentUser.login}!</li>
+            <li>{t("layouts.user_greeter", { user: currentUser.login })}</li>
             <li>
-              <Link to="/settings">Settings</Link>
+              <Link to="/settings">{t("layouts.settings")}</Link>
             </li>
             <li>
               <a href="/logout" onClick={logout}>
-                Logout
+                {t("layouts.logout")}
               </a>
             </li>
           </ul>

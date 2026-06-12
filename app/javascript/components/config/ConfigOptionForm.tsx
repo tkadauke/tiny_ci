@@ -1,4 +1,5 @@
 import React, { FormEvent, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type LocalizedString = string | Record<string, string>;
 
@@ -17,15 +18,11 @@ type ConfigOptionFormProps = {
   submitLabel: string;
 };
 
-function currentLocale(): string {
-  return document.documentElement.lang || "en";
-}
-
-function localizedValue(value: LocalizedString | null | undefined): string | null {
+function localizedValue(value: LocalizedString | null | undefined, locale: string): string | null {
   if (value == null) return null;
   if (typeof value === "string") return value;
 
-  return value[currentLocale()] ?? Object.values(value)[0] ?? null;
+  return value[locale] ?? Object.values(value)[0] ?? null;
 }
 
 function currentValue(option: ConfigOption): string {
@@ -39,6 +36,7 @@ export default function ConfigOptionForm({
   onSubmit,
   submitLabel,
 }: ConfigOptionFormProps) {
+  const { i18n } = useTranslation();
   const visibleOptions = options.filter((option) => option.type !== "Hash");
   const [values, setValues] = useState<Record<string, string>>({});
 
@@ -65,8 +63,8 @@ export default function ConfigOptionForm({
   return (
     <form onSubmit={handleSubmit}>
       {visibleOptions.map((option) => {
-        const label = localizedValue(option.name) ?? option.key;
-        const description = localizedValue(option.description);
+        const label = localizedValue(option.name, i18n.language) ?? option.key;
+        const description = localizedValue(option.description, i18n.language);
 
         return (
           <p className="form_item" key={option.key}>

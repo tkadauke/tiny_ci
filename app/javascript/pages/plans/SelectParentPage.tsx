@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Reference } from "../../components/plans/PlanForm";
 
 type SelectParentPageProps = {
@@ -52,6 +53,7 @@ function storeNotice(message: string) {
 }
 
 export default function SelectParentPage(props: SelectParentPageProps) {
+  const { t } = useTranslation();
   const routeParams = useParams();
   const projectId = props.projectId ?? routeParams.projectId ?? "";
   const planId = props.planId ?? routeParams.planId ?? "";
@@ -76,7 +78,7 @@ export default function SelectParentPage(props: SelectParentPageProps) {
         setParentId(payload.parent_id);
         setRootPlanOptions(payload.root_plan_options);
       } catch (apiError) {
-        setErrors(apiError instanceof Error ? apiError.message.split("\n") : ["Unable to load plan"]);
+        setErrors(apiError instanceof Error ? apiError.message.split("\n") : [t("spa.plans.load_error")]);
       } finally {
         setLoading(false);
       }
@@ -101,23 +103,23 @@ export default function SelectParentPage(props: SelectParentPageProps) {
         body: JSON.stringify({ parent_id: parentId }),
       });
       const updatedPlan = await parseJsonResponse<PlanPayload>(response);
-      storeNotice("Successfully updated plan");
+      storeNotice(t("flash.notice.updated_plan"));
       window.location.assign(planPath(updatedPlan.project.name, updatedPlan.name));
     } catch (apiError) {
-      setErrors(apiError instanceof Error ? apiError.message.split("\n") : ["Unable to update plan"]);
+      setErrors(apiError instanceof Error ? apiError.message.split("\n") : [t("spa.plans.update_error")]);
       setSubmitting(false);
     }
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{t("spa.loading")}</p>;
 
   return (
     <>
-      <h1>Select parent plan for {plan?.name ?? planId}</h1>
+      <h1>{t("plans.child.select_parent_plan_for_plan", { plan: plan?.name ?? planId })}</h1>
 
       {errors.length > 0 ? (
         <div className="errorExplanation">
-          <h2>{errors.length} prohibited this plan from being saved</h2>
+          <h2>{t("spa.plans.save_error", { count: errors.length })}</h2>
           <ul>
             {errors.map((error) => (
               <li key={error}>{error}</li>
@@ -129,7 +131,7 @@ export default function SelectParentPage(props: SelectParentPageProps) {
       <form onSubmit={submitParent}>
         <p className="form_item">
           <span className="label">
-            <label htmlFor="plan_parent_id">Select Parent Plan</label>
+            <label htmlFor="plan_parent_id">{t("plans.child.select_parent_plan")}</label>
           </span>
           <select id="plan_parent_id" name="plan[parent_id]" value={parentId ?? ""} onChange={updateParent}>
             <option value="" />
@@ -142,7 +144,7 @@ export default function SelectParentPage(props: SelectParentPageProps) {
         </p>
 
         <button type="submit" disabled={submitting}>
-          Update
+          {t("plans.child.update")}
         </button>
       </form>
     </>

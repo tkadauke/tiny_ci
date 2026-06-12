@@ -2,6 +2,7 @@ import { http, HttpResponse } from "msw";
 
 export const guestUser = {
   guest: true,
+  locale: "en",
   login: null,
   email: null,
   role: "guest",
@@ -18,6 +19,7 @@ export const guestUser = {
 
 export const adminUser = {
   guest: false,
+  locale: "en",
   login: "admin",
   email: "admin@example.test",
   role: "admin",

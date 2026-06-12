@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import PlanForm, { Reference, emptyPlanFormValues, PlanFormValues } from "../../components/plans/PlanForm";
 
 type NewPlanPageProps = {
@@ -58,6 +59,7 @@ function planPath(projectId: string, planName: string) {
 }
 
 export default function NewPlanPage(props: NewPlanPageProps) {
+  const { t } = useTranslation();
   const routeParams = useParams();
   const projectId = props.projectId ?? routeParams.projectId ?? "";
   const [values, setValues] = useState<PlanFormValues>(emptyPlanFormValues());
@@ -81,7 +83,7 @@ export default function NewPlanPage(props: NewPlanPageProps) {
         setRootPlanOptions(payload.root_plan_options);
         setCanEditPlans(payload.can_edit_plans);
       } catch (apiError) {
-        setErrors(apiError instanceof Error ? apiError.message.split("\n") : ["Unable to load plan form"]);
+        setErrors(apiError instanceof Error ? apiError.message.split("\n") : [t("spa.plans.load_form_error")]);
       } finally {
         setLoading(false);
       }
@@ -104,23 +106,23 @@ export default function NewPlanPage(props: NewPlanPageProps) {
       const plan = await parseJsonResponse<PlanResponse>(response);
       window.location.assign(planPath(plan.project.name, plan.name));
     } catch (apiError) {
-      setErrors(apiError instanceof Error ? apiError.message.split("\n") : ["Unable to create plan"]);
+      setErrors(apiError instanceof Error ? apiError.message.split("\n") : [t("spa.plans.create_error")]);
       setSubmitting(false);
     }
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{t("spa.loading")}</p>;
 
   return (
     <>
-      <h1>New Plan</h1>
+      <h1>{t("plans.new.new_plan")}</h1>
       <PlanForm
         values={values}
         canEditPlans={canEditPlans}
         rootPlanOptions={rootPlanOptions}
         errors={errors}
         submitting={submitting}
-        submitLabel="Create"
+        submitLabel={t("plans.new.create")}
         onChange={setValues}
         onSubmit={submitPlan}
       />

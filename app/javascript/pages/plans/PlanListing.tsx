@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PlanList, type PlanListPlan } from "@/components/plans/PlanList";
 
 type ReportMode = "list" | "overview";
@@ -30,11 +31,13 @@ async function fetchPlans(endpoint: string) {
 }
 
 function ModeToggle({ mode, basePath }: { mode: ReportMode; basePath: string }) {
+  const { t } = useTranslation();
+
   return (
     <ul className="action-list">
       <li>
         <Link to={`${basePath}?report=list`} aria-current={mode === "list" ? "page" : undefined}>
-          Details
+          {t("plans.full_index.details")}
         </Link>
       </li>
       <li>
@@ -42,7 +45,7 @@ function ModeToggle({ mode, basePath }: { mode: ReportMode; basePath: string }) 
           to={`${basePath}?report=overview`}
           aria-current={mode === "overview" ? "page" : undefined}
         >
-          Overview
+          {t("plans.full_index.overview")}
         </Link>
       </li>
     </ul>
@@ -56,6 +59,7 @@ export function PlanListing({
   canCreatePlans = false,
   newPlanPath = null,
 }: PlanListingProps) {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const report = searchParams.get("report");
   const mode = isReportMode(report) ? report : "list";
@@ -70,13 +74,13 @@ export function PlanListing({
       <h1>{heading}</h1>
       <ModeToggle mode={mode} basePath={basePath} />
       <div id="plans">
-        {isLoading ? <p>Loading...</p> : null}
-        {error ? <p className="error">Could not load plans.</p> : null}
+        {isLoading ? <p>{t("spa.loading")}</p> : null}
+        {error ? <p className="error">{t("spa.plans.load_error")}</p> : null}
         {!isLoading && !error ? <PlanList plans={plans} mode={mode} /> : null}
       </div>
       {canCreatePlans && newPlanPath ? (
         <p>
-          <Link to={newPlanPath}>New Plan</Link>
+          <Link to={newPlanPath}>{t("plans.index.new_plan")}</Link>
         </p>
       ) : null}
     </>

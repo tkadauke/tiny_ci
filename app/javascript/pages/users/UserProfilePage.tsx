@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { CurrentUser } from "../../hooks/useCurrentUser";
 import { useUser } from "../../hooks/useUser";
 
@@ -15,31 +16,32 @@ function canEditProfile(currentUser: CurrentUser | undefined, login: string) {
 }
 
 export default function UserProfilePage({ currentUser }: UserProfilePageProps) {
+  const { t } = useTranslation();
   const { login } = useParams();
   const userQuery = useUser(login);
 
   return (
     <div className="react-page">
       <p>
-        You are here: <Link to="/">Home</Link> &gt; <Link to="/users">Users</Link> &gt;{" "}
+        {t("spa.breadcrumbs.you_are_here")} <Link to="/">{t("breadcrumb.home")}</Link> &gt; <Link to="/users">{t("breadcrumb.users")}</Link> &gt;{" "}
         {login}
       </p>
 
-      {userQuery.isPending ? <p>Loading profile...</p> : null}
+      {userQuery.isPending ? <p>{t("spa.users.loading_profile")}</p> : null}
       {userQuery.isError ? (
         <div className="error" role="alert">
-          Could not load profile.
+          {t("spa.users.load_profile_error")}
         </div>
       ) : null}
 
       {userQuery.data ? (
         <>
-          <h2>{userQuery.data.login}'s Profile</h2>
+          <h2>{t("users.show.users_profile", { login: userQuery.data.login })}</h2>
           <ul className="action-list">
             {canEditProfile(currentUser, userQuery.data.login) ? (
               <li>
                 <Link to={`/users/${encodeURIComponent(userQuery.data.login)}/edit`}>
-                  Edit profile
+                  {t("users.show.edit_profile")}
                 </Link>
               </li>
             ) : null}

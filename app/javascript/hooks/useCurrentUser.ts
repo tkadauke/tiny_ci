@@ -3,6 +3,7 @@ import { api } from "@/lib/api";
 
 export type CurrentUser = {
   guest: boolean;
+  locale: "en" | "de";
   login: string | null;
   email: string | null;
   role: string;
@@ -19,6 +20,7 @@ export type CurrentUser = {
 
 const guestUser: CurrentUser = {
   guest: true,
+  locale: "en",
   login: null,
   email: null,
   role: "guest",

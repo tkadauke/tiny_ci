@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import RequireAuth from "@/components/auth/RequireAuth";
@@ -32,6 +34,7 @@ import EditUserPage from "@/pages/users/EditUserPage";
 import UserProfilePage from "@/pages/users/UserProfilePage";
 import UsersPage from "@/pages/users/UsersPage";
 import { useProjects } from "@/hooks/projects/useProjects";
+import { normalizeLocale } from "@/i18n";
 
 const queryClient = new QueryClient();
 setQueryClient(queryClient);
@@ -73,27 +76,37 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <FlashProvider>
-          <Layout>
-            <Routes>
-              {routes.map((route) => (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    route.requireAuth ? (
-                      <RequireAuth>{route.element}</RequireAuth>
-                    ) : (
-                      route.element
-                    )
-                  }
-                />
-              ))}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
+          <LocalizedApp />
         </FlashProvider>
       </BrowserRouter>
     </QueryClientProvider>
+  );
+}
+
+function LocalizedApp() {
+  const { data: currentUser } = useCurrentUser();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const locale = normalizeLocale(currentUser.locale);
+    if (i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  }, [currentUser.locale, i18n]);
+
+  return (
+    <Layout>
+      <Routes>
+        {routes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={route.requireAuth ? <RequireAuth>{route.element}</RequireAuth> : route.element}
+          />
+        ))}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Layout>
   );
 }
 
@@ -162,13 +175,14 @@ function ProjectsRoute() {
 }
 
 function EditProjectRoute() {
+  const { t } = useTranslation();
   const { projectId = "" } = useParams();
   const { projects, loading, errors } = useProjects();
   const project = projects.find((candidate) => candidate.name === projectId);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{t("spa.loading")}</p>;
   if (errors.length > 0) return <p>{errors.join(", ")}</p>;
-  if (!project) return <p>Project not found.</p>;
+  if (!project) return <p>{t("spa.projects.not_found")}</p>;
 
   return <EditProjectPage project={project} />;
 }
@@ -229,10 +243,12 @@ function EditWorkerRoute() {
 }
 
 function NotFound() {
+  const { t } = useTranslation();
+
   return (
     <section>
-      <h1>Not Found</h1>
-      <p>The requested page could not be found.</p>
+      <h1>{t("spa.not_found.title")}</h1>
+      <p>{t("spa.not_found.message")}</p>
     </section>
   );
 }

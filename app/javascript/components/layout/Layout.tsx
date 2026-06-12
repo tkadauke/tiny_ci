@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import Header from "@/components/layout/Header";
 import Navigation from "@/components/layout/Navigation";
 import FlashMessage from "@/components/ui/FlashMessage";
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div id="wrap">
@@ -41,9 +44,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       <div className="bottom_space">
         <div id="ads_page_end">
-          <h1>Quick links</h1>
+          <h1>{t("layouts.quick_links")}</h1>
           <div id="links">
-            <a href="http://github.com/tkadauke/tiny_ci">Github project page</a>
+            <a href="http://github.com/tkadauke/tiny_ci">{t("layouts.github_project_page")}</a>
           </div>
         </div>
       </div>
@@ -52,9 +55,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 }
 
 function LinkList() {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Link to="/">Home</Link> | <Link to="/projects">Projects</Link> | <Link to="/users">Users</Link>
+      <Link to="/">{t("layouts.home")}</Link> | <Link to="/projects">{t("layouts.projects")}</Link> |{" "}
+      <Link to="/users">{t("layouts.users")}</Link>
     </>
   );
 }

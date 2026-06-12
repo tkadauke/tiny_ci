@@ -1,4 +1,5 @@
 import React, { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import type { OutputRow } from "@/hooks/useBuild"
 import { parseReports, type DeployReport, type Report, type TestReport } from "@/lib/reportParser"
 
@@ -20,21 +21,23 @@ export function GistReport({ rows }: Props) {
 }
 
 function ReportGist({ report }: { report: Report }) {
+  const { t } = useTranslation()
+
   if (report.type === "build") {
     const testReports = report.tasks.filter((task): task is TestReport => task.type === "test")
 
     return (
       <>
-        <a href="#">Build</a>
+        <a href="#">{t("report.build")}</a>
         <div>
           <dl>
-            <dt>Build tool</dt>
+            <dt>{t("report.build_tool")}</dt>
             <dd>{report.buildTool}</dd>
-            <dt>Targets</dt>
+            <dt>{t("report.targets")}</dt>
             <dd>{report.targets}</dd>
           </dl>
 
-          <h2>Tasks</h2>
+          <h2>{t("report.tasks")}</h2>
           <ul>
             {testReports.map((task, index) => (
               <li key={`${task.name}-${index}`}><TestReportGist report={task} /></li>
@@ -49,20 +52,22 @@ function ReportGist({ report }: { report: Report }) {
 }
 
 function TestReportGist({ report }: { report: TestReport }) {
+  const { t } = useTranslation()
+
   return (
     <>
-      <a href="#">Test Run {report.name}</a>
+      <a href="#">{t("report.test_run", { name: report.name })}</a>
       <div>
         <dl>
-          <dt>Total time</dt>
+          <dt>{t("report.total_time")}</dt>
           <dd>{report.summary.totalTime}</dd>
-          <dt>Tests</dt>
+          <dt>{t("report.tests")}</dt>
           <dd>{report.summary.tests}</dd>
-          <dt>Assertions</dt>
+          <dt>{t("report.assertions")}</dt>
           <dd>{report.summary.assertions}</dd>
-          <dt>Failures</dt>
+          <dt>{t("report.failures")}</dt>
           <dd>{report.summary.failures}</dd>
-          <dt>Errors</dt>
+          <dt>{t("report.errors")}</dt>
           <dd>{report.summary.errors}</dd>
         </dl>
       </div>
@@ -71,14 +76,16 @@ function TestReportGist({ report }: { report: TestReport }) {
 }
 
 function DeployReportGist({ report }: { report: DeployReport }) {
+  const { t } = useTranslation()
+
   return (
     <>
-      <a href="#">Deploy</a>
+      <a href="#">{t("report.deploy")}</a>
       <div>
         <dl>
-          <dt>Deploy tool</dt>
+          <dt>{t("report.deploy_tool")}</dt>
           <dd>{report.deployTool}&nbsp;</dd>
-          <dt>Targets</dt>
+          <dt>{t("report.targets")}</dt>
           <dd>{report.targets}&nbsp;</dd>
         </dl>
       </div>

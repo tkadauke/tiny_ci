@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { LoggedInCurrentUser } from "../../hooks/useCurrentUser";
 import type { User } from "../../hooks/useUser";
 import { api } from "../../lib/api";
@@ -13,6 +14,7 @@ function canEditUser(currentUser: UsersPageProps["currentUser"], user: User) {
 }
 
 export default function UsersPage({ currentUser }: UsersPageProps) {
+  const { t } = useTranslation();
   const usersQuery = useQuery({
     queryKey: ["users"],
     queryFn: () => api.get<User[]>("/api/users"),
@@ -21,23 +23,23 @@ export default function UsersPage({ currentUser }: UsersPageProps) {
   return (
     <div className="react-page">
       <p>
-        You are here: <Link to="/">Home</Link> &gt; Users
+        {t("spa.breadcrumbs.you_are_here")} <Link to="/">{t("breadcrumb.home")}</Link> &gt; {t("breadcrumb.users")}
       </p>
-      <h1>Listing Users</h1>
+      <h1>{t("users.index.listing_users")}</h1>
 
-      {usersQuery.isPending ? <p>Loading users...</p> : null}
+      {usersQuery.isPending ? <p>{t("spa.users.loading")}</p> : null}
       {usersQuery.isError ? (
         <div className="error" role="alert">
-          Could not load users.
+          {t("spa.users.load_error")}
         </div>
       ) : null}
 
       {usersQuery.data?.length === 0 ? (
         <>
-          <p>There are no user accounts yet.</p>
+          <p>{t("users.index.there_are_no_user_accounts_yet")}</p>
           {currentUser.can_create_accounts ? (
             <p>
-              <a href="/signup">Create first administrator account</a>
+              <a href="/signup">{t("users.index.create_first_administrator_account")}</a>
             </p>
           ) : null}
         </>
@@ -48,8 +50,8 @@ export default function UsersPage({ currentUser }: UsersPageProps) {
           <table className="list">
             <thead>
               <tr>
-                <th>Login name</th>
-                <th>Options</th>
+                <th>{t("users.index.login_name")}</th>
+                <th>{t("users.index.options")}</th>
               </tr>
             </thead>
             <tbody>
@@ -60,7 +62,7 @@ export default function UsersPage({ currentUser }: UsersPageProps) {
                   </td>
                   <td>
                     {canEditUser(currentUser, user) ? (
-                      <Link to={`/users/${encodeURIComponent(user.login)}/edit`}>Edit</Link>
+                      <Link to={`/users/${encodeURIComponent(user.login)}/edit`}>{t("users.index.edit")}</Link>
                     ) : null}
                   </td>
                 </tr>
@@ -70,7 +72,7 @@ export default function UsersPage({ currentUser }: UsersPageProps) {
 
           {currentUser.can_create_accounts ? (
             <p>
-              <a href="/signup">New Account</a>
+              <a href="/signup">{t("users.index.new_account")}</a>
             </p>
           ) : null}
         </>

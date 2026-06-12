@@ -1,5 +1,6 @@
 import React from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import type { Build } from "@/hooks/useBuilds"
 import { buildsQueryKey } from "@/hooks/useBuilds"
 
@@ -12,18 +13,6 @@ type BuildListProps = {
 }
 
 const FINISHED_STATUSES = new Set(["success", "error", "failure", "canceled", "stopped"])
-
-const STATUS_LABELS: Record<string, string> = {
-  canceled: "Canceled",
-  error: "Error",
-  failure: "Failure",
-  pending: "Pending",
-  running: "Running",
-  stopped: "Stopped",
-  stopping: "Stopping",
-  success: "Success",
-  waiting: "Waiting"
-}
 
 function pathForBuild(build: Build) {
   return `/projects/${build.plan.project_id}/plans/${build.plan.plan_id}/builds/${build.position}`
@@ -76,7 +65,8 @@ async function stopBuild(build: Build) {
 }
 
 function StatusCell({ build }: { build: Build }) {
-  const label = STATUS_LABELS[build.status] || build.status
+  const { t } = useTranslation()
+  const label = t(`build.status.${build.status}`, { defaultValue: build.status })
 
   return (
     <td>
@@ -97,6 +87,7 @@ function StopCell({
   stopIconPath?: string
 }) {
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
   const mutation = useMutation({
     mutationFn: () => stopBuild(build),
     onSuccess: () => {
@@ -116,7 +107,7 @@ function StopCell({
         disabled={mutation.isPending || build.status === "stopping"}
         onClick={() => mutation.mutate()}
       >
-        <img src={stopIconPath} alt="" width={16} height={16} /> Stop
+        <img src={stopIconPath} alt="" width={16} height={16} /> {t("spa.actions.stop")}
       </button>
     </td>
   )
@@ -159,20 +150,22 @@ export function BuildList({
   projectId,
   planId,
   stopIconPath,
-  emptyMessage = "No builds"
+  emptyMessage
 }: BuildListProps) {
+  const { t } = useTranslation()
+
   if (!builds || builds.length === 0) {
-    return <p>{emptyMessage}</p>
+    return <p>{emptyMessage ?? t("builds.list.no_builds")}</p>
   }
 
   return (
     <table className="list">
       <thead>
         <tr>
-          <th>Number</th>
-          <th>Name</th>
-          <th>Timestamp</th>
-          <th>Status</th>
+          <th>{t("builds.list.number")}</th>
+          <th>{t("builds.list.name")}</th>
+          <th>{t("builds.list.timestamp")}</th>
+          <th>{t("builds.list.status")}</th>
           <th />
         </tr>
       </thead>

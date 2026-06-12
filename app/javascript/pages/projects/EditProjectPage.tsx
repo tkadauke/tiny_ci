@@ -1,9 +1,11 @@
 import { createElement as h, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useUpdateProject } from "hooks/projects/useUpdateProject"
 import { ProjectForm, showFlash } from "pages/projects/NewProjectPage"
 import type { Project } from "hooks/projects/useProjects"
 
 export default function EditProjectPage({ project }: { project: Project }) {
+  const { t } = useTranslation()
   const [errors, setErrors] = useState<string[]>([])
   const { updateProject } = useUpdateProject()
 
@@ -14,7 +16,7 @@ export default function EditProjectPage({ project }: { project: Project }) {
       return
     }
 
-    showFlash("Successfully updated project")
+    showFlash(t("flash.notice.updated_project"))
     if (window.Turbo) {
       window.Turbo.visit("/projects")
     } else {
@@ -25,7 +27,7 @@ export default function EditProjectPage({ project }: { project: Project }) {
   return h(
     "div",
     null,
-    h("h1", null, `Edit Project ${project.name}`),
-    h(ProjectForm, { project, submitLabel: "Update", onSubmit: handleSubmit, errors })
+    h("h1", null, t("projects.edit.edit_project_name", { name: project.name })),
+    h(ProjectForm, { project, submitLabel: t("projects.edit.update"), onSubmit: handleSubmit, errors })
   )
 }

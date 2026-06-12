@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { OutputRow } from "@/hooks/useBuild"
 import { parseReports, type DeployCommandReport, type DeployReport, type DeployTaskReport, type Report, type TestCase, type TestReport, type TaskReport } from "@/lib/reportParser"
 import { RawOutput } from "./RawOutput"
@@ -39,16 +40,18 @@ function ExpandableSection({ label, children }: { label: React.ReactNode; childr
 }
 
 function BuildReportDetails({ report }: { report: Extract<Report, { type: "build" }> }) {
+  const { t } = useTranslation()
+
   return (
-    <ExpandableSection label="Build">
+    <ExpandableSection label={t("report.build")}>
         <dl>
-          <dt>Build tool</dt>
+          <dt>{t("report.build_tool")}</dt>
           <dd>{report.buildTool}&nbsp;</dd>
-          <dt>Targets</dt>
+          <dt>{t("report.targets")}</dt>
           <dd>{report.targets}&nbsp;</dd>
         </dl>
 
-        <h2>Tasks</h2>
+        <h2>{t("report.tasks")}</h2>
         <ul className="tasks">
           {report.tasks.map((task, index) => (
             <li key={`${task.name}-${index}`}><TaskDetails task={task} /></li>
@@ -59,24 +62,26 @@ function BuildReportDetails({ report }: { report: Extract<Report, { type: "build
 }
 
 function TaskDetails({ task }: { task: TaskReport }) {
+  const { t } = useTranslation()
   if (task.type === "test") return <TestReportDetails report={task} />
 
   return (
-    <ExpandableSection label={<>Task {task.name}</>}>
+    <ExpandableSection label={t("report.task", { name: task.name })}>
       {task.rawOutput.length ? <RawOutput rows={task.rawOutput} /> : null}
     </ExpandableSection>
   )
 }
 
 function TestReportDetails({ report }: { report: TestReport }) {
+  const { t } = useTranslation()
   const tests = [...report.tests].sort((a, b) => a.name.localeCompare(b.name))
 
   return (
-    <ExpandableSection label={<>Test Run {report.name}</>}>
-        <h3>Summary</h3>
+    <ExpandableSection label={t("report.test_run", { name: report.name })}>
+        <h3>{t("report.summary")}</h3>
         <TestSummaryList report={report} />
 
-        <h3>Details</h3>
+        <h3>{t("report.details")}</h3>
         <ul className="test-report">
           {tests.map((test) => (
             <li key={test.name}>
@@ -84,9 +89,9 @@ function TestReportDetails({ report }: { report: TestReport }) {
                 <table>
                   <thead>
                     <tr>
-                      <th className="name">Test Case</th>
-                      <th className="duration">Duration</th>
-                      <th className="status">Status</th>
+                      <th className="name">{t("report.test_case")}</th>
+                      <th className="duration">{t("report.duration")}</th>
+                      <th className="status">{t("report.status")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -104,17 +109,19 @@ function TestReportDetails({ report }: { report: TestReport }) {
 }
 
 function TestSummaryList({ report }: { report: TestReport }) {
+  const { t } = useTranslation()
+
   return (
     <dl>
-      <dt>Total time</dt>
+      <dt>{t("report.total_time")}</dt>
       <dd>{report.summary.totalTime}&nbsp;</dd>
-      <dt>Tests</dt>
+      <dt>{t("report.tests")}</dt>
       <dd>{report.summary.tests}&nbsp;</dd>
-      <dt>Assertions</dt>
+      <dt>{t("report.assertions")}</dt>
       <dd>{report.summary.assertions}&nbsp;</dd>
-      <dt>Failures</dt>
+      <dt>{t("report.failures")}</dt>
       <dd>{report.summary.failures}&nbsp;</dd>
-      <dt>Errors</dt>
+      <dt>{t("report.errors")}</dt>
       <dd>{report.summary.errors}&nbsp;</dd>
     </dl>
   )
@@ -160,16 +167,18 @@ function TestCaseRow({ testCase }: { testCase: TestCase }) {
 }
 
 function DeployReportDetails({ report }: { report: DeployReport }) {
+  const { t } = useTranslation()
+
   return (
-    <ExpandableSection label="Deploy">
+    <ExpandableSection label={t("report.deploy")}>
         <dl>
-          <dt>Deploy tool</dt>
+          <dt>{t("report.deploy_tool")}</dt>
           <dd>{report.deployTool}&nbsp;</dd>
-          <dt>Targets</dt>
+          <dt>{t("report.targets")}</dt>
           <dd>{report.targets}&nbsp;</dd>
         </dl>
 
-        <h2>Tasks</h2>
+        <h2>{t("report.tasks")}</h2>
         <ul className="tasks">
           {report.tasks.map((task, index) => (
             <li key={`${task.name}-${index}`}><DeployTaskDetails report={task} /></li>
@@ -180,8 +189,10 @@ function DeployReportDetails({ report }: { report: DeployReport }) {
 }
 
 function DeployTaskDetails({ report }: { report: DeployTaskReport }) {
+  const { t } = useTranslation()
+
   return (
-    <ExpandableSection label={<>Task {report.name}</>}>
+    <ExpandableSection label={t("report.task", { name: report.name })}>
         {report.commands.length ? (
           <ul className="tasks">
             {report.commands.map((command, index) => (
@@ -194,15 +205,16 @@ function DeployTaskDetails({ report }: { report: DeployTaskReport }) {
 }
 
 function DeployCommandDetails({ report }: { report: DeployCommandReport }) {
+  const { t } = useTranslation()
   const servers = Object.keys(report.output).sort()
   const [selectedServer, setSelectedServer] = useState(servers[0])
 
   return (
-    <ExpandableSection label={<>Command {report.command}</>}>
+    <ExpandableSection label={t("report.command", { name: report.command })}>
         {servers.length ? (
           <div className="tabs">
             <p>
-              Command output:{" "}
+              {t("report.command_output")}{" "}
               {servers.map((server) => (
                 <React.Fragment key={server}>
                   <a href="#" onClick={(event) => { event.preventDefault(); setSelectedServer(server) }}>

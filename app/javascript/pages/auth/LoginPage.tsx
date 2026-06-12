@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ApiError } from "@/lib/api";
 import { useLogin } from "../../hooks/useLogin";
 
@@ -8,6 +9,7 @@ type LoginPageProps = {
 };
 
 export default function LoginPage({ onFlash }: LoginPageProps) {
+  const { t } = useTranslation();
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -22,17 +24,17 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
     try {
       await loginMutation.mutateAsync({ login, password });
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      onFlash("Successfully logged in");
+      onFlash(t("flash.notice.logged_in"));
       window.location.assign("/");
     } catch (error) {
-      setError(error instanceof ApiError ? error.message : "Invalid login or password");
+      setError(error instanceof ApiError ? error.message : t("spa.auth.invalid_login"));
     }
   }
 
   return (
     <div className="react-page">
-      <p>You are here: <a href="/">Home</a> &gt; Login</p>
-      <h2>Login</h2>
+      <p>{t("spa.breadcrumbs.you_are_here")} <a href="/">{t("breadcrumb.home")}</a> &gt; {t("breadcrumb.login")}</p>
+      <h2>{t("user_sessions.new.login")}</h2>
       {error ? (
         <div className="error" role="alert">
           {error}
@@ -40,7 +42,7 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
       ) : null}
       <form className="form" onSubmit={handleSubmit}>
         <p>
-          <label htmlFor="login">User name</label>
+          <label htmlFor="login">{t("user_sessions.new.user_name")}</label>
           <input
             id="login"
             name="login"
@@ -51,7 +53,7 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
           />
         </p>
         <p>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">{t("user_sessions.new.password")}</label>
           <input
             id="password"
             name="password"
@@ -70,12 +72,12 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
               checked={rememberMe}
               onChange={(event) => setRememberMe(event.target.checked)}
             />
-            Remember me
+            {t("user_sessions.new.remember_me")}
           </label>
         </p>
         <p>
           <button type="submit" disabled={loginMutation.isPending}>
-            Login
+            {t("user_sessions.new.login")}
           </button>
         </p>
       </form>

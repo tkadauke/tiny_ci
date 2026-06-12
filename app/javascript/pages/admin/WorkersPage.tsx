@@ -1,10 +1,12 @@
 import { FormEvent, useState } from "react"
 import { useCreateWorker } from "../../hooks/admin/useCreateWorker"
 import { useWorkers } from "../../hooks/admin/useWorkers"
+import { useTranslation } from "react-i18next"
 
-function statusIcon(offline: boolean) {
+function StatusIcon({ offline }: { offline: boolean }) {
+  const { t } = useTranslation()
   const status = offline ? "offline" : "online"
-  const label = offline ? "Offline" : "Online"
+  const label = offline ? t("admin.slaves.index.offline") : t("admin.slaves.index.online")
   return (
     <>
       <img src={`/assets/icons/small/${status}.png`} alt="" /> {label}
@@ -13,6 +15,7 @@ function statusIcon(offline: boolean) {
 }
 
 export function WorkersPage() {
+  const { t } = useTranslation()
   const { workers, loading, error } = useWorkers()
   const { createWorker } = useCreateWorker()
   const [quickCreateError, setQuickCreateError] = useState<string | null>(null)
@@ -29,7 +32,7 @@ export function WorkersPage() {
     }
   }
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p>{t("spa.loading")}</p>
   if (error) return <p>{error}</p>
 
   return (
@@ -54,16 +57,16 @@ export function WorkersPage() {
           <table className="list">
             <thead>
               <tr>
-                <th>Status</th>
-                <th>Protocol</th>
-                <th>Name</th>
-                <th>Hostname</th>
+                <th>{t("admin.slaves.index.status")}</th>
+                <th>{t("admin.slaves.index.protocol")}</th>
+                <th>{t("admin.slaves.index.name")}</th>
+                <th>{t("admin.slaves.index.hostname")}</th>
               </tr>
             </thead>
             <tbody>
               {workers.map((worker) => (
                 <tr key={worker.name}>
-                  <td>{statusIcon(worker.offline)}</td>
+                  <td><StatusIcon offline={worker.offline} /></td>
                   <td>{worker.protocol}</td>
                   <td>
                     <a href={`/admin/workers/${encodeURIComponent(worker.name)}`}>{worker.name}</a>
