@@ -89,6 +89,7 @@
     "projects": "Projects",
     "settings": "Settings",
     "slaves": "Slaves",
+    "workers": "Workers",
     "users": "Users"
   },
   "build": {
@@ -228,6 +229,7 @@
     "subtitle": "Continuous Integration for Ruby on Rails",
     "user_greeter": "Welcome, %{user}!",
     "users": "Users",
+    "workers": "Workers",
     "you_are_here_html": "You are here: %{bread_crumb}"
   },
   "navigation": {

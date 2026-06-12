@@ -46,7 +46,7 @@ test("close link removes the message", async () => {
   );
 
   await user.click(screen.getByRole("button", { name: "Set flash" }));
-  await user.click(screen.getByRole("link", { name: "Close" }));
+  await user.click(screen.getByRole("button", { name: "Close" }));
 
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });

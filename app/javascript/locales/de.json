@@ -89,6 +89,7 @@
     "projects": "Projekte",
     "settings": "Einstellungen",
     "slaves": "Build-Rechner",
+    "workers": "Build-Rechner",
     "users": "Benutzer"
   },
   "build": {
@@ -228,6 +229,7 @@
     "subtitle": "Continuous Integration für Ruby on Rails",
     "user_greeter": "Willkommen, %{user}!",
     "users": "Benutzer",
+    "workers": "Build-Rechner",
     "you_are_here_html": "Sie sind hier: %{bread_crumb}"
   },
   "navigation": {

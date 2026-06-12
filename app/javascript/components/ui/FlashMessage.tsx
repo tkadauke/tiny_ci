@@ -47,18 +47,25 @@ export default function FlashMessage() {
     return null;
   }
 
+  const variantClass =
+    flash.type === "notice"
+      ? "bg-green-50 border-green-200 text-green-800"
+      : "bg-red-50 border-red-200 text-red-800";
+  const buttonClass = flash.type === "notice" ? "text-green-600 hover:text-green-800" : "text-red-600 hover:text-red-800";
+
   return (
-    <div id="flash" className={flash.type} role="alert">
-      {flash.message}
-      <a
-        href="#"
-        onClick={(event) => {
-          event.preventDefault();
+    <div className={`mb-4 flex items-center gap-3 rounded-md border px-4 py-3 text-sm ${variantClass}`} role="alert">
+      <span className="flex-1">{flash.message}</span>
+      <button
+        type="button"
+        onClick={() => {
           clearFlash();
         }}
+        className={buttonClass}
+        aria-label={t("layouts.close_flash")}
       >
-        {t("layouts.close_flash")}
-      </a>
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
   );
 }
