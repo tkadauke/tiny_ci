@@ -1,7 +1,9 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
 import { useCreateUser } from "@/hooks/useCreateUser";
 import type { CreateUserInput } from "@/hooks/useCreateUser";
 
@@ -24,7 +26,6 @@ type SignupPageProps = {
 };
 
 export default function SignupPage({ onFlash }: SignupPageProps) {
-  const { t } = useTranslation();
   const [form, setForm] = useState<CreateUserInput>(initialForm);
   const createUser = useCreateUser();
   const queryClient = useQueryClient();
@@ -39,20 +40,22 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
     createUser.mutate(form, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-        onFlash(t("flash.notice.created_account"));
+        onFlash("Successfully created account");
         window.location.assign("/");
       }
     });
   }
 
   return (
-    <div className="react-page">
-      <h2>{t("users.new.create_new_account")}</h2>
+    <div className="mx-auto mt-16 max-w-sm">
+      <Card>
+        <CardHeader>Create New Account</CardHeader>
+        <CardBody>
       <form action="/users" method="post" onSubmit={submit}>
         {errors.length > 0 && (
-          <div id="errorExplanation" className="errorExplanation">
-            <h2>{t("spa.users.create_error")}</h2>
-            <ul>
+          <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p className="font-medium">Could not create account</p>
+            <ul className="mt-2 list-disc pl-5">
               {errors.map((message) => (
                 <li key={message}>{message}</li>
               ))}
@@ -60,45 +63,36 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
           </div>
         )}
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_login">{t("users.new.login_name")}</label>
-          </span>
-          <span className="desc">{t("users.new.the_nick_name_used_for_logins")}</span>
-          <input id="user_login" name="login" type="text" value={form.login} onChange={updateField} />
-        </p>
+        <FormField label="Login Name">
+          <p className="mb-2 text-sm text-gray-500">The nick name used for logins</p>
+          <input className={inputClassName} id="user_login" name="login" type="text" value={form.login} onChange={updateField} />
+        </FormField>
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_email">{t("users.new.email_address")}</label>
-          </span>
-          <span className="desc">{t("users.new.the_email_address_is_used_for_notifications")}</span>
-          <input id="user_email" name="email" type="text" value={form.email} onChange={updateField} />
-        </p>
+        <FormField label="E-Mail Address">
+          <p className="mb-2 text-sm text-gray-500">The email address is used for notifications</p>
+          <input className={inputClassName} id="user_email" name="email" type="text" value={form.email} onChange={updateField} />
+        </FormField>
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_password">{t("users.new.password")}</label>
-          </span>
-          <input id="user_password" name="password" type="password" value={form.password} onChange={updateField} />
-        </p>
+        <FormField label="Password">
+          <input className={inputClassName} id="user_password" name="password" type="password" value={form.password} onChange={updateField} />
+        </FormField>
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_password_confirmation">{t("users.new.password_confirmation")}</label>
-          </span>
-          <span className="desc">{t("users.new.please_repeat_the_password_exactly_as_above")}</span>
+        <FormField label="Password Confirmation">
+          <p className="mb-2 text-sm text-gray-500">Please repeat the password exactly as above</p>
           <input
+            className={inputClassName}
             id="user_password_confirmation"
             name="password_confirmation"
             type="password"
             value={form.password_confirmation}
             onChange={updateField}
           />
-        </p>
+        </FormField>
 
-        <input type="submit" value={createUser.isPending ? t("spa.users.creating_account") : t("users.new.create_account")} disabled={createUser.isPending} />
+        <Button type="submit" disabled={createUser.isPending}>{createUser.isPending ? "Creating account..." : "Create account"}</Button>
       </form>
+        </CardBody>
+      </Card>
     </div>
   );
 }

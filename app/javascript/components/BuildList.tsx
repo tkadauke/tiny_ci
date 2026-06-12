@@ -1,6 +1,5 @@
 import React from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useTranslation } from "react-i18next"
 import { StatusBadge } from "@/components/ui/Badge"
 import { Button } from "@/components/ui/Button"
 import { Table, Td, Th, Tr } from "@/components/ui/Table"
@@ -68,11 +67,9 @@ async function stopBuild(build: Build) {
 }
 
 function StatusCell({ build }: { build: Build }) {
-  const { t } = useTranslation()
-
   return (
     <Td>
-      <StatusBadge status={build.status} label={t(`build.status.${build.status}`, { defaultValue: build.status })} />
+      <StatusBadge status={build.status} />
     </Td>
   )
 }
@@ -89,7 +86,6 @@ function StopCell({
   stopIconPath?: string
 }) {
   const queryClient = useQueryClient()
-  const { t } = useTranslation()
   const mutation = useMutation({
     mutationFn: () => stopBuild(build),
     onSuccess: () => {
@@ -109,7 +105,7 @@ function StopCell({
         disabled={mutation.isPending || build.status === "stopping"}
         onClick={() => mutation.mutate()}
       >
-        <img src={stopIconPath} alt="" width={16} height={16} /> {t("spa.actions.stop")}
+        Stop
       </Button>
     </Td>
   )
@@ -152,22 +148,20 @@ export function BuildList({
   projectId,
   planId,
   stopIconPath,
-  emptyMessage
+  emptyMessage = "No builds"
 }: BuildListProps) {
-  const { t } = useTranslation()
-
   if (!builds || builds.length === 0) {
-    return <p>{emptyMessage ?? t("builds.list.no_builds")}</p>
+    return <p>{emptyMessage}</p>
   }
 
   return (
     <Table>
       <thead>
         <tr>
-          <Th>{t("builds.list.number")}</Th>
-          <Th>{t("builds.list.name")}</Th>
-          <Th>{t("builds.list.timestamp")}</Th>
-          <Th>{t("builds.list.status")}</Th>
+          <Th>Number</Th>
+          <Th>Name</Th>
+          <Th>Timestamp</Th>
+          <Th>Status</Th>
           <Th />
         </tr>
       </thead>

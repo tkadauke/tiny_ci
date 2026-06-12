@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import type { CurrentUser } from "../hooks/useCurrentUser";
 
@@ -10,79 +9,70 @@ type HeaderProps = {
 };
 
 export function Header({ currentUser, onFlash }: HeaderProps) {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const loggedIn = currentUser && !("guest" in currentUser && currentUser.guest);
 
   async function handleLogout() {
     await api.delete("/api/session");
     await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    onFlash(t("flash.notice.logged_out"));
+    onFlash("Successfully logged out");
     window.location.assign("/");
   }
 
   return (
-    <div id="react_header">
-      <div id="top_header">
-        <div id="logo">
+    <div className="border-b border-gray-200 bg-white">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4">
+        <div>
           <h1>
-            <Link to="/">TinyCI</Link>
+            <Link className="text-xl font-semibold text-gray-900" to="/">TinyCI</Link>
           </h1>
-          <p>{t("layouts.subtitle")}</p>
+          <p className="text-sm text-gray-500">Continuous Integration for Ruby on Rails</p>
         </div>
-        <div id="center_header">
-          <div id="suggestion">
-            <div className="suggestion_corner_right">
-              <span>
-                {t("spa.layout.report_bugs_prefix")}{" "}
-                <a href="http://github.com/tkadauke/tiny_ci/issues">{t("layouts.report_link_text")}</a>
-              </span>
-            </div>
-          </div>
+        <div className="hidden text-sm text-gray-500 md:block">
+                Found a bug? <a href="http://github.com/tkadauke/tiny_ci/issues">Report it!</a>
         </div>
-        <div id="right_header">
+        <div>
           {loggedIn ? (
-            <ul className="action-list">
-              <li>{t("layouts.user_greeter", { user: currentUser.login })}</li>
+            <ul className="flex items-center gap-3 text-sm">
+              <li>Welcome, {currentUser.login}!</li>
               <li>
-                <a href="/settings">{t("layouts.settings")}</a>
+                <a href="/settings">Settings</a>
               </li>
               <li>
                 <button type="button" onClick={handleLogout}>
-                  {t("layouts.logout")}
+                  Logout
                 </button>
               </li>
             </ul>
           ) : (
-            <ul className="action-list">
-              <li>{t("layouts.guest_greeter")}</li>
+            <ul className="flex items-center gap-3 text-sm">
+              <li>Welcome, Guest!</li>
               <li>
-                <Link to="/login">{t("layouts.login")}</Link>
+                <Link to="/login">Login</Link>
               </li>
               <li>
-                <a href="/users/new">{t("layouts.signup")}</a>
+                <a href="/users/new">Signup</a>
               </li>
             </ul>
           )}
         </div>
-        <div className="clearer" />
       </div>
-      <div id="menu_container">
-        <div id="menu">
-          <ul>
+      <div className="border-t border-gray-100">
+        <nav className="mx-auto max-w-7xl px-4">
+          <ul className="flex flex-wrap gap-4 py-3 text-sm">
             <li>
-              <Link to="/" className="first">
-                {t("layouts.home")}
+              <Link to="/">
+                Home
               </Link>
             </li>
             <li>
-              <a href="/plans">{t("layouts.all_plans")}</a>
+              <a href="/plans">All Plans</a>
             </li>
             <li>
-              <a href="/projects">{t("layouts.projects")}</a>
+              <a href="/projects">Projects</a>
             </li>
             <li>
-              <a href="/users">{t("layouts.users")}</a>
+              <a href="/users">Users</a>
             </li>
             {loggedIn && currentUser.can_configure_workers ? (
               <li>
@@ -91,15 +81,14 @@ export function Header({ currentUser, onFlash }: HeaderProps) {
             ) : null}
             {loggedIn && currentUser.can_configure_system_variables ? (
               <li>
-                <a href="/admin/configuration">{t("layouts.configuration")}</a>
+                <a href="/admin/configuration">Configuration</a>
               </li>
             ) : null}
             <li>
-              <a href="/help_topics">{t("layouts.help")}</a>
+              <a href="/help_topics">Help</a>
             </li>
           </ul>
-        </div>
-        <div className="clearer" />
+        </nav>
       </div>
     </div>
   );

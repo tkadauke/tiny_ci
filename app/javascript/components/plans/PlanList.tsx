@@ -1,8 +1,8 @@
 import React from "react"
-import { useTranslation } from "react-i18next"
 import { WeatherIcon } from "@/components/plans/WeatherIcon"
 import { StatusBadge } from "@/components/ui/Badge"
 import { Table, Td, Th, Tr } from "@/components/ui/Table"
+import { Card, CardBody } from "@/components/ui/Card"
 
 const h = React.createElement
 
@@ -28,16 +28,20 @@ function statusBadge(status: string | null | undefined, label?: string) {
   return h(StatusBadge, { status, label })
 }
 
+function statusLabel(status: string) {
+  return `${status.charAt(0).toUpperCase()}${status.slice(1)}`
+}
+
 function truncate(text: string | null | undefined, length: number) {
   if (!text) return ""
   return text.length > length ? `${text.slice(0, length - 3)}...` : text
 }
 
-function duration(seconds: number | string | null | undefined, t: (key: string) => string) {
-  if (seconds === null || seconds === undefined || seconds === "") return t("plans.list.unknown")
+function duration(seconds: number | string | null | undefined) {
+  if (seconds === null || seconds === undefined || seconds === "") return "unknown"
 
   let remaining = Number(seconds)
-  if (!Number.isFinite(remaining)) return t("plans.list.unknown")
+  if (!Number.isFinite(remaining)) return "unknown"
 
   const days = Math.floor(remaining / 86400)
   remaining %= 86400
@@ -46,20 +50,20 @@ function duration(seconds: number | string | null | undefined, t: (key: string) 
   const minutes = Math.floor(remaining / 60)
   const secs = Math.floor(remaining % 60)
   const parts = [
-    [days, t("duration.days")],
-    [hours, t("duration.hours")],
-    [minutes, t("duration.minutes")],
-    [secs, t("duration.seconds")]
+    [days, "days"],
+    [hours, "hours"],
+    [minutes, "minutes"],
+    [secs, "seconds"]
   ].filter(([value]) => value !== 0) as Array<[number, string]>
 
-  return parts.length ? parts.map(([value, unit]) => `${value} ${unit}`).join(", ") : `0 ${t("duration.seconds")}`
+  return parts.length ? parts.map(([value, unit]) => `${value} ${unit}`).join(", ") : "0 seconds"
 }
 
-function timeAgo(value: string | null | undefined, t: (key: string, options?: Record<string, unknown>) => string) {
-  if (!value) return t("plans.list.unknown")
+function timeAgo(value: string | null | undefined) {
+  if (!value) return "unknown"
 
   const time = new Date(value).getTime()
-  if (!Number.isFinite(time)) return t("plans.list.unknown")
+  if (!Number.isFinite(time)) return "unknown"
 
   const seconds = Math.max(0, Math.floor((Date.now() - time) / 1000))
   const units: Array<[number, string]> = [
@@ -74,11 +78,11 @@ function timeAgo(value: string | null | undefined, t: (key: string, options?: Re
   for (const [unitSeconds, label] of units) {
     if (seconds >= unitSeconds) {
       const count = Math.floor(seconds / unitSeconds)
-      return t("plans.list.time_ago", { time: `${count} ${label}${count === 1 ? "" : "s"}` })
+      return `${count} ${label}${count === 1 ? "" : "s"} ago`
     }
   }
 
-  return t("plans.list.time_ago", { time: t("spa.time.less_than_minute") })
+  return "less than a minute ago"
 }
 
 function planPath(plan: PlanListPlan) {
@@ -99,25 +103,23 @@ function planName(plan: PlanListPlan) {
   )
 }
 
-function listRows(plans: PlanListPlan[], t: (key: string, options?: Record<string, unknown>) => string) {
+function listRows(plans: PlanListPlan[]) {
   return plans.map((plan) =>
     h(
       Tr,
       { key: `${plan.project.name}/${plan.name}` },
-      h(Td, null, statusBadge(plan.status, plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
+      h(Td, null, statusBadge(plan.status, plan.status ? statusLabel(plan.status) : undefined)),
       h(Td, null, h(WeatherIcon, { weather: plan.weather })),
       h(Td, null, planName(plan)),
       h(Td, null, truncate(plan.description, 40)),
-      h(Td, null, duration(plan.last_build_time, t)),
-      h(Td, null, plan.last_success_at ? timeAgo(plan.last_success_at, t) : t("plans.list.unknown")),
-      h(Td, null, plan.last_failure_at ? timeAgo(plan.last_failure_at, t) : t("plans.list.unknown"))
+      h(Td, null, duration(plan.last_build_time)),
+      h(Td, null, plan.last_success_at ? timeAgo(plan.last_success_at) : "unknown"),
+      h(Td, null, plan.last_failure_at ? timeAgo(plan.last_failure_at) : "unknown")
     )
   )
 }
 
 function PlanTable({ plans }: { plans: PlanListPlan[] }) {
-  const { t } = useTranslation()
-
   return h(
     Table,
     null,
@@ -129,49 +131,43 @@ function PlanTable({ plans }: { plans: PlanListPlan[] }) {
         null,
         h(Th, null),
         h(Th, null),
-        h(Th, null, t("plans.list.name")),
-        h(Th, null, t("plans.list.description")),
-        h(Th, null, t("plans.list.last_build_time")),
-        h(Th, null, t("plans.list.last_success")),
-        h(Th, null, t("plans.list.last_failure"))
+        h(Th, null, "Name"),
+        h(Th, null, "Description"),
+        h(Th, null, "Last Build time"),
+        h(Th, null, "Last Success"),
+        h(Th, null, "Last Failure")
       )
     ),
-    h("tbody", null, listRows(plans, t))
+    h("tbody", null, listRows(plans))
   )
 }
 
 function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
-  const { t } = useTranslation()
-
   return h(
-    React.Fragment,
-    null,
-    h(
-      "ul",
-      { className: "plan-overview" },
+    "div",
+    { className: "plan-overview grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3" },
       plans.map((plan) =>
         h(
-          "li",
+          Card,
           { key: `${plan.project.name}/${plan.name}` },
-          h("div", { className: "status" }, statusBadge(plan.status, plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
           h(
-            "div",
-            { className: "details" },
-            h("a", { href: planPath(plan) }, plan.name),
-            h("br"),
-            h("span", { className: "secondary" }, "(", h("a", { href: projectPath(plan) }, plan.project.name), ")")
+            CardBody,
+            null,
+            h(
+              "div",
+              { className: "mb-2 flex items-center justify-between gap-3" },
+              h("a", { className: "font-medium text-blue-600 hover:text-blue-500", href: planPath(plan) }, plan.name),
+              statusBadge(plan.status, plan.status ? statusLabel(plan.status) : undefined)
+            ),
+            h("p", { className: "text-sm text-gray-500" }, h("a", { className: "text-blue-600 hover:text-blue-500", href: projectPath(plan) }, plan.project.name))
           )
         )
       )
-    ),
-    h("div", { className: "clearer" })
   )
 }
 
 export function PlanList({ plans, mode }: { plans: PlanListPlan[]; mode: "list" | "overview" }) {
-  const { t } = useTranslation()
-
-  if (plans.length === 0) return h("p", null, t("spa.plans.no_plans"))
+  if (plans.length === 0) return h("p", null, "No plans")
 
   return mode === "overview" ? h(PlanOverview, { plans }) : h(PlanTable, { plans })
 }

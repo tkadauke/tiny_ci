@@ -1,7 +1,8 @@
 import React, { useCallback } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { useTranslation } from "react-i18next"
 import { BuildList } from "@/components/BuildList"
+import { Card, CardBody } from "@/components/ui/Card"
+import { PageHeader } from "@/components/ui/PageHeader"
 import { RequireAuth } from "@/components/RequireAuth"
 import { buildsQueryKey, useBuilds } from "@/hooks/useBuilds"
 import { useChannel } from "@/hooks/useChannel"
@@ -14,7 +15,6 @@ type BuildHistoryPageProps = {
 }
 
 export function BuildHistoryPage({ projectId, planId, planName, stopIconPath }: BuildHistoryPageProps) {
-  const { t } = useTranslation()
   const buildsQuery = useBuilds(projectId, planId)
   const queryClient = useQueryClient()
   const planPath = `/projects/${projectId}/plans/${planId}`
@@ -26,24 +26,26 @@ export function BuildHistoryPage({ projectId, planId, planName, stopIconPath }: 
 
   return (
     <RequireAuth>
-      <h1>
-        {t("spa.builds.builds_of_plan")} <a href={planPath}>{planName}</a>
-      </h1>
+      <PageHeader title={<>Builds of Plan <a href={planPath}>{planName}</a></>} />
       {buildsQuery.isLoading ? (
-        <p>{t("spa.loading")}</p>
+        <p>Loading...</p>
       ) : buildsQuery.isError ? (
-        <p>{t("spa.builds.load_error")}</p>
+        <p>Unable to load builds</p>
       ) : (
-        <BuildList
-          builds={buildsQuery.data}
-          projectId={projectId}
-          planId={planId}
-          stopIconPath={stopIconPath}
-          emptyMessage={t("builds.list.no_builds")}
-        />
+        <Card>
+          <CardBody>
+            <BuildList
+              builds={buildsQuery.data}
+              projectId={projectId}
+              planId={planId}
+              stopIconPath={stopIconPath}
+              emptyMessage="No builds"
+            />
+          </CardBody>
+        </Card>
       )}
       <p>
-        <a href={planPath}>{t("builds.index.back_to_plan")}</a>
+        <a href={planPath}>Back to Plan</a>
       </p>
     </RequireAuth>
   )

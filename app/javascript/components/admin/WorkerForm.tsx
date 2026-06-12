@@ -1,6 +1,9 @@
 import { FormEvent, useEffect, useMemo, useState } from "react"
+import { Button } from "@/components/ui/Button"
+import { Card, CardBody } from "@/components/ui/Card"
+import { FormField, inputClassName } from "@/components/ui/FormField"
+import { Table, Td, Th, Tr } from "@/components/ui/Table"
 import type { Worker } from "../../hooks/admin/useWorkers"
-import { useTranslation } from "react-i18next"
 
 type EnvironmentRow = {
   id: string
@@ -50,7 +53,6 @@ function toEnvironmentVariables(rows: EnvironmentRow[]) {
 }
 
 export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
-  const { t } = useTranslation()
   const initialWorker = useMemo(() => ({ ...blankWorker, ...(worker || {}) }), [worker])
   const [form, setForm] = useState<Partial<Worker>>(initialWorker)
   const [rows, setRows] = useState<EnvironmentRow[]>(environmentRows(worker))
@@ -106,120 +108,101 @@ export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
   const defaultBasePath = worker?.default_base_path || "the default path"
 
   return (
+    <Card>
+      <CardBody>
     <form onSubmit={handleSubmit}>
-      {error ? <div className="errorExplanation">{error}</div> : null}
+      {error ? <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
-      <p className="form_item">
+      <label className="mb-4 flex items-center gap-2 text-sm text-gray-700">
         <input
+          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           id="worker_offline"
           name="offline"
           type="checkbox"
           checked={Boolean(form.offline)}
           onChange={(event) => updateField("offline", event.currentTarget.checked)}
-        />{" "}
-        <label htmlFor="worker_offline">Offline</label>
-      </p>
+        />
+        Offline
+      </label>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_name">Name</label>
-        </span>
-        <input id="worker_name" name="name" type="text" value={form.name || ""} onChange={(event) => updateField("name", event.currentTarget.value)} />
-      </p>
+      <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
+      <FormField label="Name">
+        <input className={inputClassName} id="worker_name" name="name" type="text" value={form.name || ""} onChange={(event) => updateField("name", event.currentTarget.value)} />
+      </FormField>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_protocol">Protocol</label>
-        </span>
-        <select id="worker_protocol" name="protocol" value={form.protocol || "localhost"} onChange={(event) => updateField("protocol", event.currentTarget.value)}>
+      <FormField label="Protocol">
+        <select className={inputClassName} id="worker_protocol" name="protocol" value={form.protocol || "localhost"} onChange={(event) => updateField("protocol", event.currentTarget.value)}>
           <option value="localhost">localhost</option>
           <option value="ssh">ssh</option>
         </select>
-      </p>
+      </FormField>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_hostname">Host Name</label>
-        </span>
-        <input id="worker_hostname" name="hostname" type="text" value={form.hostname || ""} onChange={(event) => updateField("hostname", event.currentTarget.value)} />
-      </p>
+      <FormField label="Host Name">
+        <input className={inputClassName} id="worker_hostname" name="hostname" type="text" value={form.hostname || ""} onChange={(event) => updateField("hostname", event.currentTarget.value)} />
+      </FormField>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_username">User Name</label>
-        </span>
-        <input id="worker_username" name="username" type="text" value={form.username || ""} onChange={(event) => updateField("username", event.currentTarget.value)} />
-      </p>
+      <FormField label="User Name">
+        <input className={inputClassName} id="worker_username" name="username" type="text" value={form.username || ""} onChange={(event) => updateField("username", event.currentTarget.value)} />
+      </FormField>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_password">Password</label>
-        </span>
-        <input id="worker_password" name="password" type="text" value={form.password || ""} onChange={(event) => updateField("password", event.currentTarget.value)} />
-      </p>
+      <FormField label="Password">
+        <input className={inputClassName} id="worker_password" name="password" type="text" value={form.password || ""} onChange={(event) => updateField("password", event.currentTarget.value)} />
+      </FormField>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_base_path">Base Path</label>
-        </span>
-        <span className="desc">Leave blank to use the default path {defaultBasePath}</span>
-        <input id="worker_base_path" name="base_path" type="text" value={form.base_path || ""} onChange={(event) => updateField("base_path", event.currentTarget.value)} />
-      </p>
+      <FormField label="Base Path">
+        <p className="mb-2 text-sm text-gray-500">Leave blank to use the default path {defaultBasePath}</p>
+        <input className={inputClassName} id="worker_base_path" name="base_path" type="text" value={form.base_path || ""} onChange={(event) => updateField("base_path", event.currentTarget.value)} />
+      </FormField>
+      </div>
 
-      <div className="form_item">
-        <span className="label">{t("spa.admin.slaves.environment_variables")}</span>
-        <table>
+      <div className="mb-4">
+        <h2 className="mb-2 text-sm font-medium text-gray-700">Environment Variables</h2>
+        <Table>
           <thead>
             <tr>
-              <th>{t("admin.slaves.form.variable_name")}</th>
-              <th>{t("admin.slaves.form.value")}</th>
-              <th></th>
+              <Th>Variable name</Th>
+              <Th>Value</Th>
+              <Th></Th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr key={row.id}>
-                <td>
-                  <input type="text" value={row.key} onChange={(event) => updateRow(index, "key", event.currentTarget.value)} />
-                </td>
-                <td>
-                  <input type="text" value={row.value} onChange={(event) => updateRow(index, "value", event.currentTarget.value)} />
-                </td>
-                <td>
+              <Tr key={row.id}>
+                <Td>
+                  <input className={inputClassName} type="text" value={row.key} onChange={(event) => updateRow(index, "key", event.currentTarget.value)} />
+                </Td>
+                <Td>
+                  <input className={inputClassName} type="text" value={row.value} onChange={(event) => updateRow(index, "value", event.currentTarget.value)} />
+                </Td>
+                <Td>
                   {index < rows.length - 1 ? (
-                    <button type="button" onClick={() => removeRow(index)}>
-                      {t("spa.actions.remove")}
-                    </button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => removeRow(index)}>
+                      Remove
+                    </Button>
                   ) : null}
-                </td>
-              </tr>
+                </Td>
+              </Tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_capabilities">Worker Capabilities</label>
-        </span>
-        <span className="desc">
+      <FormField label="Worker Capabilities">
+        <p className="mb-2 text-sm text-gray-500">
           Values are separated by commas. <a href="/help_topics/workers">Help</a>
-        </span>
-        <textarea id="worker_capabilities" name="capabilities" rows={3} value={form.capabilities || ""} onChange={(event) => updateField("capabilities", event.currentTarget.value)} />
-      </p>
+        </p>
+        <textarea className={inputClassName} id="worker_capabilities" name="capabilities" rows={3} value={form.capabilities || ""} onChange={(event) => updateField("capabilities", event.currentTarget.value)} />
+      </FormField>
 
-      <p className="form_item">
-        <span className="label">
-          <label htmlFor="worker_max_builds">Maximum Builds</label>
-        </span>
-        <span className="desc">0 = unlimited</span>
-        <input id="worker_max_builds" name="max_builds" type="text" value={form.max_builds ?? 0} onChange={(event) => updateField("max_builds", event.currentTarget.value)} />
-      </p>
+      <FormField label="Maximum Builds">
+        <p className="mb-2 text-sm text-gray-500">0 = unlimited</p>
+        <input className={inputClassName} id="worker_max_builds" name="max_builds" type="text" value={form.max_builds ?? 0} onChange={(event) => updateField("max_builds", event.currentTarget.value)} />
+      </FormField>
 
-      <p>
-        <input type="submit" value={submitting ? `${submitLabel}...` : submitLabel} disabled={submitting} />
-      </p>
+      <Button type="submit" disabled={submitting}>{submitting ? `${submitLabel}...` : submitLabel}</Button>
     </form>
+      </CardBody>
+    </Card>
   )
 }
 

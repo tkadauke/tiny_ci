@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { StatusBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Table, Td, Th, Tr } from "@/components/ui/Table";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useChannel } from "@/hooks/useChannel";
@@ -53,7 +53,7 @@ function formatTimestamp(value: string) {
   return date.toLocaleString();
 }
 
-function formatDuration(value: number | null, t: (key: string) => string) {
+function formatDuration(value: number | null) {
   if (value == null) return "";
 
   let duration = Math.floor(Number(value));
@@ -67,46 +67,50 @@ function formatDuration(value: number | null, t: (key: string) => string) {
   const days = Math.floor(duration / 24);
 
   return [
-    [days, t("duration.days")],
-    [hours, t("duration.hours")],
-    [minutes, t("duration.minutes")],
-    [seconds, t("duration.seconds")],
+    [days, "days"],
+    [hours, "hours"],
+    [minutes, "minutes"],
+    [seconds, "seconds"],
   ]
     .filter(([amount]) => amount !== 0)
     .map(([amount, label]) => `${amount} ${label}`)
     .join(", ");
 }
 
+function statusLabel(status: string) {
+  return `${status.charAt(0).toUpperCase()}${status.slice(1)}`;
+}
+
 function QuickLinks() {
-  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const accountLink = currentUser.initial_admin
-    ? { label: t("start.index.create_admin_account"), path: "/users/new" }
+    ? { label: "Create first administrator account", path: "/users/new" }
     : !currentUser.guest && currentUser.can_create_accounts
-      ? { label: t("start.index.create_accounts"), path: "/users/new" }
-      : { label: t("start.index.sign_up"), path: "/users/new" };
+      ? { label: "Create accounts", path: "/users/new" }
+      : { label: "Sign up", path: "/users/new" };
 
   return (
-    <>
-      <h2>{t("start.index.quick_links")}</h2>
-      <ul className="asterisk">
+    <Card>
+      <CardHeader>Quick links</CardHeader>
+      <CardBody>
+      <ul className="space-y-2 text-sm">
         <li>
           <Link to={accountLink.path}>{accountLink.label}</Link>
         </li>
         <li>
-          <Link to="/projects/new">{t("start.index.create_a_project")}</Link>
+          <Link to="/projects/new">Create a project</Link>
         </li>
         <li>
           <Link to="/admin/workers">Manage build workers</Link>
         </li>
       </ul>
-    </>
+      </CardBody>
+    </Card>
   );
 }
 
 function StopButton({ build }: { build: Build }) {
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
   const mutation = useMutation({
     mutationFn: () => api.post<void>(stopPath(build), {}),
     onSuccess: () => {
@@ -121,7 +125,7 @@ function StopButton({ build }: { build: Build }) {
       disabled={mutation.isPending || build.status === "stopping"}
       onClick={() => mutation.mutate()}
     >
-      <img src="/assets/icons/small/stopped.png" alt="" width={16} height={16} /> {t("spa.actions.stop")}
+      Stop
     </Button>
   );
 }
@@ -137,8 +141,6 @@ function BuildRow({
   showDuration: boolean;
   showStopAction: boolean;
 }) {
-  const { t } = useTranslation();
-
   return (
     <Tr>
       <Td>
@@ -153,9 +155,9 @@ function BuildRow({
         <Link to={buildPath(build)}>{formatTimestamp(build.created_at)}</Link>
       </Td>
       <Td>
-        <StatusBadge status={build.status} label={t(`build.status.${build.status}`, { defaultValue: build.status })} />
+        <StatusBadge status={build.status} label={statusLabel(build.status)} />
       </Td>
-      {showDuration ? <Td>{formatDuration(build.duration, t)}</Td> : null}
+      {showDuration ? <Td>{formatDuration(build.duration)}</Td> : null}
       {showStopAction ? (
         <Td>{unfinishedStatuses.has(build.status) ? <StopButton build={build} /> : null}</Td>
       ) : null}
@@ -172,19 +174,17 @@ function DashboardBuildList({
   showDuration?: boolean;
   showStopAction?: boolean;
 }) {
-  const { t } = useTranslation();
-
-  if (builds.length === 0) return <p>{t("builds.list.no_builds")}</p>;
+  if (builds.length === 0) return <p>No builds</p>;
 
   return (
     <Table>
       <thead>
         <tr>
-          <Th>{t("builds.list.number")}</Th>
-          <Th>{t("builds.list.name")}</Th>
-          <Th>{t("builds.list.timestamp")}</Th>
-          <Th>{t("builds.list.status")}</Th>
-          {showDuration ? <Th>{t("builds.completed.duration")}</Th> : null}
+          <Th>Number</Th>
+          <Th>Name</Th>
+          <Th>Timestamp</Th>
+          <Th>Status</Th>
+          {showDuration ? <Th>Duration</Th> : null}
           {showStopAction ? <Th /> : null}
         </tr>
       </thead>
@@ -212,12 +212,14 @@ function DashboardBuildList({
 }
 
 function BuildQueueWidget({ builds }: { builds: Build[] }) {
-  const { t } = useTranslation();
-
   return (
     <section>
-      <h2>{t("start.queue.build_queue")}</h2>
+    <Card>
+      <CardHeader>Build queue</CardHeader>
+      <CardBody>
       <DashboardBuildList builds={builds} />
+      </CardBody>
+    </Card>
     </section>
   );
 }
@@ -225,9 +227,9 @@ function BuildQueueWidget({ builds }: { builds: Build[] }) {
 function WorkerStatus({ worker }: { worker: Worker }) {
   if (worker.offline) {
     return (
-      <p>
-        <img src="/assets/icons/small/offline.png" alt="" width={16} height={16} />{" "}
-        Slave is offline.{" "}
+      <p className="flex items-center gap-2 text-sm">
+        <span className="h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+        Slave is offline.
         <Link to={`/admin/workers/${worker.name}/edit`}>Configure</Link>
       </p>
     );
@@ -240,44 +242,55 @@ function WorkerStatusWidget({ workers }: { workers: Worker[] }) {
   if (workers.length === 0) {
     return (
       <section>
-        <h2>Worker status</h2>
+      <Card>
+        <CardHeader>Worker status</CardHeader>
+        <CardBody>
         <p>
           No workers configured. <Link to="/admin/workers">Configure them now</Link>
         </p>
+        </CardBody>
+      </Card>
       </section>
     );
   }
 
   return (
     <section>
-      <h2>Worker status</h2>
-      <ul>
+    <Card>
+      <CardHeader>Worker status</CardHeader>
+      <CardBody>
+      <ul className="space-y-4">
         {workers.map((worker) => (
           <li key={worker.name}>
-            <p>
+            <p className="mb-2 flex items-center gap-2 text-sm">
+              <span className={`h-2.5 w-2.5 rounded-full ${worker.offline ? "bg-red-500" : "bg-green-500"}`} aria-hidden="true" />
               <strong>{worker.name}</strong>
             </p>
             <WorkerStatus worker={worker} />
           </li>
         ))}
       </ul>
+      </CardBody>
+    </Card>
     </section>
   );
 }
 
 function RecentBuildsWidget({ builds }: { builds: Build[] }) {
-  const { t } = useTranslation();
-
   return (
     <section>
-      <h2>{t("start.queue.recently_finished_builds")}</h2>
+    <Card>
+      <CardHeader>Recently finished builds</CardHeader>
+      <CardBody>
       <DashboardBuildList builds={builds} showDuration showStopAction={false} />
+      </CardBody>
+    </Card>
     </section>
   );
 }
 
 export function DashboardPage() {
-  const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
   const queryClient = useQueryClient();
   const onQueueMessage = () => {
     queryClient.invalidateQueries({ queryKey: dashboardQueryKey });
@@ -291,10 +304,12 @@ export function DashboardPage() {
 
   return (
     <>
-      <QuickLinks />
-      {error ? <p>{t("spa.dashboard.load_error")}</p> : null}
-      {isLoading ? <p>{t("spa.loading")}</p> : null}
-      <div id="queue">
+      {error ? <p>Dashboard data could not be loaded.</p> : null}
+      {isLoading ? <p>Loading...</p> : null}
+      <div className="mb-4">
+        <QuickLinks />
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <BuildQueueWidget builds={data.queue} />
         <WorkerStatusWidget workers={data.workers} />
         <RecentBuildsWidget builds={data.recent_builds} />

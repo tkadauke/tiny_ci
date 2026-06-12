@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 
 import ConfigOptionForm from "../../components/config/ConfigOptionForm";
+import { PageHeader } from "@/components/ui/PageHeader";
 import useAdminConfigOptions from "../../hooks/useAdminConfigOptions";
 import useUpdateAdminConfig from "../../hooks/useUpdateAdminConfig";
 
 export default function AdminConfigPage() {
-  const { t } = useTranslation();
   const { options, loading, error, refetch } = useAdminConfigOptions();
   const { updateAdminConfig } = useUpdateAdminConfig();
   const [flash, setFlash] = useState<string | null>(null);
@@ -18,21 +17,22 @@ export default function AdminConfigPage() {
 
     try {
       await updateAdminConfig(values);
-      setFlash(t("flash.notice.updated_configuration"));
+      setFlash("Successfully updated configuration");
       await refetch();
     } catch (updateError) {
-      setSubmitError(updateError instanceof Error ? updateError : new Error(t("spa.admin.configuration.update_error")));
+      setSubmitError(updateError instanceof Error ? updateError : new Error("Failed to update configuration"));
     }
   }
 
-  if (loading) return <p>{t("spa.admin.configuration.loading")}</p>;
-  if (error) return <p className="error">{error.message}</p>;
+  if (loading) return <p>Loading configuration...</p>;
+  if (error) return <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error.message}</p>;
 
   return (
     <>
-      {flash ? <div id="flash" className="notice">{flash}</div> : null}
-      {submitError ? <div id="flash" className="error">{submitError.message}</div> : null}
-      <ConfigOptionForm options={options} onSubmit={handleSubmit} submitLabel={t("admin.configurations.show.update")} />
+      <PageHeader title="Configuration" />
+      {flash ? <div className="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{flash}</div> : null}
+      {submitError ? <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{submitError.message}</div> : null}
+      <ConfigOptionForm options={options} onSubmit={handleSubmit} submitLabel="Update" />
     </>
   );
 }
