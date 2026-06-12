@@ -1,5 +1,5 @@
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.irregular "slave", "slaves"
+  inflect.irregular "worker", "workers"
   inflect.acronym "CI"
   inflect.acronym "DSL"
   inflect.acronym "SSH"

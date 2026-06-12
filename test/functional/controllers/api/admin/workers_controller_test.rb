@@ -1,12 +1,12 @@
 require_relative "../../../test_helper"
 
-class Api::Admin::SlavesControllerTest < ActionController::TestCase
+class Api::Admin::WorkersControllerTest < ActionController::TestCase
   def setup
     login_with create_admin
   end
 
-  test "should list slaves as json" do
-    Slave.create!(
+  test "should list workers as json" do
+    Worker.create!(
       name: "builder",
       protocol: "ssh",
       hostname: "build.example.com",
@@ -42,10 +42,10 @@ class Api::Admin::SlavesControllerTest < ActionController::TestCase
     )
   end
 
-  test "should show slave by name" do
-    slave = Slave.create!(name: "builder", protocol: "localhost")
+  test "should show worker by name" do
+    worker = Worker.create!(name: "builder", protocol: "localhost")
 
-    get :show, params: { name: slave.name }, format: :json
+    get :show, params: { name: worker.name }, format: :json
 
     assert_response :success
     assert_equal "builder", response.parsed_body["name"]
@@ -54,10 +54,10 @@ class Api::Admin::SlavesControllerTest < ActionController::TestCase
     assert_equal TinyCI::Config.base_path, response.parsed_body["default_base_path"]
   end
 
-  test "should create slave" do
-    assert_difference "Slave.count" do
+  test "should create worker" do
+    assert_difference "Worker.count" do
       post :create, params: {
-        slave: {
+        worker: {
           name: "builder",
           protocol: "localhost",
           environment_variables: {
@@ -71,58 +71,58 @@ class Api::Admin::SlavesControllerTest < ActionController::TestCase
     assert_equal "builder", response.parsed_body["name"]
     assert_equal(
       { "0" => { "key" => "RAILS_ENV", "value" => "test" } },
-      Slave.find_by!(name: "builder").environment_variables
+      Worker.find_by!(name: "builder").environment_variables
     )
   end
 
   test "should return validation errors when create fails" do
-    assert_no_difference "Slave.count" do
-      post :create, params: { slave: { name: "" } }, format: :json
+    assert_no_difference "Worker.count" do
+      post :create, params: { worker: { name: "" } }, format: :json
     end
 
     assert_response :unprocessable_entity
     assert_includes response.parsed_body["errors"], "Name can't be blank"
   end
 
-  test "should update slave" do
-    slave = Slave.create!(name: "builder", protocol: "localhost")
+  test "should update worker" do
+    worker = Worker.create!(name: "builder", protocol: "localhost")
 
     patch :update, params: {
-      name: slave.name,
-      slave: { name: "builder", protocol: "ssh", max_builds: 3 }
+      name: worker.name,
+      worker: { name: "builder", protocol: "ssh", max_builds: 3 }
     }, format: :json
 
     assert_response :success
     assert_equal "ssh", response.parsed_body["protocol"]
-    assert_equal 3, slave.reload.max_builds
+    assert_equal 3, worker.reload.max_builds
   end
 
   test "should return validation errors when update fails" do
-    slave = Slave.create!(name: "builder", protocol: "localhost")
+    worker = Worker.create!(name: "builder", protocol: "localhost")
 
     patch :update, params: {
-      name: slave.name,
-      slave: { protocol: nil }
+      name: worker.name,
+      worker: { protocol: nil }
     }, format: :json
 
     assert_response :unprocessable_entity
     assert_includes response.parsed_body["errors"], "Protocol can't be blank"
   end
 
-  test "should destroy slave without destroying builds" do
-    slave = Slave.create!(name: "builder", protocol: "localhost")
+  test "should destroy worker without destroying builds" do
+    worker = Worker.create!(name: "builder", protocol: "localhost")
     project = Project.create!(name: "Project")
     plan = project.plans.create!(name: "Plan")
-    build = plan.builds.create!(slave: slave)
+    build = plan.builds.create!(worker: worker)
 
-    assert_difference "Slave.count", -1 do
+    assert_difference "Worker.count", -1 do
       assert_no_difference "Build.count" do
-        delete :destroy, params: { name: slave.name }, format: :json
+        delete :destroy, params: { name: worker.name }, format: :json
       end
     end
 
     assert_response :success
     assert_equal({ "ok" => true }, response.parsed_body)
-    assert_nil build.reload.slave_id
+    assert_nil build.reload.worker_id
   end
 end

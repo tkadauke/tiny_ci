@@ -6,7 +6,7 @@ module Api
     before_action :find_build, only: %i[show stop]
 
     def index
-      builds = @plan.builds.includes(:starter, plan: :project, children: [:starter, { plan: :project }]).order(created_at: :desc)
+      builds = @plan.builds.includes(:worker, :starter, plan: :project, children: [:worker, :starter, { plan: :project }]).order(created_at: :desc)
       render json: builds.map { |build| TinyCI::Api::BuildSerializer.new(build).as_json }
     end
 

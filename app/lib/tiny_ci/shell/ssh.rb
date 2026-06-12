@@ -9,7 +9,7 @@ module TinyCI
 
       def initialize(build)
         @build = build
-        @ssh = Net::SSH.start(build.slave.hostname, build.slave.username, password: build.slave.password)
+        @ssh = Net::SSH.start(build.worker.hostname, build.worker.username, password: build.worker.password)
       end
 
       def run(command, parameters, working_dir, environment)

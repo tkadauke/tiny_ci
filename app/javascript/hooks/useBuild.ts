@@ -16,7 +16,7 @@ export type BuildDetail = {
   status_text: string
   duration: number | null
   revision: string | null
-  slave: { name: string } | null
+  worker: { name: string } | null
   starter_id: number | null
   starter_login: string | null
   plan: {
@@ -68,7 +68,7 @@ export function shareBuild(oldBuild: unknown, newBuild: unknown) {
       oldBuild.plan.plan_id === newBuild.plan.plan_id
         ? oldBuild.plan
         : newBuild.plan,
-    slave: oldBuild.slave?.name === newBuild.slave?.name ? oldBuild.slave : newBuild.slave,
+    worker: oldBuild.worker?.name === newBuild.worker?.name ? oldBuild.worker : newBuild.worker,
     output_rows: shareOutputRows(oldBuild.output_rows, newBuild.output_rows),
   }
 }

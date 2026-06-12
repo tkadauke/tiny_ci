@@ -6,7 +6,7 @@ export const guestUser = {
   email: null,
   role: "guest",
   initial_admin: false,
-  can_configure_slaves: false,
+  can_configure_workers: false,
   can_configure_system_variables: false,
   can_create_accounts: false,
   can_create_projects: false,
@@ -22,7 +22,7 @@ export const adminUser = {
   email: "admin@example.test",
   role: "admin",
   initial_admin: false,
-  can_configure_slaves: true,
+  can_configure_workers: true,
   can_configure_system_variables: true,
   can_create_accounts: true,
   can_create_projects: true,
@@ -37,7 +37,7 @@ export const normalUser = {
   login: "jane",
   email: "jane@example.test",
   role: "user",
-  can_configure_slaves: false,
+  can_configure_workers: false,
   can_configure_system_variables: false,
   can_create_accounts: false,
   can_create_projects: false,
@@ -109,7 +109,7 @@ export const buildFixture = {
   revision: "abc123",
   starter_id: 1,
   starter_login: "admin",
-  slave: { name: "builder-1" },
+  worker: { name: "builder-1" },
   plan: {
     name: "main",
     project_name: "tiny-ci",
@@ -124,7 +124,7 @@ export const buildFixture = {
   ],
 };
 
-export const slaveFixture = {
+export const workerFixture = {
   name: "builder-1",
   hostname: "builder.local",
   protocol: "ssh",
@@ -188,7 +188,7 @@ export const handlers = [
   http.get("/api/dashboard", () =>
     HttpResponse.json({
       queue: [{ ...buildFixture, id: 101, position: 8, status: "pending" }],
-      slaves: [{ name: "builder-1", offline: false, running_builds: [{ ...buildFixture, status: "running" }] }],
+      workers: [{ name: "builder-1", offline: false, running_builds: [{ ...buildFixture, status: "running" }] }],
       recent_builds: [buildFixture],
     }),
   ),
@@ -214,11 +214,11 @@ export const handlers = [
     const body = (await request.json()) as { user?: { email?: string; role?: string } };
     return HttpResponse.json({ login: params.login, email: body.user?.email ?? "updated@example.test", role: body.user?.role ?? "user" });
   }),
-  http.get("/api/admin/slaves", () => HttpResponse.json([slaveFixture])),
-  http.post("/api/admin/slaves", () => HttpResponse.json({ ...slaveFixture, name: "new-builder" }, { status: 201 })),
-  http.get("/api/admin/slaves/:name", () => HttpResponse.json(slaveFixture)),
-  http.patch("/api/admin/slaves/:name", () => HttpResponse.json(slaveFixture)),
-  http.delete("/api/admin/slaves/:name", () => new HttpResponse(null, { status: 204 })),
+  http.get("/api/admin/workers", () => HttpResponse.json([workerFixture])),
+  http.post("/api/admin/workers", () => HttpResponse.json({ ...workerFixture, name: "new-builder" }, { status: 201 })),
+  http.get("/api/admin/workers/:name", () => HttpResponse.json(workerFixture)),
+  http.patch("/api/admin/workers/:name", () => HttpResponse.json(workerFixture)),
+  http.delete("/api/admin/workers/:name", () => new HttpResponse(null, { status: 204 })),
   http.get("/api/admin/configuration/options", () => HttpResponse.json(configOptionsFixture)),
   http.post("/api/admin/configuration", () => new HttpResponse(null, { status: 204 })),
   http.get("/api/settings/options", () => HttpResponse.json(configOptionsFixture)),

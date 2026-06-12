@@ -138,8 +138,8 @@ export default function PlanForm({
           <label htmlFor={fieldId("requirements")}>Plan requirements</label>
         </span>
         <span className="desc">
-          Capabilities a build slave must have to build this plan, separated by commas.{" "}
-          <a href="/help_topics/slaves">Help</a>
+          Capabilities a build worker must have to build this plan, separated by commas.{" "}
+          <a href="/help_topics/workers">Help</a>
         </span>
         <textarea
           id={fieldId("requirements")}

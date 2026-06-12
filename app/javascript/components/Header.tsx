@@ -81,9 +81,9 @@ export function Header({ currentUser, onFlash }: HeaderProps) {
             <li>
               <a href="/users">Users</a>
             </li>
-            {loggedIn && currentUser.can_configure_slaves ? (
+            {loggedIn && currentUser.can_configure_workers ? (
               <li>
-                <a href="/admin/slaves">Slaves</a>
+                <a href="/admin/workers">Workers</a>
               </li>
             ) : null}
             {loggedIn && currentUser.can_configure_system_variables ? (

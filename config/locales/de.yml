@@ -1,11 +1,11 @@
---- 
-de: 
-  admin: 
-    configurations: 
-      show: 
+---
+de:
+  admin:
+    configurations:
+      show:
         update: Speichern
-    setup: 
-      index: 
+    setup:
+      index:
         database_configuration: Datenbank-Konfiguration
         database_host: Datenbank-Host
         database_name: Datenbank-Name
@@ -16,11 +16,11 @@ de:
         password_description: "Dieses Passwort wird unverschlüsselt in %{path} gespeichert."
         save_and_restart: "Speichern und neu starten"
         welcome_to_tinyci: "Willkommen zu TinyCI"
-    slaves: 
-      edit: 
-        edit_slave: "Build-Rechner %{name} bearbeiten"
+    workers:
+      edit:
+        edit_worker: "Build-Rechner %{name} bearbeiten"
         update: Speichern
-      form: 
+      form:
         base_path: Basis-Pfad
         base_path_description: "Freilassen, um den Standardpfad %{default_path} zu verwenden"
         capabilities_description: "Durch Kommas getrennt."
@@ -31,27 +31,27 @@ de:
         offline: Offline
         password: Passwort
         protocol: Protocol
-        slave_capabilities: "Fähigkeiten des Rechners"
+        worker_capabilities: "Fähigkeiten des Rechners"
         user_name: Username
         value: Wert
         variable_name: Variablenname
-      index: 
-        add_the_first_slave: "Ersten Build-Rechner hinzufügen"
+      index:
+        add_the_first_worker: "Ersten Build-Rechner hinzufügen"
         hostname: Hostname
-        listing_slaves: "Alle Build-Rechner"
+        listing_workers: "Alle Build-Rechner"
         name: Name
-        new_slave: "Neuer Build-Rechner"
+        new_worker: "Neuer Build-Rechner"
         offline: Offline
         online: Online
         or: oder
         protocol: Protokoll
         status: Status
-        there_are_no_slaves_configured_yet: "Bisher sind keine Build-Rechner konfiguriert."
-        use_localhost_as_the_first_slave: "Lokalen Rechner als ersten Build-Rechner verwenden"
-      new: 
+        there_are_no_workers_configured_yet: "Bisher sind keine Build-Rechner konfiguriert."
+        use_localhost_as_the_first_worker: "Lokalen Rechner als ersten Build-Rechner verwenden"
+      new:
         create: Erstellen
-        new_slave: "Neuer Build-Rechner"
-      show: 
+        new_worker: "Neuer Build-Rechner"
+      show:
         busy: Beschäftigt?
         capabilities: Fähigkeiten
         clone: Klonen
@@ -63,11 +63,11 @@ de:
         : Nein
         offline: Offline
         protocol: Protokoll
-        slave_name: "Build-Rechner %{name}"
-        slaves_overview: "Überblick über Build-Rechner"
+        worker_name: "Build-Rechner %{name}"
+        workers_overview: "Überblick über Build-Rechner"
         ? "yes"
         : Ja
-  breadcrumb: 
+  breadcrumb:
     admin: Administation
     builds: Builds
     child: "In Kind-Plan umwandeln"
@@ -80,10 +80,10 @@ de:
     plans: Plans
     projects: Projekte
     settings: Einstellungen
-    slaves: Build-Rechner
+    workers: Build-Rechner
     users: Benutzer
-  build: 
-    status: 
+  build:
+    status:
       canceled: Abgebrochen
       error: Fehler
       failure: Fehlschlag
@@ -93,75 +93,75 @@ de:
       stopping: Anhalten
       success: Erfolg
       waiting: Wartend
-  build_mailer: 
-    subject: 
+  build_mailer:
+    subject:
       failure: "[TinyCI] Build %{project} / %{plan} fehlgeschlagen"
       success: "[TinyCI] Build %{project} / %{plan} erfolgreich"
-  builds: 
-    build: 
+  builds:
+    build:
       build_output_of_plan_html: "Build-Ausgabe von %{plan} #%{position}"
       details: Details
       duration: Dauer
       gist: Wesentliches
-      on_slave: "auf Build-Rechner %{slave_name}"
+      on_worker: "auf Build-Rechner %{worker_name}"
       raw_output: "Rohe Ausgabe"
       requested_manually: "(manuell gestartet)"
       revision: Revision
       started_by: "Gestartet von"
       status: Status
       unknown: unbekannt
-    completed: 
+    completed:
       duration: Dauer
       name: Name
       no_builds: "Keine Builds"
       number: Nummer
       status: Status
       timestamp: Zeitstempel
-    index: 
+    index:
       back_to_plan: "Zurück zu Plan"
       builds_of_plan_html: "Builds von Plan %{plan_link}"
-    list: 
+    list:
       name: Name
       no_builds: "Keine Builds"
       number: Nummer
       status: Status
       timestamp: Zeitstempel
-    report: 
+    report:
       no_output_yet: "Keine Ausgabe (bisher)"
-    show: 
+    show:
       back_to_builds: "Zurück zu den Builds"
-  configurations: 
-    show: 
+  configurations:
+    show:
       update: Speichern
-  duration: 
+  duration:
     days: Tage
     hours: Stunden
     minutes: Minuten
     seconds: Sekunden
-  errors: 
+  errors:
     ? "404"
-    : 
+    :
       error_message: "Möglicherweise haben Sie die Adresse falsch eingetippt, oder die Seite wurde entfernt."
       title: "Die gewünschte Seite wurde nicht gefunden."
     ? "422"
-    : 
+    :
       error_message: "Möglicherweise haben Sie versucht, etwas zu ändern, ohne die benötigten Zugriffsrechte zu besitzen."
       title: "Ihre gewünschte Änderung wurde verweigert."
     ? "500"
-    : 
+    :
       error_message: "Bitte melden Sie diesen Bug und wir werden uns darum kümmern."
       title: "Es tut uns leid, aber gerade ist etwas schief gelaufen."
-  flash: 
-    error: 
+  flash:
+    error:
       access_denied: "Sie können das nicht tun"
       connect_to_database: "Konnte keine Verbindung zur Datenbank aufbauen"
-    notice: 
+    notice:
       building_plan: "Baue Plan %{name}"
       created_account: "Benutzerkonto wurde erfolgreich erstellt"
       created_plan: "Plan wurde erfolgreich erstellt"
       created_project: "Projekt wurde erfolgreich erstellt"
-      created_slave: "Build-Rechner wurde erfolgreich erstellt"
-      deleted_slave: "Build-Rechner wurde erfolgreich entfernt"
+      created_worker: "Build-Rechner wurde erfolgreich erstellt"
+      deleted_worker: "Build-Rechner wurde erfolgreich entfernt"
       logged_in: "Erfolgreich eingeloggt"
       logged_out: "Erfolgreich ausgeloggt"
       login_required: "Sie müssen eingeloggt sein um auf diese Seite zuzugreifen"
@@ -169,15 +169,15 @@ de:
       updated_plan: "Plan wurde erfolgreich aktualisiert"
       updated_profile: "%{user}s Profil wurde erfolgreich aktualisiert"
       updated_project: "Projekt wurde erfolgreich aktualisiert"
-      updated_slave: "Build-Rechner wurde erfolgreich aktualisiert"
-  growl_notifier: 
-    subject: 
+      updated_worker: "Build-Rechner wurde erfolgreich aktualisiert"
+  growl_notifier:
+    subject:
       failure: Fehler
       success: Erfolg
-    text: 
+    text:
       failure: "Build %{project} / %{plan} (%{build}) fehlgeschlagen (Status %{status})!"
       success: "Build %{project} / %{plan} (%{build}) erfolgreich beendet!"
-  layouts: 
+  layouts:
     all_plans: "Alle Plans"
     close_flash: Schließen
     configuration: Konfiguration
@@ -194,22 +194,22 @@ de:
     settings: Einstellungen
     setup: Einrichten
     signup: Registrieren
-    slaves: Build-Rechner
+    workers: Build-Rechner
     subtitle: "Continuous Integration für Ruby on Rails"
     user_greeter: "Willkommen, %{user}!"
     users: Benutzer
     you_are_here_html: "Sie sind hier: %{bread_crumb}"
-  navigation: 
+  navigation:
     help: Hilfe
-  plans: 
-    child: 
+  plans:
+    child:
       select_parent_plan: "Übergeorneten Plan auswählen"
       select_parent_plan_for_plan: "Übergeorneten Plan für %{plan} auswählen"
       update: Speichern
-    edit: 
+    edit:
       edit_plan_name: "Bearbeite Plan %{name}"
       update: Speichern
-    form: 
+    form:
       description: Beschreibung
       name: Name
       name_description: "Der Name des Plans wird in der URL erscheinen. Durch Änderung des Namens werden alle bisherigen URLs ungültig. Nur Buchstaben, Zahlen, Unterstriche und Bindestriche sind im Namen erlaubt."
@@ -220,16 +220,16 @@ de:
       run_this_plan_after: "Diesen Plan bauen nach"
       steps: Schritte
       steps_description: "Nötige Schritte um den Plan zu bauen."
-    full_index: 
+    full_index:
       details: Details
       listing_all_plans: "Alle Plans"
       overview: Überblick
-    index: 
+    index:
       details: Details
       listing_plans: Plans
       new_plan: "Neuer Plan"
       overview: Überblick
-    list: 
+    list:
       count_of_the_last_5_builds_were_successful: "%{count} der letzten 5 Builds waren erfolgreich"
       description: Beschreibung
       last_build_time: "Letzte Buildzeit"
@@ -238,10 +238,10 @@ de:
       name: Name
       time_ago: "vor %{time}"
       unknown: unbekannt
-    new: 
+    new:
       create: Erstellen
       new_plan: "Neuer Plan"
-    show: 
+    show:
       back_to_parent_plan: "Zurück zum übergeordneten Plan %{parent}"
       back_to_project_html: "Zurück zu Projekt %{link}"
       build_chain: Build-Kette
@@ -268,25 +268,25 @@ de:
       steps: Schritte
       url: URL
       weather: Wetter
-  projects: 
-    edit: 
+  projects:
+    edit:
       edit_project_name: "Projekt %{name} bearbeiten"
       update: Speichern
-    form: 
+    form:
       description: Beschreibung
       name: Name
       name_description: "Der Name des Projektes wird in der URL erscheinen. Durch Änderung des Namens werden alle bisherigen URLs ungültig. Nur Buchstaben, Zahlen, Unterstriche und Bindestriche sind im Namen erlaubt."
-    index: 
+    index:
       description: Beschreibung
       edit: Bearbeiten
       listing_projects: "Alle Projekte"
       name: Name
       new_project: "Neues Project"
       options: Optionen
-    new: 
+    new:
       create: Erstellen
       new_project: "Neues Projekt"
-  report: 
+  report:
     assertions: Prüfungen
     build: Build
     build_tool: Buildwerkzeug
@@ -307,37 +307,37 @@ de:
     test_run: "Testlauf %{name}"
     tests: Tests
     total_time: Gesamtzeit
-  start: 
-    index: 
+  start:
+    index:
       create_a_project: "Projekt erstellen"
       create_accounts: "Benutzerkonten erstellen"
       create_admin_account: "Erstes Administrator-Konto erstellen"
-      manage_build_slaves: "Build-Rechner verwalten"
+      manage_build_workers: "Build-Rechner verwalten"
       quick_links: Schnellstart
       sign_up: Registrieren
-    queue: 
+    queue:
       build_queue: Build-Warteschlange
       recently_finished_builds: "Zuletzt beendete Builds"
-      slave_status: "Status der Build-Rechner"
-    slave_status: 
-      configure_slave: Konfigurieren
-      configure_slaves_now: "Jetzt konfigurieren"
-      no_slaves_configured: "Keine Build-Rechner konfiguriert."
-      slave_is_offline: "Build-Rechner ist offline."
-  user_sessions: 
-    new: 
+      worker_status: "Status der Build-Rechner"
+    worker_status:
+      configure_worker: Konfigurieren
+      configure_workers_now: "Jetzt konfigurieren"
+      no_workers_configured: "Keine Build-Rechner konfiguriert."
+      worker_is_offline: "Build-Rechner ist offline."
+  user_sessions:
+    new:
       login: Login
       password: Passwort
       remember_me: "Von diesem Rechner aus automatisch anmelden"
       user_name: Benutzername
-  users: 
-    edit: 
+  users:
+    edit:
       edit_users_profile: "%{login}s Profil bearbeiten"
       email_address: E-Mail-Adresse
       the_email_address_is_used_for_notifications: "Diese E-Mail-Adresse wird für Benachrichtigungen verwendet."
       the_users_role: "Die Benutzerrolle. Auf \"user\" stellen für normale Benutzerkonten."
       update: Speichern
-    index: 
+    index:
       create_first_administrator_account: "Erstes Administrator-Konto erstellen"
       edit: Bearbeiten
       listing_users: "Alle Benutzer"
@@ -345,7 +345,7 @@ de:
       new_account: "Neues Benutzerkonto"
       options: Optionen
       there_are_no_user_accounts_yet: "Bisher gibt es keine Benutzerkonten."
-    new: 
+    new:
       create_account: "Benutzerkonto erstellen"
       create_new_account: "Neues Benutzerkonto erstellen"
       email_address: E-Mail-Adresse
@@ -355,6 +355,6 @@ de:
       please_repeat_the_password_exactly_as_above: "Bitte wiederholen Sie das Passwort exakt."
       the_email_address_is_used_for_notifications: "Diese E-Mail-Adresse wird für Benachrichtigungen verwendet."
       the_nick_name_used_for_logins: "Der Benutzername wird zum einloggen verwendet."
-    show: 
+    show:
       edit_profile: "Profil bearbeiten"
       users_profile: "%{login}s Profil"

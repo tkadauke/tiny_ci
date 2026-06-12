@@ -1,19 +1,19 @@
 # Dashboard & Build Details Feature Inventory
 
-Sources read: `app/controllers/start_controller.rb`, `app/controllers/builds_controller.rb`, `app/views/start/*`, `app/views/builds/*`, `app/views/build_reports/details/*`, `app/views/build_reports/gist/*`, `app/helpers/builds_helper.rb`, `app/helpers/application_helper.rb`, `app/models/build.rb`, `app/models/slave.rb`, `app/models/plan.rb`, `app/lib/tiny_ci/report/*`, `app/lib/tiny_ci/output.rb`, `app/lib/tiny_ci/output_parser*`, dashboard/build Cucumber features, and `config/locales/*`. `app/lib/juggernaut.rb` is not present in this checkout; the no-op Juggernaut stub exists in `features/support/mocks.rb`.
+Sources read: `app/controllers/start_controller.rb`, `app/controllers/builds_controller.rb`, `app/views/start/*`, `app/views/builds/*`, `app/views/build_reports/details/*`, `app/views/build_reports/gist/*`, `app/helpers/builds_helper.rb`, `app/helpers/application_helper.rb`, `app/models/build.rb`, `app/models/worker.rb`, `app/models/plan.rb`, `app/lib/tiny_ci/report/*`, `app/lib/tiny_ci/output.rb`, `app/lib/tiny_ci/output_parser*`, dashboard/build Cucumber features, and `config/locales/*`. `app/lib/juggernaut.rb` is not present in this checkout; the no-op Juggernaut stub exists in `features/support/mocks.rb`.
 
 ## `/` Dashboard Root
 
-- [ ] Route/controller: `root to: "start#index"` loads all slaves into `@slaves` and the 5 newest finished builds into `@recent_builds`.
+- [ ] Route/controller: `root to: "start#index"` loads all workers into `@workers` and the 5 newest finished builds into `@recent_builds`.
 - [ ] Current page subscribes to `turbo_stream_from "queue"` and enables morph refreshes with scroll preservation.
-  > **SPA note:** The React dashboard needs one shared live queue/status/recent-builds feed. WebSocket, SSE, or polling should refresh the queue, slave status, and recent finished widgets when builds are created or statuses change.
+  > **SPA note:** The React dashboard needs one shared live queue/status/recent-builds feed. WebSocket, SSE, or polling should refresh the queue, worker status, and recent finished widgets when builds are created or statuses change.
 - [ ] Quick links render above the widgets:
   - [ ] initial admin sees `Create first administrator account`;
   - [ ] logged-in account creator sees `Create accounts`;
   - [ ] other visitors see `Sign up`;
-  - [ ] all visitors see `Create a project` and `Manage build slaves`.
+  - [ ] all visitors see `Create a project` and `Manage build workers`.
 - [ ] Build queue widget title is `Build queue`; it renders `Build.pending` via the shared build list partial.
-- [ ] Slave status widget title is `Slave status`; it renders every configured slave.
+- [ ] Worker status widget title is `Worker status`; it renders every configured worker.
 - [ ] Recently finished widget title is `Recently finished builds`; it renders `@recent_builds`, ordered by `created_at DESC`, limited to 5.
 - [ ] XHR requests to the dashboard render only the `_queue` partial, which contains all three widgets.
   > **SPA note:** Preserve the ability to refresh only dashboard widget data without reloading the whole shell.
@@ -33,16 +33,16 @@ Sources read: `app/controllers/start_controller.rb`, `app/controllers/builds_con
 - [ ] Cucumber coverage expects following remote link `Stop` to keep the plan visible and update status to `Stopping`.
   > **SPA note:** Stop/cancel should optimistically or reactively show `Stopping` after the POST succeeds, then rely on the live feed to move to `Stopped` when the worker finalizes. Existing server behavior returns `200 OK` for XHR and no body.
 
-## `/` Slave Status Widget
+## `/` Worker Status Widget
 
-- [ ] Empty slave list renders `No slaves configured.` plus `Configure them now` linking to `/admin/slaves`.
-- [ ] Each slave renders its name in bold.
-- [ ] Offline slave renders `Slave is offline.` plus `Configure` linking to `/admin/slaves/:name/edit`.
-- [ ] Online slave renders a nested build list of `slave.running_builds`.
-- [ ] Bored online slave therefore shows the shared build-list empty state: `No builds`.
-- [ ] Busy online slave shows the currently running build rows with the same build-list columns, links, status icon/text, and stop action.
-- [ ] `Slave#running_builds` includes only builds with status `running`; pending/stopping/waiting builds are not shown as current slave work here.
-  > **SPA note:** Slave status must update when builds enter/leave `running` and when slaves are edited online/offline. The current implementation refreshes the `"queue"` Turbo stream on build status changes, but slave online/offline edits are not broadcast from `Slave`.
+- [ ] Empty worker list renders `No workers configured.` plus `Configure them now` linking to `/admin/workers`.
+- [ ] Each worker renders its name in bold.
+- [ ] Offline worker renders `Worker is offline.` plus `Configure` linking to `/admin/workers/:name/edit`.
+- [ ] Online worker renders a nested build list of `worker.running_builds`.
+- [ ] Bored online worker therefore shows the shared build-list empty state: `No builds`.
+- [ ] Busy online worker shows the currently running build rows with the same build-list columns, links, status icon/text, and stop action.
+- [ ] `Worker#running_builds` includes only builds with status `running`; pending/stopping/waiting builds are not shown as current worker work here.
+  > **SPA note:** Worker status must update when builds enter/leave `running` and when workers are edited online/offline. The current implementation refreshes the `"queue"` Turbo stream on build status changes, but worker online/offline edits are not broadcast from `Worker`.
 
 ## `/` Recently Finished Widget
 
@@ -80,7 +80,7 @@ Sources read: `app/controllers/start_controller.rb`, `app/controllers/builds_con
 - [ ] Full page subscribes to `turbo_stream_from "build_#{@build.name}_#{@build.position}"`.
 - [ ] Full page enables morph refreshes with scroll preservation while the build is not finished.
   > **SPA note:** Build details need live status and output updates. Current model broadcasts the build stream when `output` or `status` changes. React should use WebSocket/SSE for streaming-like output or poll the build resource and append rows without resetting scroll unexpectedly.
-- [ ] Header: `Build output of <plan link> #<position>` and, when assigned, `on slave <slave name>`.
+- [ ] Header: `Build output of <plan link> #<position>` and, when assigned, `on worker <worker name>`.
 - [ ] Metadata definition list:
   - [ ] status: `icons/large/:status.png` plus localized status;
   - [ ] revision: raw revision or `unknown`;
@@ -172,8 +172,8 @@ Sources read: `app/controllers/start_controller.rb`, `app/controllers/builds_con
   - [ ] `waiting` -> `app/assets/images/icons/small/waiting.png`;
   - [ ] `offline` -> `app/assets/images/icons/small/offline.png`.
 - [ ] Large icons exist for the same statuses under `app/assets/images/icons/large/*.png`.
-- [ ] Online/offline slave icons exist as `small/online.png`, `small/offline.png`, `large/online.png`, and `large/offline.png`.
-- [ ] Dashboard slave status text does not currently render online/offline icons; admin slave index does.
+- [ ] Online/offline worker icons exist as `small/online.png`, `small/offline.png`, `large/online.png`, and `large/offline.png`.
+- [ ] Dashboard worker status text does not currently render online/offline icons; admin worker index does.
 - [ ] Stop button uses `icons/small/stopped.png`, not a dedicated stop-action icon.
 - [ ] Running build detail footer uses `spinner.gif`, not a status icon.
 

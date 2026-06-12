@@ -2,17 +2,17 @@
 
 Inventory source files:
 
-- `app/controllers/admin/slaves_controller.rb`
+- `app/controllers/admin/workers_controller.rb`
 - `app/controllers/admin/configurations_controller.rb`
 - `app/controllers/configurations_controller.rb`
 - `app/controllers/help_topics_controller.rb`
-- `app/views/admin/slaves/*`
+- `app/views/admin/workers/*`
 - `app/views/admin/configurations/show.html.erb`
 - `app/views/configurations/show.html.erb`
 - `app/views/config_options/_form.html.erb`
 - `app/views/help_topics/show.html.erb`
 - `app/views/layouts/application.html.erb`
-- `app/models/slave.rb`
+- `app/models/worker.rb`
 - `app/models/config_option.rb`
 - `app/models/user/configuration.rb`
 - `app/models/help_topic.rb`
@@ -23,20 +23,20 @@ Inventory source files:
 - `config/routes.rb`
 - `config/locales/en.yml`
 - `config/locales/de.yml`
-- `features/manage_slaves.feature`
+- `features/manage_workers.feature`
 - `features/configuration.feature`
 - `features/settings.feature`
 - `features/help.feature`
 
 ## Cross-Cutting Access, Layout, and Flash Behavior
 
-- [ ] Logged-out users attempting admin slave, admin configuration, or user settings routes are redirected to `/login`, receive `flash.notice.login_required`, and the requested URL is stored in `session[:return_to]`.
+- [ ] Logged-out users attempting admin worker, admin configuration, or user settings routes are redirected to `/login`, receive `flash.notice.login_required`, and the requested URL is stored in `session[:return_to]`.
 - [ ] Authenticated users without an admin capability are redirected to `root_path` with `flash.error.access_denied` rather than receiving a 403.
 - [ ] Admin users can access all `can_*?` checks because `Role::Admin#method_missing` returns `true` for any permission predicate.
-- [ ] Initial setup admins can configure slaves and system variables via `Role::InitialAdmin`, but normal users cannot.
+- [ ] Initial setup admins can configure workers and system variables via `Role::InitialAdmin`, but normal users cannot.
 - [ ] The application layout top-right account actions show the current user greeting, `Settings` link to `/settings`, and `Logout` link submitted as `DELETE /logout`.
 - [ ] The application layout main navigation always shows `Home`, `All Plans`, `Projects`, `Users`, and `Help`.
-- [ ] The `Slaves` main navigation item appears only when `current_user.can_configure_slaves?`.
+- [ ] The `Workers` main navigation item appears only when `current_user.can_configure_workers?`.
 - [ ] The `Configuration` main navigation item appears only when `current_user.can_configure_system_variables?`; this is the layout-level link seen by admin/signup flows.
 - [ ] The plain layout used for errors/setup has no account actions; outside setup it shows `Home`, `Projects`, `Users`, and `Help`.
 - [ ] Flash rendering supports one dismissible message at a time: `flash[:error]` is preferred over `flash[:notice]`.
@@ -44,116 +44,116 @@ Inventory source files:
 
 > **SPA note:** The Rails authorization behavior is redirect-and-flash based, not API-status based. A React migration should decide whether admin-only API calls return 401/403 while preserving the user-facing redirect and message behavior.
 
-## `GET /admin/slaves`
+## `GET /admin/workers`
 
-- [ ] Controller action: `Admin::SlavesController#index`, gated by `require_user` and `can_configure_slaves!`.
-- [ ] Loads every slave with `@slaves = Slave.all`; there is no explicit sorting or pagination.
-- [ ] Empty state text: `There are no slaves configured yet.`
-- [ ] Empty state action: link `Add the first slave` to `new_admin_slave_path`.
-- [ ] Empty state quick-create form posts a hidden slave with `name=localhost` and `protocol=localhost`; submit label is `Use localhost as the first slave`.
+- [ ] Controller action: `Admin::WorkersController#index`, gated by `require_user` and `can_configure_workers!`.
+- [ ] Loads every worker with `@workers = Worker.all`; there is no explicit sorting or pagination.
+- [ ] Empty state text: `There are no workers configured yet.`
+- [ ] Empty state action: link `Add the first worker` to `new_admin_worker_path`.
+- [ ] Empty state quick-create form posts a hidden worker with `name=localhost` and `protocol=localhost`; submit label is `Use localhost as the first worker`.
 - [ ] Non-empty state renders a table with columns `Status`, `Protocol`, `Name`, and `Hostname`.
-- [ ] Status column renders `icons/small/offline.png` plus `Offline` when `slave.offline` is truthy.
+- [ ] Status column renders `icons/small/offline.png` plus `Offline` when `worker.offline` is truthy.
 - [ ] Status column renders `icons/small/online.png` plus `Online` otherwise.
-- [ ] Protocol column renders the raw `slave.protocol`.
-- [ ] Name column links to `GET /admin/slaves/:name`; slave URLs use the unique slave name, not numeric ID.
-- [ ] Hostname column renders the raw `slave.hostname`.
-- [ ] The only row-level action on the index is the linked slave name; edit, clone, and delete are available from the show page.
-- [ ] The page footer action links `New Slave` to `GET /admin/slaves/new`.
+- [ ] Protocol column renders the raw `worker.protocol`.
+- [ ] Name column links to `GET /admin/workers/:name`; worker URLs use the unique worker name, not numeric ID.
+- [ ] Hostname column renders the raw `worker.hostname`.
+- [ ] The only row-level action on the index is the linked worker name; edit, clone, and delete are available from the show page.
+- [ ] The page footer action links `New Worker` to `GET /admin/workers/new`.
 - [ ] Cucumber coverage verifies that an online `localhost` and offline `foreignhost` appear with `Online` and `Offline`.
 
-## `GET /admin/slaves/:id`
+## `GET /admin/workers/:id`
 
-- [ ] Controller action: `Admin::SlavesController#show`, gated by `require_user` and `can_configure_slaves!`.
-- [ ] Finds by `Slave.from_param!(params[:id])`, which calls `find_by!(name: param)`.
-- [ ] Heading: `Slave %{name}`.
+- [ ] Controller action: `Admin::WorkersController#show`, gated by `require_user` and `can_configure_workers!`.
+- [ ] Finds by `Worker.from_param!(params[:id])`, which calls `find_by!(name: param)`.
+- [ ] Heading: `Worker %{name}`.
 - [ ] Action list includes `Edit`, `Clone`, and `Delete`.
-- [ ] `Edit` links to `GET /admin/slaves/:name/edit`.
-- [ ] `Clone` links to `GET /admin/slaves/new?clone=:name`.
-- [ ] `Delete` submits `DELETE /admin/slaves/:name` with confirmation text `Do you really want to delete this slave? This operation can not be undone.`
+- [ ] `Edit` links to `GET /admin/workers/:name/edit`.
+- [ ] `Clone` links to `GET /admin/workers/new?clone=:name`.
+- [ ] `Delete` submits `DELETE /admin/workers/:name` with confirmation text `Do you really want to delete this worker? This operation can not be undone.`
 - [ ] Detail fields displayed are `Offline`, `Protocol`, `Host name`, `Busy?`, and `Capabilities`.
 - [ ] Offline display is textual `Yes` or `No`; the show page does not use online/offline icon images.
-- [ ] `Busy?` displays `@slave.busy?.inspect`, so the UI currently shows literal `true` or `false`.
+- [ ] `Busy?` displays `@worker.busy?.inspect`, so the UI currently shows literal `true` or `false`.
 - [ ] The show page does not display username, password, base path, environment variables, maximum builds, current running builds, current build names, or a current build link.
-- [ ] The page includes a `Slaves Overview` link back to `/admin/slaves`.
+- [ ] The page includes a `Workers Overview` link back to `/admin/workers`.
 
-> **SPA note:** The issue asks for a current-build display on the slave show page, but the current Rails show page only exposes `Busy?`. Running builds are rendered on the dashboard slave-status partial, not here. Treat current-build detail as a new SPA/API requirement if it is desired.
+> **SPA note:** The issue asks for a current-build display on the worker show page, but the current Rails show page only exposes `Busy?`. Running builds are rendered on the dashboard worker-status partial, not here. Treat current-build detail as a new SPA/API requirement if it is desired.
 
-## `GET /admin/slaves/new`
+## `GET /admin/workers/new`
 
-- [ ] Controller action: `Admin::SlavesController#new`, gated by `require_user` and `can_configure_slaves!`.
-- [ ] Without `clone`, initializes a blank `Slave.new`.
-- [ ] Heading: `New Slave`.
-- [ ] Form posts to `POST /admin/slaves`.
+- [ ] Controller action: `Admin::WorkersController#new`, gated by `require_user` and `can_configure_workers!`.
+- [ ] Without `clone`, initializes a blank `Worker.new`.
+- [ ] Heading: `New Worker`.
+- [ ] Form posts to `POST /admin/workers`.
 - [ ] Submit label: `Create`.
 - [ ] Validation errors render through legacy `f.error_messages`.
 - [ ] Required model validations are `name` presence, `name` uniqueness, and `protocol` presence.
 - [ ] The form has an `Offline` checkbox.
-- [ ] The form has `Name` text field bound to `slave[name]`.
-- [ ] The form has `Protocol` select bound to `slave[protocol]` with exactly two options: `localhost` and `ssh`.
-- [ ] The form has `Host Name` text field bound to `slave[hostname]`.
-- [ ] The form has `User Name` text field bound to `slave[username]`; the UI label is not `login`.
-- [ ] The form has `Password` text field bound to `slave[password]`; the model encrypts this field.
-- [ ] The form has `Base Path` text field bound to `slave[base_path]`, using `@slave.base_path(:skip_default)` as the visible value.
-- [ ] Base path help text says leaving it blank uses the default `@slave.default_base_path`, which comes from `TinyCI::Config.base_path`.
+- [ ] The form has `Name` text field bound to `worker[name]`.
+- [ ] The form has `Protocol` select bound to `worker[protocol]` with exactly two options: `localhost` and `ssh`.
+- [ ] The form has `Host Name` text field bound to `worker[hostname]`.
+- [ ] The form has `User Name` text field bound to `worker[username]`; the UI label is not `login`.
+- [ ] The form has `Password` text field bound to `worker[password]`; the model encrypts this field.
+- [ ] The form has `Base Path` text field bound to `worker[base_path]`, using `@worker.base_path(:skip_default)` as the visible value.
+- [ ] Base path help text says leaving it blank uses the default `@worker.default_base_path`, which comes from `TinyCI::Config.base_path`.
 - [ ] The form has an environment variables table with `Variable name` and `Value` text fields.
 - [ ] Existing environment variables are sorted and rendered, then one blank row is appended for adding a new variable.
-- [ ] Blank environment-variable keys are removed by `Slave#cleanup_environment` before save.
-- [ ] The form has `Slave capabilities` textarea with 3 rows and a help link to `/help_topics/slaves`.
+- [ ] Blank environment-variable keys are removed by `Worker#cleanup_environment` before save.
+- [ ] The form has `Worker capabilities` textarea with 3 rows and a help link to `/help_topics/workers`.
 - [ ] Capabilities help text says values are separated by commas.
-- [ ] The form has `Maximum builds` text field bound to `slave[max_builds]`.
+- [ ] The form has `Maximum builds` text field bound to `worker[max_builds]`.
 - [ ] Maximum builds help text says `0 = unlimited`; schema default is `0`.
 - [ ] There are no current form fields for port, SSH key path, timeout, or separate login name beyond `username`.
 - [ ] The protocol select does not dynamically hide or require other fields. Both `localhost` and `ssh` show hostname, username, password, base path, environment variables, capabilities, and maximum builds.
-- [ ] Cucumber coverage verifies creating a slave by filling only `name` and pressing `Create`.
+- [ ] Cucumber coverage verifies creating a worker by filling only `name` and pressing `Create`.
 
 > **SPA note:** Protocol-specific conditional fields are not implemented in the current Rails UI. If React hides SSH fields for `localhost` or enforces required fields for `ssh`, that would be new behavior and should be coordinated with backend validations.
 
-## `GET /admin/slaves/new?clone=:name`
+## `GET /admin/workers/new?clone=:name`
 
-- [ ] Controller action: `Admin::SlavesController#new` calls `Slave.find_for_cloning!(params[:clone])`.
-- [ ] Clone lookup uses the source slave name.
-- [ ] Clone copies the source slave object attributes, including protocol, hostname, username, encrypted password value, base path, environment variables, offline flag, capabilities, and maximum builds.
+- [ ] Controller action: `Admin::WorkersController#new` calls `Worker.find_for_cloning!(params[:clone])`.
+- [ ] Clone lookup uses the source worker name.
+- [ ] Clone copies the source worker object attributes, including protocol, hostname, username, encrypted password value, base path, environment variables, offline flag, capabilities, and maximum builds.
 - [ ] Clone clears `id`.
 - [ ] Clone clears `name`.
 - [ ] Clone sets `@new_record` to true so the form submits a create rather than an update.
-- [ ] The user must enter a unique name before saving because `Slave` validates name uniqueness.
-- [ ] Cucumber coverage verifies following `Clone`, entering `clone_slave`, pressing `Create`, and seeing the cloned slave.
+- [ ] The user must enter a unique name before saving because `Worker` validates name uniqueness.
+- [ ] Cucumber coverage verifies following `Clone`, entering `clone_worker`, pressing `Create`, and seeing the cloned worker.
 
-## `POST /admin/slaves`
+## `POST /admin/workers`
 
-- [ ] Controller action: `Admin::SlavesController#create`, gated by `require_user` and `can_configure_slaves!`.
+- [ ] Controller action: `Admin::WorkersController#create`, gated by `require_user` and `can_configure_workers!`.
 - [ ] Strong parameters permit `protocol`, `name`, `hostname`, `username`, `password`, `base_path`, `offline`, `capabilities`, `max_builds`, and `environment_variables`.
-- [ ] `environment_variables` is permitted as a hash and coerced to a plain Hash in `Slave#environment_variables=`.
-- [ ] On successful save, sets `flash.notice.created_slave` (`Successfully created slave`) and redirects to `GET /admin/slaves/:name`.
+- [ ] `environment_variables` is permitted as a hash and coerced to a plain Hash in `Worker#environment_variables=`.
+- [ ] On successful save, sets `flash.notice.created_worker` (`Successfully created worker`) and redirects to `GET /admin/workers/:name`.
 - [ ] On validation failure, renders `new` with HTTP 422.
 
-## `GET /admin/slaves/:id/edit`
+## `GET /admin/workers/:id/edit`
 
-- [ ] Controller action: `Admin::SlavesController#edit`, gated by `require_user` and `can_configure_slaves!`.
-- [ ] Finds by slave name via `Slave.from_param!`.
-- [ ] Heading: `Edit Slave %{name}`.
-- [ ] Form fields are identical to the new slave form.
+- [ ] Controller action: `Admin::WorkersController#edit`, gated by `require_user` and `can_configure_workers!`.
+- [ ] Finds by worker name via `Worker.from_param!`.
+- [ ] Heading: `Edit Worker %{name}`.
+- [ ] Form fields are identical to the new worker form.
 - [ ] Submit label: `Update`.
 - [ ] Cucumber coverage verifies changing `protocol` to `ssh` and seeing `ssh` after update.
 
-## `PATCH/PUT /admin/slaves/:id`
+## `PATCH/PUT /admin/workers/:id`
 
-- [ ] Controller action: `Admin::SlavesController#update`, gated by `require_user` and `can_configure_slaves!`.
+- [ ] Controller action: `Admin::WorkersController#update`, gated by `require_user` and `can_configure_workers!`.
 - [ ] Uses the same strong-parameter allowlist as create.
-- [ ] On successful update, sets `flash.notice.updated_slave` (`Successfully updated slave`) and redirects to `GET /admin/slaves/:name`.
+- [ ] On successful update, sets `flash.notice.updated_worker` (`Successfully updated worker`) and redirects to `GET /admin/workers/:name`.
 - [ ] On validation failure, renders `edit` with HTTP 422.
 
-## `DELETE /admin/slaves/:id`
+## `DELETE /admin/workers/:id`
 
-- [ ] Controller action: `Admin::SlavesController#destroy`, gated by `require_user` and `can_configure_slaves!`.
-- [ ] Finds by slave name via `Slave.from_param!`.
-- [ ] Calls `@slave.destroy` unconditionally.
-- [ ] On destroy, sets `flash.notice.deleted_slave` (`Successfully deleted slave`) and redirects to `/admin/slaves`.
-- [ ] There is no guard preventing deletion of a slave with running builds.
-- [ ] `Slave has_many :builds, dependent: :nullify`, so deleting a slave nulls existing build `slave_id` references instead of deleting builds.
-- [ ] Cucumber coverage verifies deleting a slave removes it from the slaves page.
+- [ ] Controller action: `Admin::WorkersController#destroy`, gated by `require_user` and `can_configure_workers!`.
+- [ ] Finds by worker name via `Worker.from_param!`.
+- [ ] Calls `@worker.destroy` unconditionally.
+- [ ] On destroy, sets `flash.notice.deleted_worker` (`Successfully deleted worker`) and redirects to `/admin/workers`.
+- [ ] There is no guard preventing deletion of a worker with running builds.
+- [ ] `Worker has_many :builds, dependent: :nullify`, so deleting a worker nulls existing build `worker_id` references instead of deleting builds.
+- [ ] Cucumber coverage verifies deleting a worker removes it from the workers page.
 
-> **SPA note:** The delete confirmation is client-side only. A React implementation should still treat the backend as allowing deletion of busy slaves unless a new backend guard/API contract is added.
+> **SPA note:** The delete confirmation is client-side only. A React implementation should still treat the backend as allowing deletion of busy workers unless a new backend guard/API contract is added.
 
 ## `GET /admin/configuration`
 
@@ -257,10 +257,10 @@ Inventory source files:
 - [ ] Remaining lines are joined as the body text.
 - [ ] Missing files raise `Errno::ENOENT`, which is handled by rendering `errors/404` with status 404 and plain layout.
 - [ ] Body text is rendered through `RedCloth.new(...).to_html.html_safe`.
-- [ ] The helper rewrites Textile links like `":slaves` to `":/help_topics/slaves`.
+- [ ] The helper rewrites Textile links like `":workers` to `":/help_topics/workers`.
 - [ ] The helper preserves external `http` links when the matched link target is `http`.
 - [ ] `help_link(topic_name)` renders localized `navigation.help` text pointing at `help_topic_path(topic_name)`.
-- [ ] Existing topic files include `about`, `index`, `plan`, `plan/chain`, `plan/child`, `project`, `slaves`, `test`, and `users`.
+- [ ] Existing topic files include `about`, `index`, `plan`, `plan/chain`, `plan/child`, `project`, `workers`, `test`, and `users`.
 - [ ] Cucumber coverage verifies loading topic `test` shows `Test Page`.
 
 > **SPA note:** Help topics are filesystem-backed Textile documents, not database rows. A React migration needs either an endpoint that renders/sanitizes Textile HTML server-side or a build/runtime content pipeline that preserves wildcard nested topic IDs and 404 behavior.
@@ -268,14 +268,14 @@ Inventory source files:
 ## Locale Keys Used In This Area
 
 - [ ] Admin configuration: `admin.configurations.show.update`.
-- [ ] Admin slave edit: `admin.slaves.edit.edit_slave`, `admin.slaves.edit.update`.
-- [ ] Admin slave form: `admin.slaves.form.base_path`, `base_path_description`, `capabilities_description`, `host_name`, `max_builds_description`, `maximum_builds`, `name`, `offline`, `password`, `protocol`, `slave_capabilities`, `user_name`, `value`, `variable_name`.
-- [ ] Admin slave index: `admin.slaves.index.add_the_first_slave`, `hostname`, `listing_slaves`, `name`, `new_slave`, `offline`, `online`, `or`, `protocol`, `status`, `there_are_no_slaves_configured_yet`, `use_localhost_as_the_first_slave`.
-- [ ] Admin slave new: `admin.slaves.new.create`, `admin.slaves.new.new_slave`.
-- [ ] Admin slave show: `admin.slaves.show.busy`, `capabilities`, `clone`, `delete`, `delete_confirmation`, `edit`, `host_name`, `no`, `offline`, `protocol`, `slave_name`, `slaves_overview`, `yes`.
+- [ ] Admin worker edit: `admin.workers.edit.edit_worker`, `admin.workers.edit.update`.
+- [ ] Admin worker form: `admin.workers.form.base_path`, `base_path_description`, `capabilities_description`, `host_name`, `max_builds_description`, `maximum_builds`, `name`, `offline`, `password`, `protocol`, `worker_capabilities`, `user_name`, `value`, `variable_name`.
+- [ ] Admin worker index: `admin.workers.index.add_the_first_worker`, `hostname`, `listing_workers`, `name`, `new_worker`, `offline`, `online`, `or`, `protocol`, `status`, `there_are_no_workers_configured_yet`, `use_localhost_as_the_first_worker`.
+- [ ] Admin worker new: `admin.workers.new.create`, `admin.workers.new.new_worker`.
+- [ ] Admin worker show: `admin.workers.show.busy`, `capabilities`, `clone`, `delete`, `delete_confirmation`, `edit`, `host_name`, `no`, `offline`, `protocol`, `worker_name`, `workers_overview`, `yes`.
 - [ ] User settings: `configurations.show.update`.
-- [ ] Flash messages: `flash.error.access_denied`, `flash.notice.login_required`, `flash.notice.created_slave`, `flash.notice.updated_slave`, `flash.notice.deleted_slave`, `flash.notice.updated_configuration`.
-- [ ] Layout keys: `layouts.all_plans`, `close_flash`, `configuration`, `github_project_page`, `guest_greeter`, `help`, `home`, `login`, `logout`, `projects`, `quick_links`, `report_bugs_html`, `report_link_text`, `settings`, `setup`, `signup`, `slaves`, `subtitle`, `user_greeter`, `users`, `you_are_here_html`.
+- [ ] Flash messages: `flash.error.access_denied`, `flash.notice.login_required`, `flash.notice.created_worker`, `flash.notice.updated_worker`, `flash.notice.deleted_worker`, `flash.notice.updated_configuration`.
+- [ ] Layout keys: `layouts.all_plans`, `close_flash`, `configuration`, `github_project_page`, `guest_greeter`, `help`, `home`, `login`, `logout`, `projects`, `quick_links`, `report_bugs_html`, `report_link_text`, `settings`, `setup`, `signup`, `workers`, `subtitle`, `user_greeter`, `users`, `you_are_here_html`.
 - [ ] Help link key: `navigation.help`.
-- [ ] Breadcrumb keys relevant to this area: `breadcrumb.admin`, `breadcrumb.configuration`, `breadcrumb.edit`, `breadcrumb.help_topics`, `breadcrumb.home`, `breadcrumb.new`, `breadcrumb.settings`, `breadcrumb.slaves`.
+- [ ] Breadcrumb keys relevant to this area: `breadcrumb.admin`, `breadcrumb.configuration`, `breadcrumb.edit`, `breadcrumb.help_topics`, `breadcrumb.home`, `breadcrumb.new`, `breadcrumb.settings`, `breadcrumb.workers`.
 

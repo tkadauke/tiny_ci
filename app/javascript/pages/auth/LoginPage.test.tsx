@@ -27,7 +27,7 @@ test("successful submit calls the session API and invokes onFlash", async () => 
         email: "admin@example.com",
         role: "admin",
         initial_admin: false,
-        can_configure_slaves: true,
+        can_configure_workers: true,
         can_configure_system_variables: true,
         can_create_accounts: true,
         can_create_projects: true,

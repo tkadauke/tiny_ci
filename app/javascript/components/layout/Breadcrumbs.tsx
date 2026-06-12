@@ -13,7 +13,7 @@ const breadcrumbLabels: Record<string, string> = {
   projects: "Projects",
   settings: "Settings",
   signup: "Signup",
-  slaves: "Slaves",
+  workers: "Workers",
   users: "Users",
 };
 

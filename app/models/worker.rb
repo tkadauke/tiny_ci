@@ -1,4 +1,4 @@
-class Slave < ApplicationRecord
+class Worker < ApplicationRecord
   include OverridesField
 
   encrypts :password
@@ -20,7 +20,7 @@ class Slave < ApplicationRecord
   scope :least_busy, -> {
     where.not(offline: true)
       .left_joins(:running_builds)
-      .group("slaves.id")
+      .group("workers.id")
       .order(Arel.sql("COUNT(builds.id) ASC"))
   }
 
@@ -30,11 +30,11 @@ class Slave < ApplicationRecord
   overrides_field :base_path, from: "TinyCI::Config"
 
   def self.find_for_cloning!(name)
-    slave = from_param!(name)
-    slave.id = nil
-    slave.name = nil
-    slave.instance_variable_set(:@new_record, true)
-    slave
+    worker = from_param!(name)
+    worker.id = nil
+    worker.name = nil
+    worker.instance_variable_set(:@new_record, true)
+    worker
   end
 
   def current_environment
@@ -53,8 +53,8 @@ class Slave < ApplicationRecord
     running_builds.empty?
   end
 
-  def self.find_free_slave_for(build)
-    least_busy.to_a.find { |slave| slave.can_build_now?(build) }
+  def self.find_free_worker_for(build)
+    least_busy.to_a.find { |worker| worker.can_build_now?(build) }
   end
 
   def all_resources

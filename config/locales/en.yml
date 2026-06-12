@@ -1,11 +1,11 @@
---- 
-en: 
-  admin: 
-    configurations: 
-      show: 
+---
+en:
+  admin:
+    configurations:
+      show:
         update: Update
-    setup: 
-      index: 
+    setup:
+      index:
         database_configuration: "Database configuration"
         database_host: "Database Host"
         database_name: "Database Name"
@@ -16,58 +16,58 @@ en:
         password_description: "This password will be saved as plain text in %{path}."
         save_and_restart: "Save and restart"
         welcome_to_tinyci: "Welcome to TinyCI"
-    slaves: 
-      edit: 
-        edit_slave: "Edit Slave %{name}"
+    workers:
+      edit:
+        edit_worker: "Edit Worker %{name}"
         update: Update
-      form: 
+      form:
         base_path: "Base Path"
         base_path_description: "Leave blank to use the default of %{default_path}"
         capabilities_description: "Separated by commas."
         host_name: "Host Name"
-        max_builds_description: "Maximum number of parallel builds on this slave (0 = unlimited)"
+        max_builds_description: "Maximum number of parallel builds on this worker (0 = unlimited)"
         maximum_builds: "Maximum builds"
         name: Name
         offline: Offline
         password: Password
         protocol: Protocol
-        slave_capabilities: "Slave capabilities"
+        worker_capabilities: "Worker capabilities"
         user_name: "User Name"
         value: Value
         variable_name: "Variable name"
-      index: 
-        add_the_first_slave: "Add the first slave"
+      index:
+        add_the_first_worker: "Add the first worker"
         hostname: Hostname
-        listing_slaves: "Listing Slaves"
+        listing_workers: "Listing Workers"
         name: Name
-        new_slave: "New Slave"
+        new_worker: "New Worker"
         offline: Offline
         online: Online
         or: or
         protocol: Protocol
         status: Status
-        there_are_no_slaves_configured_yet: "There are no slaves configured yet."
-        use_localhost_as_the_first_slave: "Use localhost as the first slave"
-      new: 
+        there_are_no_workers_configured_yet: "There are no workers configured yet."
+        use_localhost_as_the_first_worker: "Use localhost as the first worker"
+      new:
         create: Create
-        new_slave: "New Slave"
-      show: 
+        new_worker: "New Worker"
+      show:
         busy: Busy?
         capabilities: Capabilities
         clone: Clone
         delete: Delete
-        delete_confirmation: "Do you really want to delete this slave? This operation can not be undone."
+        delete_confirmation: "Do you really want to delete this worker? This operation can not be undone."
         edit: Edit
         host_name: "Host name"
         ? "no"
         : "No"
         offline: Offline
         protocol: Protocol
-        slave_name: "Slave %{name}"
-        slaves_overview: "Slaves Overview"
+        worker_name: "Worker %{name}"
+        workers_overview: "Workers Overview"
         ? "yes"
         : "Yes"
-  breadcrumb: 
+  breadcrumb:
     admin: Admin
     builds: Builds
     child: "Convert to Child"
@@ -80,10 +80,10 @@ en:
     plans: Plans
     projects: Projects
     settings: Settings
-    slaves: Slaves
+    workers: Workers
     users: Users
-  build: 
-    status: 
+  build:
+    status:
       canceled: Canceled
       error: Error
       failure: Failure
@@ -93,75 +93,75 @@ en:
       stopping: Stopping
       success: Success
       waiting: Waiting
-  build_mailer: 
-    subject: 
+  build_mailer:
+    subject:
       failure: "[TinyCI] Build %{project} / %{plan} failed"
       success: "[TinyCI] Build %{project} / %{plan} succeeded"
-  builds: 
-    build: 
+  builds:
+    build:
       build_output_of_plan_html: "Build output of %{plan} #%{position}"
       details: Details
       duration: Duration
       gist: Gist
-      on_slave: "on slave %{slave_name}"
+      on_worker: "on worker %{worker_name}"
       raw_output: "Raw output"
       requested_manually: "(Requested manually)"
       revision: Revision
       started_by: "Started by"
       status: Status
       unknown: unknown
-    completed: 
+    completed:
       duration: Duration
       name: Name
       no_builds: "No builds"
       number: Number
       status: Status
       timestamp: Timestamp
-    index: 
+    index:
       back_to_plan: "Back to Plan"
       builds_of_plan_html: "Builds of Plan %{plan_link}"
-    list: 
+    list:
       name: Name
       no_builds: "No builds"
       number: Number
       status: Status
       timestamp: Timestamp
-    report: 
+    report:
       no_output_yet: "No output (yet)"
-    show: 
+    show:
       back_to_builds: "Back to Builds"
-  configurations: 
-    show: 
+  configurations:
+    show:
       update: Update
-  duration: 
+  duration:
     days: days
     hours: hours
     minutes: minutes
     seconds: seconds
-  errors: 
+  errors:
     ? "404"
-    : 
+    :
       error_message: "You may have mistyped the address or the page may have moved."
       title: "The page you were looking for doesn't exist."
     ? "422"
-    : 
+    :
       error_message: "Maybe you tried to change something you didn't have access to."
       title: "The change you wanted was rejected."
     ? "500"
-    : 
+    :
       error_message: "We've been notified about this issue and we'll take a look at it shortly."
       title: "We're sorry, but something went wrong."
-  flash: 
-    error: 
+  flash:
+    error:
       access_denied: "You can not do that"
       connect_to_database: "Could not connect to the database"
-    notice: 
+    notice:
       building_plan: "Building plan %{name}"
       created_account: "Successfully created account"
       created_plan: "Successfully created plan"
       created_project: "Successfully created project"
-      created_slave: "Successfully created slave"
-      deleted_slave: "Successfully deleted slave"
+      created_worker: "Successfully created worker"
+      deleted_worker: "Successfully deleted worker"
       logged_in: "Successfully logged in"
       logged_out: "Successfully logged out"
       login_required: "You must be logged in to access this page"
@@ -169,15 +169,15 @@ en:
       updated_plan: "Successfully updated plan"
       updated_profile: "Successfully updated %{user}'s profile"
       updated_project: "Successfully updated project"
-      updated_slave: "Successfully updated slave"
-  growl_notifier: 
-    subject: 
+      updated_worker: "Successfully updated worker"
+  growl_notifier:
+    subject:
       failure: Failure
       success: Success
-    text: 
+    text:
       failure: "Build %{project} / %{plan} (%{build}) failed (status %{status})!"
       success: "Build %{project} / %{plan} (%{build}) finished successfully!"
-  layouts: 
+  layouts:
     all_plans: "All Plans"
     close_flash: Close
     configuration: Configuration
@@ -194,42 +194,42 @@ en:
     settings: Settings
     setup: Setup
     signup: Signup
-    slaves: Slaves
+    workers: Workers
     subtitle: "Continuous Integration for Ruby on Rails"
     user_greeter: "Welcome, %{user}!"
     users: Users
     you_are_here_html: "You are here: %{bread_crumb}"
-  navigation: 
+  navigation:
     help: Help
-  plans: 
-    child: 
+  plans:
+    child:
       select_parent_plan: "Select Parent Plan"
       select_parent_plan_for_plan: "Select parent plan for %{plan}"
       update: Update
-    edit: 
+    edit:
       edit_plan_name: "Edit Plan %{name}"
       update: Update
-    form: 
+    form:
       description: Description
       name: Name
       name_description: "The plan's name will appear in the URL. Changes to the name will change all URLs for this plan. Only characters, numbers, underscores and dashes are allowed in the name."
       plan_requirements: "Plan requirements"
-      plan_requirements_description: "Capabilities a build slave must have to build this plan, separated by commas."
+      plan_requirements_description: "Capabilities a build worker must have to build this plan, separated by commas."
       previous_plan: "Previous Plan"
       repository_url: "Repository URL"
       run_this_plan_after: "Run this plan after"
       steps: Steps
       steps_description: "Steps necessary to build the plan."
-    full_index: 
+    full_index:
       details: Details
       listing_all_plans: "Listing All Plans"
       overview: Overview
-    index: 
+    index:
       details: Details
       listing_plans: "Listing Plans"
       new_plan: "New Plan"
       overview: Overview
-    list: 
+    list:
       count_of_the_last_5_builds_were_successful: "%{count} of the last 5 builds were successful"
       description: Description
       last_build_time: "Last Build time"
@@ -238,10 +238,10 @@ en:
       name: Name
       time_ago: "%{time} ago"
       unknown: unknown
-    new: 
+    new:
       create: Create
       new_plan: "New Plan"
-    show: 
+    show:
       back_to_parent_plan: "Back to parent plan %{parent}"
       back_to_project_html: "Back to project %{link}"
       build_chain: "Build chain"
@@ -268,25 +268,25 @@ en:
       steps: Steps
       url: URL
       weather: Weather
-  projects: 
-    edit: 
+  projects:
+    edit:
       edit_project_name: "Edit Project %{name}"
       update: Update
-    form: 
+    form:
       description: Description
       name: Name
       name_description: "The project's name will appear in the URL. Changes to the name will change all URLs for this project. Only characters, numbers, underscores and dashes are allowed in the name."
-    index: 
+    index:
       description: Description
       edit: Edit
       listing_projects: "Listing Projects"
       name: Name
       new_project: "New Project"
       options: Options
-    new: 
+    new:
       create: Create
       new_project: "New Project"
-  report: 
+  report:
     assertions: Assertions
     build: Build
     build_tool: "Build tool"
@@ -307,37 +307,37 @@ en:
     test_run: "Test Run %{name}"
     tests: Tests
     total_time: "Total time"
-  start: 
-    index: 
+  start:
+    index:
       create_a_project: "Create a project"
       create_accounts: "Create accounts"
       create_admin_account: "Create first administrator account"
-      manage_build_slaves: "Manage build slaves"
+      manage_build_workers: "Manage build workers"
       quick_links: "Quick links"
       sign_up: "Sign up"
-    queue: 
+    queue:
       build_queue: "Build queue"
       recently_finished_builds: "Recently finished builds"
-      slave_status: "Slave status"
-    slave_status: 
-      configure_slave: Configure
-      configure_slaves_now: "Configure them now"
-      no_slaves_configured: "No slaves configured."
-      slave_is_offline: "Slave is offline."
-  user_sessions: 
-    new: 
+      worker_status: "Worker status"
+    worker_status:
+      configure_worker: Configure
+      configure_workers_now: "Configure them now"
+      no_workers_configured: "No workers configured."
+      worker_is_offline: "Worker is offline."
+  user_sessions:
+    new:
       login: Login
       password: Password
       remember_me: "Remember me"
       user_name: "User name"
-  users: 
-    edit: 
+  users:
+    edit:
       edit_users_profile: "Edit %{login}'s Profile"
       email_address: "E-Mail Address"
       the_email_address_is_used_for_notifications: "The email address is used for notifications."
       the_users_role: "The user's role. Set to \"user\" for normal user accounts."
       update: Update
-    index: 
+    index:
       create_first_administrator_account: "Create first administrator account"
       edit: Edit
       listing_users: "Listing Users"
@@ -345,7 +345,7 @@ en:
       new_account: "New Account"
       options: Options
       there_are_no_user_accounts_yet: "There are no user accounts yet."
-    new: 
+    new:
       create_account: "Create account"
       create_new_account: "Create new account"
       email_address: "E-Mail Address"
@@ -355,6 +355,6 @@ en:
       please_repeat_the_password_exactly_as_above: "Please repeat the password exactly as above."
       the_email_address_is_used_for_notifications: "The email address is used for notifications."
       the_nick_name_used_for_logins: "The nick name used for logins."
-    show: 
+    show:
       edit_profile: "Edit profile"
       users_profile: "%{login}'s Profile"

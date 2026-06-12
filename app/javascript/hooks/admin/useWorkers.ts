@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export type Slave = {
+export type Worker = {
   name: string
   hostname: string | null
   protocol: "localhost" | "ssh" | string
@@ -25,17 +25,17 @@ async function fetchJson<T>(url: string): Promise<T> {
   return response.json()
 }
 
-export function useSlaves() {
-  const [slaves, setSlaves] = useState<Slave[]>([])
+export function useWorkers() {
+  const [workers, setWorkers] = useState<Worker[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
 
-    fetchJson<Slave[]>("/api/admin/slaves")
+    fetchJson<Worker[]>("/api/admin/workers")
       .then((data) => {
-        if (active) setSlaves(data)
+        if (active) setWorkers(data)
       })
       .catch((err) => {
         if (active) setError(err.message)
@@ -49,14 +49,14 @@ export function useSlaves() {
     }
   }, [])
 
-  return { slaves, loading, error, setSlaves }
+  return { workers, loading, error, setWorkers }
 }
 
 export function csrfToken() {
   return document.querySelector<HTMLMetaElement>("meta[name='csrf-token']")?.content || ""
 }
 
-export async function submitSlave<T>(url: string, method: string, slave: unknown): Promise<T> {
+export async function submitWorker<T>(url: string, method: string, worker: unknown): Promise<T> {
   const response = await fetch(url, {
     method,
     credentials: "same-origin",
@@ -65,7 +65,7 @@ export async function submitSlave<T>(url: string, method: string, slave: unknown
       "Content-Type": "application/json",
       "X-CSRF-Token": csrfToken(),
     },
-    body: JSON.stringify({ slave }),
+    body: JSON.stringify({ worker }),
   })
 
   const data = await response.json().catch(() => ({}))

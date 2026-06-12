@@ -14,7 +14,7 @@ module TinyCI
   module Scheduler
     DEFAULT_INTERVAL = 0.5
 
-    # One scheduling pass: pick the next buildable Build, find a free Slave,
+    # One scheduling pass: pick the next buildable Build, find a free Worker,
     # assign, and enqueue. Designed to be called periodically (or after a
     # DB change that might unblock a build).
     def self.tick
@@ -22,10 +22,10 @@ module TinyCI
         next_build = Build.pending.to_a.find(&:buildable?)
         return unless next_build
 
-        slave = Slave.find_free_slave_for(next_build)
-        return unless slave
+        worker = Worker.find_free_worker_for(next_build)
+        return unless worker
 
-        next_build.assign_to!(slave)
+        next_build.assign_to!(worker)
         start(next_build)
       end
     rescue StandardError => e

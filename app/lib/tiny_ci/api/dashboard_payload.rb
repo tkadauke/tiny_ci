@@ -3,9 +3,9 @@ module TinyCI
     class DashboardPayload
       def as_json(*)
         {
-          queue: serialize_builds(Build.pending.includes(:starter, plan: :project, children: [:starter, { plan: :project }])),
-          slaves: Slave.all.includes(running_builds: [:starter, { plan: :project }, { children: [:starter, { plan: :project }] }]).map { |slave| slave_json(slave) },
-          recent_builds: serialize_builds(Build.finished.includes(:starter, plan: :project, children: [:starter, { plan: :project }]).order(created_at: :desc).limit(5))
+          queue: serialize_builds(Build.pending.includes(:worker, :starter, plan: :project, children: [:worker, :starter, { plan: :project }])),
+          workers: Worker.all.includes(running_builds: [:worker, :starter, { plan: :project }, { children: [:worker, :starter, { plan: :project }] }]).map { |worker| worker_json(worker) },
+          recent_builds: serialize_builds(Build.finished.includes(:worker, :starter, plan: :project, children: [:worker, :starter, { plan: :project }]).order(created_at: :desc).limit(5))
         }
       end
 
@@ -15,11 +15,11 @@ module TinyCI
         builds.map { |build| BuildSerializer.new(build).as_json }
       end
 
-      def slave_json(slave)
+      def worker_json(worker)
         {
-          name: slave.name,
-          offline: slave.offline?,
-          running_builds: serialize_builds(slave.running_builds)
+          name: worker.name,
+          offline: worker.offline?,
+          running_builds: serialize_builds(worker.running_builds)
         }
       end
     end

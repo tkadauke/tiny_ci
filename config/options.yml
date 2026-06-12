@@ -15,7 +15,7 @@
       en: 'Base Path'
       de: 'Basis-Pfad'
     description:
-      en: "The default path under which builds are checked out. This can be overridden per slave."
+      en: "The default path under which builds are checked out. This can be overridden per worker."
       de: "Der Standard-Pfad unter dem Code auf Build-Rechnern gespeichert wird. Diese Einstellung kann pro Build-Rechner angepasst werden."
     type: String
     default: <%= ENV['HOME'] %>/tiny_ci

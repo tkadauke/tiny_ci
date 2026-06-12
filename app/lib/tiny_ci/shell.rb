@@ -3,8 +3,8 @@ module TinyCI
     class CommandExecutionFailed < StandardError; end
 
     def self.open(build)
-      klass = for_protocol(build.slave.protocol)
-      raise ArgumentError, "Unknown shell protocol: #{build.slave.protocol.inspect}" unless klass
+      klass = for_protocol(build.worker.protocol)
+      raise ArgumentError, "Unknown shell protocol: #{build.worker.protocol.inspect}" unless klass
       klass.new(build)
     end
 

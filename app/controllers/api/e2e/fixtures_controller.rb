@@ -18,10 +18,10 @@ module Api
           steps: "step :build",
           requirements: "ruby"
         )
-        slave = Slave.create!(name: tagged("worker"), protocol: "localhost", hostname: "localhost", offline: false)
+        worker = Worker.create!(name: tagged("worker"), protocol: "localhost", hostname: "localhost", offline: false)
         finished_build = create_build!(
           plan,
-          slave: slave,
+          worker: worker,
           starter: user,
           status: "success",
           position: 1,
@@ -29,7 +29,7 @@ module Api
         )
         running_build = create_build!(
           plan,
-          slave: slave,
+          worker: worker,
           starter: user,
           status: "running",
           position: 2,
@@ -48,7 +48,7 @@ module Api
             finished: { position: finished_build.position },
             running: { position: running_build.position }
           },
-          slave: { name: slave.name }
+          worker: { name: worker.name }
         }, status: :created
       end
 
@@ -87,10 +87,10 @@ module Api
         )
       end
 
-      def create_build!(plan, slave:, starter:, status:, position:, output_lines:)
+      def create_build!(plan, worker:, starter:, status:, position:, output_lines:)
         now = Time.current
         plan.builds.create!(
-          slave: slave,
+          worker: worker,
           starter: starter,
           status: status,
           position: position,
@@ -108,7 +108,7 @@ module Api
       def cleanup_tag
         User.where("login LIKE ?", "e2e-#{tag}-%").destroy_all
         Project.where("name LIKE ?", "e2e-#{tag}-%").destroy_all
-        Slave.where("name LIKE ?", "e2e-#{tag}-%").destroy_all
+        Worker.where("name LIKE ?", "e2e-#{tag}-%").destroy_all
       end
     end
   end

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react"
-import type { Slave } from "../../hooks/admin/useSlaves"
+import type { Worker } from "../../hooks/admin/useWorkers"
 
 type EnvironmentRow = {
   id: string
@@ -8,12 +8,12 @@ type EnvironmentRow = {
 }
 
 type Props = {
-  slave?: Partial<Slave> | null
+  worker?: Partial<Worker> | null
   submitLabel: string
-  onSubmit: (slave: Partial<Slave>) => Promise<void>
+  onSubmit: (worker: Partial<Worker>) => Promise<void>
 }
 
-const blankSlave: Partial<Slave> = {
+const blankWorker: Partial<Worker> = {
   offline: false,
   name: "",
   protocol: "localhost",
@@ -26,8 +26,8 @@ const blankSlave: Partial<Slave> = {
   environment_variables: {},
 }
 
-function environmentRows(slave?: Partial<Slave> | null): EnvironmentRow[] {
-  const variables = slave?.environment_variables || {}
+function environmentRows(worker?: Partial<Worker> | null): EnvironmentRow[] {
+  const variables = worker?.environment_variables || {}
   const rows = Object.entries(variables)
     .sort(([left], [right]) => String(left).localeCompare(String(right)))
     .map(([id, variable]) => ({
@@ -48,19 +48,19 @@ function toEnvironmentVariables(rows: EnvironmentRow[]) {
   }, {})
 }
 
-export default function SlaveForm({ slave, submitLabel, onSubmit }: Props) {
-  const initialSlave = useMemo(() => ({ ...blankSlave, ...(slave || {}) }), [slave])
-  const [form, setForm] = useState<Partial<Slave>>(initialSlave)
-  const [rows, setRows] = useState<EnvironmentRow[]>(environmentRows(slave))
+export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
+  const initialWorker = useMemo(() => ({ ...blankWorker, ...(worker || {}) }), [worker])
+  const [form, setForm] = useState<Partial<Worker>>(initialWorker)
+  const [rows, setRows] = useState<EnvironmentRow[]>(environmentRows(worker))
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    setForm(initialSlave)
-    setRows(environmentRows(slave))
-  }, [initialSlave, slave])
+    setForm(initialWorker)
+    setRows(environmentRows(worker))
+  }, [initialWorker, worker])
 
-  function updateField(name: keyof Slave, value: string | boolean) {
+  function updateField(name: keyof Worker, value: string | boolean) {
     setForm((current) => ({ ...current, [name]: value }))
   }
 
@@ -95,13 +95,13 @@ export default function SlaveForm({ slave, submitLabel, onSubmit }: Props) {
         environment_variables: toEnvironmentVariables(rows),
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save slave")
+      setError(err instanceof Error ? err.message : "Unable to save worker")
     } finally {
       setSubmitting(false)
     }
   }
 
-  const defaultBasePath = slave?.default_base_path || "the default path"
+  const defaultBasePath = worker?.default_base_path || "the default path"
 
   return (
     <form onSubmit={handleSubmit}>
@@ -109,27 +109,27 @@ export default function SlaveForm({ slave, submitLabel, onSubmit }: Props) {
 
       <p className="form_item">
         <input
-          id="slave_offline"
+          id="worker_offline"
           name="offline"
           type="checkbox"
           checked={Boolean(form.offline)}
           onChange={(event) => updateField("offline", event.currentTarget.checked)}
         />{" "}
-        <label htmlFor="slave_offline">Offline</label>
+        <label htmlFor="worker_offline">Offline</label>
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_name">Name</label>
+          <label htmlFor="worker_name">Name</label>
         </span>
-        <input id="slave_name" name="name" type="text" value={form.name || ""} onChange={(event) => updateField("name", event.currentTarget.value)} />
+        <input id="worker_name" name="name" type="text" value={form.name || ""} onChange={(event) => updateField("name", event.currentTarget.value)} />
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_protocol">Protocol</label>
+          <label htmlFor="worker_protocol">Protocol</label>
         </span>
-        <select id="slave_protocol" name="protocol" value={form.protocol || "localhost"} onChange={(event) => updateField("protocol", event.currentTarget.value)}>
+        <select id="worker_protocol" name="protocol" value={form.protocol || "localhost"} onChange={(event) => updateField("protocol", event.currentTarget.value)}>
           <option value="localhost">localhost</option>
           <option value="ssh">ssh</option>
         </select>
@@ -137,31 +137,31 @@ export default function SlaveForm({ slave, submitLabel, onSubmit }: Props) {
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_hostname">Host Name</label>
+          <label htmlFor="worker_hostname">Host Name</label>
         </span>
-        <input id="slave_hostname" name="hostname" type="text" value={form.hostname || ""} onChange={(event) => updateField("hostname", event.currentTarget.value)} />
+        <input id="worker_hostname" name="hostname" type="text" value={form.hostname || ""} onChange={(event) => updateField("hostname", event.currentTarget.value)} />
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_username">User Name</label>
+          <label htmlFor="worker_username">User Name</label>
         </span>
-        <input id="slave_username" name="username" type="text" value={form.username || ""} onChange={(event) => updateField("username", event.currentTarget.value)} />
+        <input id="worker_username" name="username" type="text" value={form.username || ""} onChange={(event) => updateField("username", event.currentTarget.value)} />
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_password">Password</label>
+          <label htmlFor="worker_password">Password</label>
         </span>
-        <input id="slave_password" name="password" type="text" value={form.password || ""} onChange={(event) => updateField("password", event.currentTarget.value)} />
+        <input id="worker_password" name="password" type="text" value={form.password || ""} onChange={(event) => updateField("password", event.currentTarget.value)} />
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_base_path">Base Path</label>
+          <label htmlFor="worker_base_path">Base Path</label>
         </span>
         <span className="desc">Leave blank to use the default path {defaultBasePath}</span>
-        <input id="slave_base_path" name="base_path" type="text" value={form.base_path || ""} onChange={(event) => updateField("base_path", event.currentTarget.value)} />
+        <input id="worker_base_path" name="base_path" type="text" value={form.base_path || ""} onChange={(event) => updateField("base_path", event.currentTarget.value)} />
       </p>
 
       <div className="form_item">
@@ -198,20 +198,20 @@ export default function SlaveForm({ slave, submitLabel, onSubmit }: Props) {
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_capabilities">Slave Capabilities</label>
+          <label htmlFor="worker_capabilities">Worker Capabilities</label>
         </span>
         <span className="desc">
-          Values are separated by commas. <a href="/help_topics/slaves">Help</a>
+          Values are separated by commas. <a href="/help_topics/workers">Help</a>
         </span>
-        <textarea id="slave_capabilities" name="capabilities" rows={3} value={form.capabilities || ""} onChange={(event) => updateField("capabilities", event.currentTarget.value)} />
+        <textarea id="worker_capabilities" name="capabilities" rows={3} value={form.capabilities || ""} onChange={(event) => updateField("capabilities", event.currentTarget.value)} />
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor="slave_max_builds">Maximum Builds</label>
+          <label htmlFor="worker_max_builds">Maximum Builds</label>
         </span>
         <span className="desc">0 = unlimited</span>
-        <input id="slave_max_builds" name="max_builds" type="text" value={form.max_builds ?? 0} onChange={(event) => updateField("max_builds", event.currentTarget.value)} />
+        <input id="worker_max_builds" name="max_builds" type="text" value={form.max_builds ?? 0} onChange={(event) => updateField("max_builds", event.currentTarget.value)} />
       </p>
 
       <p>
@@ -220,3 +220,5 @@ export default function SlaveForm({ slave, submitLabel, onSubmit }: Props) {
     </form>
   )
 }
+
+export default WorkerForm

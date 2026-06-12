@@ -2,12 +2,12 @@ import { describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { screen, within } from "@/test/test-utils";
 import { renderWithProviders } from "@/test/test-utils";
-import { slaveFixture } from "@/test/handlers";
-import SlaveForm from "./SlaveForm";
+import { workerFixture } from "@/test/handlers";
+import WorkerForm from "./WorkerForm";
 
-describe("SlaveForm", () => {
+describe("WorkerForm", () => {
   it("renders all worker fields and protocol options", () => {
-    renderWithProviders(<SlaveForm slave={slaveFixture} submitLabel="Update" onSubmit={vi.fn()} />);
+    renderWithProviders(<WorkerForm worker={workerFixture} submitLabel="Update" onSubmit={vi.fn()} />);
 
     expect(screen.getByLabelText("Offline")).toBeInTheDocument();
     expect(screen.getByLabelText("Name")).toHaveValue("builder-1");
@@ -19,14 +19,14 @@ describe("SlaveForm", () => {
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
     expect(screen.getByLabelText("Base Path")).toBeInTheDocument();
     expect(screen.getByText("Environment Variables")).toBeInTheDocument();
-    expect(screen.getByLabelText("Slave Capabilities")).toBeInTheDocument();
+    expect(screen.getByLabelText("Worker Capabilities")).toBeInTheDocument();
     expect(screen.getByLabelText("Maximum Builds")).toBeInTheDocument();
   });
 
   it("submits changed values", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn().mockResolvedValue(undefined);
-    renderWithProviders(<SlaveForm slave={slaveFixture} submitLabel="Update" onSubmit={onSubmit} />);
+    renderWithProviders(<WorkerForm worker={workerFixture} submitLabel="Update" onSubmit={onSubmit} />);
 
     await user.clear(screen.getByLabelText("Name"));
     await user.type(screen.getByLabelText("Name"), "worker-2");

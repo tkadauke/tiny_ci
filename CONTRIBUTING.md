@@ -39,7 +39,7 @@ test "should validate presence of name" do
   # ...
 end
 
-test "should clone a slave" do
+test "should clone a worker" do
   # ...
 end
 ```

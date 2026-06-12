@@ -26,10 +26,10 @@ class BuildTest < ActiveSupport::TestCase
     assert_nil child.revision
   end
 
-  test "should use the slave's shell when building" do
+  test "should use the worker's shell when building" do
     build = Build.new(updated_at: Time.now)
     build.stubs(:plan).returns(stub(has_children?: false))
-    build.stubs(slave: stub(protocol: "ssh"))
+    build.stubs(worker: stub(protocol: "ssh"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate)
     build.stubs(:update)
@@ -41,7 +41,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should create base directory" do
     build = Build.new(updated_at: Time.now)
     build.stubs(:plan).returns(stub(has_children?: false))
-    build.stubs(slave: stub(protocol: "localhost", base_path: "/some/base/path"))
+    build.stubs(worker: stub(protocol: "localhost", base_path: "/some/base/path"))
     shell = mock
     shell.expects(:mkdir)
     TinyCI::Shell::Localhost.stubs(:new).returns(shell)
@@ -54,7 +54,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should evaluate steps" do
     build = Build.new(updated_at: Time.now)
     build.stubs(:plan).returns(stub(has_children?: false))
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.expects(:evaluate)
 
@@ -65,7 +65,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should set status to success when finished" do
     build = Build.new(updated_at: Time.now)
     build.stubs(:plan).returns(stub(has_children?: false))
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate)
 
@@ -76,7 +76,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should set status to waiting when finished but children are present" do
     build = Build.new(updated_at: Time.now)
     build.stubs(:plan).returns(stub(has_children?: true))
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate)
 
@@ -86,7 +86,7 @@ class BuildTest < ActiveSupport::TestCase
 
   test "should set status to failure on failing command" do
     build = Build.new(updated_at: Time.now)
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate).raises(TinyCI::Shell::CommandExecutionFailed)
 
@@ -96,7 +96,7 @@ class BuildTest < ActiveSupport::TestCase
 
   test "should ignore exception when build process is killed" do
     build = Build.new(updated_at: Time.now)
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate).raises(SignalException.new("TERM"))
 
@@ -107,7 +107,7 @@ class BuildTest < ActiveSupport::TestCase
 
   test "should set status to error on internal error" do
     build = Build.new(updated_at: Time.now)
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate).raises(RuntimeError)
 
@@ -117,7 +117,7 @@ class BuildTest < ActiveSupport::TestCase
 
   test "should finalize as stopped when status flips to stopping during build" do
     build = Build.new(updated_at: Time.now)
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     # Simulate a stop signal arriving mid-run: the shell loop notices the
     # status has flipped to "stopping" on its next poll and raises
@@ -130,7 +130,7 @@ class BuildTest < ActiveSupport::TestCase
 
   test "should flush buffered output before saving the stopped status" do
     build = Build.new(updated_at: Time.now)
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate).raises(TinyCI::BuildStopped)
     build.stubs(:update)
@@ -141,7 +141,7 @@ class BuildTest < ActiveSupport::TestCase
 
   test "should still call finished hook after a stopped build" do
     build = Build.new(updated_at: Time.now)
-    build.stubs(slave: stub(protocol: "localhost"))
+    build.stubs(worker: stub(protocol: "localhost"))
     build.stubs(:create_base_directory)
     TinyCI::DSL.stubs(:evaluate).raises(TinyCI::BuildStopped)
     build.stubs(:update)
@@ -221,7 +221,7 @@ class BuildTest < ActiveSupport::TestCase
   test "should have plan name in workspace path" do
     build = Build.new
     build.stubs(:plan).returns(stub(name: "some_plan", project: stub(name: "some_project")))
-    build.stubs(:slave).returns(stub(base_path: "/some/base/path"))
+    build.stubs(:worker).returns(stub(base_path: "/some/base/path"))
     assert_match(/some_plan/, build.workspace_path)
   end
 
@@ -279,20 +279,20 @@ class BuildTest < ActiveSupport::TestCase
     assert_equal({}, build.environment)
   end
 
-  test "should use the slaves environment as fallback for the current environment" do
+  test "should use the workers environment as fallback for the current environment" do
     build = Build.new(parameters: { "foo" => "bar" })
-    slave = stub(current_environment: { "foo" => "baz", "hello" => "world" })
-    build.stubs(:slave).returns(slave)
+    worker = stub(current_environment: { "foo" => "baz", "hello" => "world" })
+    build.stubs(:worker).returns(worker)
 
     assert_equal({ "foo" => "bar", "hello" => "world" }, build.current_environment)
   end
 
-  test "should assign build to slave" do
-    slave = Slave.new(name: "some_slave", protocol: "localhost")
+  test "should assign build to worker" do
+    worker = Worker.new(name: "some_worker", protocol: "localhost")
 
     build = Build.new
-    build.expects(:update).with({ slave: slave })
-    build.assign_to!(slave)
+    build.expects(:update).with({ worker: worker })
+    build.assign_to!(worker)
   end
 
   test "should be buildable if pending and plan is buildable" do

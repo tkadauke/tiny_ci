@@ -5,7 +5,7 @@ import { useChannel } from "@/hooks/useChannel";
 import { api } from "@/lib/api";
 import type { Build } from "@/hooks/useBuilds";
 
-type Slave = {
+type Worker = {
   name: string;
   offline: boolean;
   running_builds?: Build[];
@@ -13,7 +13,7 @@ type Slave = {
 
 type Dashboard = {
   queue: Build[];
-  slaves: Slave[];
+  workers: Worker[];
   recent_builds: Build[];
 };
 
@@ -96,7 +96,7 @@ function QuickLinks() {
           <Link to="/projects/new">Create a project</Link>
         </li>
         <li>
-          <Link to="/admin/slaves">Manage build slaves</Link>
+          <Link to="/admin/workers">Manage build workers</Link>
         </li>
       </ul>
     </>
@@ -214,26 +214,26 @@ function BuildQueueWidget({ builds }: { builds: Build[] }) {
   );
 }
 
-function SlaveStatus({ slave }: { slave: Slave }) {
-  if (slave.offline) {
+function WorkerStatus({ worker }: { worker: Worker }) {
+  if (worker.offline) {
     return (
       <p>
         <img src="/assets/icons/small/offline.png" alt="" width={16} height={16} />{" "}
-        <Link to={`/admin/slaves/${slave.name}/edit`}>Configure</Link>
+        <Link to={`/admin/workers/${worker.name}/edit`}>Configure</Link>
       </p>
     );
   }
 
-  return <DashboardBuildList builds={slave.running_builds || []} />;
+  return <DashboardBuildList builds={worker.running_builds || []} />;
 }
 
-function SlaveStatusWidget({ slaves }: { slaves: Slave[] }) {
-  if (slaves.length === 0) {
+function WorkerStatusWidget({ workers }: { workers: Worker[] }) {
+  if (workers.length === 0) {
     return (
       <section>
-        <h2>Slave status</h2>
+        <h2>Worker status</h2>
         <p>
-          No slaves configured. <Link to="/admin/slaves">Configure them now</Link>
+          No workers configured. <Link to="/admin/workers">Configure them now</Link>
         </p>
       </section>
     );
@@ -241,14 +241,14 @@ function SlaveStatusWidget({ slaves }: { slaves: Slave[] }) {
 
   return (
     <section>
-      <h2>Slave status</h2>
+      <h2>Worker status</h2>
       <ul>
-        {slaves.map((slave) => (
-          <li key={slave.name}>
+        {workers.map((worker) => (
+          <li key={worker.name}>
             <p>
-              <strong>{slave.name}</strong>
+              <strong>{worker.name}</strong>
             </p>
-            <SlaveStatus slave={slave} />
+            <WorkerStatus worker={worker} />
           </li>
         ))}
       </ul>
@@ -271,7 +271,7 @@ export function DashboardPage() {
   const onQueueMessage = () => {
     queryClient.invalidateQueries({ queryKey: dashboardQueryKey });
   };
-  const { data = { queue: [], slaves: [], recent_builds: [] }, error, isLoading } = useQuery({
+  const { data = { queue: [], workers: [], recent_builds: [] }, error, isLoading } = useQuery({
     queryKey: dashboardQueryKey,
     queryFn: fetchDashboard,
     enabled: !currentUser.guest,
@@ -286,7 +286,7 @@ export function DashboardPage() {
       {isLoading ? <p>Loading...</p> : null}
       <div id="queue">
         <BuildQueueWidget builds={data.queue} />
-        <SlaveStatusWidget slaves={data.slaves} />
+        <WorkerStatusWidget workers={data.workers} />
         <RecentBuildsWidget builds={data.recent_builds} />
       </div>
     </>

@@ -22,9 +22,9 @@ export default function Navigation() {
           <li>
             <Link to="/users">Users</Link>
           </li>
-          {currentUser.can_configure_slaves ? (
+          {currentUser.can_configure_workers ? (
             <li>
-              <Link to="/admin/slaves">Slaves</Link>
+              <Link to="/admin/workers">Workers</Link>
             </li>
           ) : null}
           {currentUser.can_configure_system_variables ? (

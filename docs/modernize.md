@@ -298,7 +298,7 @@ class BuildJob < ApplicationJob
 end
 ```
 
-The slave/resource matching logic in `Slave.find_free_slave_for` becomes a Solid Queue concurrency control or a custom dispatcher.
+The worker/resource matching logic in `Worker.find_free_worker_for` becomes a Solid Queue concurrency control or a custom dispatcher.
 
 **Real-time UI: replace Juggernaut with Hotwire Turbo Streams + Action Cable**
 
@@ -372,10 +372,10 @@ pre-commit:
       run: bundle audit check
 ```
 
-**Type checking — add Sorbet or steep (P2):** Given the age of the codebase, full type coverage is out of scope initially. Add `sorbet` stubs for the core domain (`Build`, `Plan`, `Slave`, `TinyCI::Scheduler::*`) as a P2 item.
+**Type checking — add Sorbet or steep (P2):** Given the age of the codebase, full type coverage is out of scope initially. Add `sorbet` stubs for the core domain (`Build`, `Plan`, `Worker`, `TinyCI::Scheduler::*`) as a P2 item.
 
 **Remove dangerous patterns:**
-- `slaves` table stores `password` in plaintext — replace with SSH key authentication (see Security section).
+- `workers` table stores `password` in plaintext — replace with SSH key authentication (see Security section).
 - `eval`-equivalent: `TinyCI::DSL` uses `instance_eval(build.plan.steps)` on user-supplied string content. This is a critical **remote code execution** vulnerability. Replace with a sandboxed DSL or a YAML/structured step format.
 
 ---
@@ -414,7 +414,7 @@ gem 'opentelemetry-exporter-otlp'
 
 Key spans to add manually:
 - `tiny_ci.build.queued` → `tiny_ci.build.dispatched` → `tiny_ci.build.finished`
-- `tiny_ci.step.run` with attributes: `step.type`, `slave.name`, `exit_code`
+- `tiny_ci.step.run` with attributes: `step.type`, `worker.name`, `exit_code`
 
 This lets operators see build latency broken down by scheduling wait vs. execution time.
 
@@ -424,7 +424,7 @@ This lets operators see build latency broken down by scheduling wait vs. executi
 gem 'prometheus_exporter'
 ```
 
-Track: queue depth, running builds per slave, build duration histogram (by project/plan), failure rate.
+Track: queue depth, running builds per worker, build duration histogram (by project/plan), failure rate.
 
 **Error tracking — add Sentry SDK:**
 
@@ -444,7 +444,7 @@ The scheduler's `rescue => e; puts e.message` swallows errors silently. Route th
 | Issue | Severity | Fix |
 |---|---|---|
 | `instance_eval(build.plan.steps)` — arbitrary Ruby execution from DB | **Critical** | Replace with structured YAML step format |
-| SSH passwords stored in plaintext in `slaves` table | **High** | Switch to SSH key pairs; store private keys encrypted with Rails credentials |
+| SSH passwords stored in plaintext in `workers` table | **High** | Switch to SSH key pairs; store private keys encrypted with Rails credentials |
 | Gemfile source uses `http://` (not `https://`) | High | Change to `https://rubygems.org` |
 | DRb server with no authentication on `druby://localhost:2250` | Medium | Remove DRb; replace with Solid Queue |
 | No CSRF protection audit (Rails 2.3 has weak defaults) | Medium | Rails 8 CSRF defaults are correct; verify after upgrade |
@@ -610,7 +610,7 @@ bundle exec rails test:modules       # module plugin tests
 - `TinyCI::DSL` evaluates build steps (lib/tiny_ci/dsl.rb)
 - `TinyCI::Scheduler::Runner` polls and dispatches builds (lib/tiny_ci/scheduler/runner.rb)
 - Plugins live in modules/ — each has an init.rb that extends the DSL
-- Slaves are remote build agents connected via SSH or localhost
+- Workers are remote build agents connected via SSH or localhost
 
 ## Conventions
 - Models: app/models/
@@ -645,7 +645,7 @@ bundle exec rails test:modules       # module plugin tests
 | **P0** | Fix Gemfile source: `http://` → `https://rubygems.org` | 5 min | High — active MitM risk |
 | **P0** | Add GitHub Actions CI workflow (test + bundler-audit) | 2 h | High — no tests run on PRs today |
 | **P0** | Replace `instance_eval(build.plan.steps)` with safe step DSL | 1–2 d | Critical — RCE from DB content |
-| **P0** | Remove plaintext SSH passwords from slaves table | 1 d | High — credential exposure |
+| **P0** | Remove plaintext SSH passwords from workers table | 1 d | High — credential exposure |
 | **P0** | Add `CLAUDE.md` for agent/contributor orientation | 1 h | Medium |
 | **P1** | Rails upgrade: 2.3 → 3.2 → 4.2 (step through with `rails app:update`) | 2–3 w | High — unlocks modern tooling |
 | **P1** | Replace Webrat + RSpec 1.3 with Capybara + RSpec 3 | 1 w | High — existing tests cannot run on Ruby 3 |

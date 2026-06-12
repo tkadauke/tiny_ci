@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import type { Slave } from "./useSlaves"
+import type { Worker } from "./useWorkers"
 
-export function useSlave(name: string | null) {
-  const [slave, setSlave] = useState<Slave | null>(null)
+export function useWorker(name: string | null) {
+  const [worker, setWorker] = useState<Worker | null>(null)
   const [loading, setLoading] = useState(Boolean(name))
   const [error, setError] = useState<string | null>(null)
 
@@ -12,7 +12,7 @@ export function useSlave(name: string | null) {
     let active = true
     setLoading(true)
 
-    fetch(`/api/admin/slaves/${encodeURIComponent(name)}`, {
+    fetch(`/api/admin/workers/${encodeURIComponent(name)}`, {
       headers: { Accept: "application/json" },
       credentials: "same-origin",
     })
@@ -21,7 +21,7 @@ export function useSlave(name: string | null) {
         return response.json()
       })
       .then((data) => {
-        if (active) setSlave(data)
+        if (active) setWorker(data)
       })
       .catch((err) => {
         if (active) setError(err.message)
@@ -35,5 +35,5 @@ export function useSlave(name: string | null) {
     }
   }, [name])
 
-  return { slave, loading, error }
+  return { worker, loading, error }
 }
