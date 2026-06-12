@@ -1,6 +1,8 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { StatusBadge } from "@/components/ui/Badge";
+import { Table, Td, Th, Tr } from "@/components/ui/Table";
 
 type Reference = {
   id: number;
@@ -113,23 +115,23 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
   const { t } = useTranslation();
 
   return (
-    <table className="list">
+    <Table>
       <thead>
         <tr>
-          <th />
-          <th />
-          <th>{t("plans.list.name")}</th>
-          <th>{t("plans.list.description")}</th>
-          <th>{t("plans.list.last_build_time")}</th>
-          <th>{t("plans.list.last_success")}</th>
-          <th>{t("plans.list.last_failure")}</th>
+          <Th />
+          <Th />
+          <Th>{t("plans.list.name")}</Th>
+          <Th>{t("plans.list.description")}</Th>
+          <Th>{t("plans.list.last_build_time")}</Th>
+          <Th>{t("plans.list.last_success")}</Th>
+          <Th>{t("plans.list.last_failure")}</Th>
         </tr>
       </thead>
       <tbody>
         {plans.map((plan) => (
-          <tr key={plan.id}>
-            <td>{plan.status ? <Icon name={plan.status} size="small" /> : null}</td>
-            <td>
+          <Tr key={plan.id}>
+            <Td>{plan.status ? <StatusBadge status={plan.status} label={t(`build.status.${plan.status}`, { defaultValue: plan.status })} /> : null}</Td>
+            <Td>
               {plan.weather !== null ? (
                 <Icon
                   name={`weather-${plan.weather}`}
@@ -137,19 +139,19 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
                   title={t("plans.list.count_of_the_last_5_builds_were_successful", { count: plan.weather })}
                 />
               ) : null}
-            </td>
-            <td>
+            </Td>
+            <Td>
               <a href={`/projects/${encodePathPart(plan.project.name)}`}>{plan.project.name}</a> /{" "}
               <a href={planPath(plan.project.name, plan.name)}>{plan.name}</a>
-            </td>
-            <td>{truncate(plan.description)}</td>
-            <td>{formatMaybeDate(plan.last_build_at, t("plans.list.unknown"))}</td>
-            <td>{formatMaybeDate(plan.last_success_at, t("plans.list.unknown"))}</td>
-            <td>{formatMaybeDate(plan.last_failure_at, t("plans.list.unknown"))}</td>
-          </tr>
+            </Td>
+            <Td>{truncate(plan.description)}</Td>
+            <Td>{formatMaybeDate(plan.last_build_at, t("plans.list.unknown"))}</Td>
+            <Td>{formatMaybeDate(plan.last_success_at, t("plans.list.unknown"))}</Td>
+            <Td>{formatMaybeDate(plan.last_failure_at, t("plans.list.unknown"))}</Td>
+          </Tr>
         ))}
       </tbody>
-    </table>
+    </Table>
   );
 }
 
@@ -350,9 +352,8 @@ export default function PlanShowPage(props: PlanShowPageProps) {
           <>
             <dt>{t("plans.show.status")}</dt>
             <dd>
-              <Icon name={plan.status} size="large" />{" "}
+              <StatusBadge status={plan.status} label={t(`build.status.${plan.status}`, { defaultValue: plan.status })} />{" "}
               <span>
-                {t(`build.status.${plan.status}`, { defaultValue: plan.status })}{" "}
                 {plan.last_finished_build ? (
                   <a href={buildPath(projectId, plan.name, plan.last_finished_build.position)}>{t("plans.show.latest_build")}</a>
                 ) : null}

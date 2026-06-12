@@ -1,6 +1,8 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { WeatherIcon } from "@/components/plans/WeatherIcon"
+import { StatusBadge } from "@/components/ui/Badge"
+import { Table, Td, Th, Tr } from "@/components/ui/Table"
 
 const h = React.createElement
 
@@ -20,14 +22,10 @@ export type PlanListPlan = {
   last_failure_at?: string | null
 }
 
-function statusIcon(status: string | null | undefined, size: "small" | "large", title?: string) {
+function statusBadge(status: string | null | undefined, label?: string) {
   if (!status) return null
 
-  return h("img", {
-    src: `/assets/icons/${size}/${status}.png`,
-    alt: title ?? status,
-    title: title ?? status
-  })
+  return h(StatusBadge, { status, label })
 }
 
 function truncate(text: string | null | undefined, length: number) {
@@ -104,15 +102,15 @@ function planName(plan: PlanListPlan) {
 function listRows(plans: PlanListPlan[], t: (key: string, options?: Record<string, unknown>) => string) {
   return plans.map((plan) =>
     h(
-      "tr",
+      Tr,
       { key: `${plan.project.name}/${plan.name}` },
-      h("td", null, statusIcon(plan.status, "small", plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
-      h("td", null, h(WeatherIcon, { weather: plan.weather })),
-      h("td", null, planName(plan)),
-      h("td", null, truncate(plan.description, 40)),
-      h("td", null, duration(plan.last_build_time, t)),
-      h("td", null, plan.last_success_at ? timeAgo(plan.last_success_at, t) : t("plans.list.unknown")),
-      h("td", null, plan.last_failure_at ? timeAgo(plan.last_failure_at, t) : t("plans.list.unknown"))
+      h(Td, null, statusBadge(plan.status, plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
+      h(Td, null, h(WeatherIcon, { weather: plan.weather })),
+      h(Td, null, planName(plan)),
+      h(Td, null, truncate(plan.description, 40)),
+      h(Td, null, duration(plan.last_build_time, t)),
+      h(Td, null, plan.last_success_at ? timeAgo(plan.last_success_at, t) : t("plans.list.unknown")),
+      h(Td, null, plan.last_failure_at ? timeAgo(plan.last_failure_at, t) : t("plans.list.unknown"))
     )
   )
 }
@@ -121,21 +119,21 @@ function PlanTable({ plans }: { plans: PlanListPlan[] }) {
   const { t } = useTranslation()
 
   return h(
-    "table",
-    { className: "list" },
+    Table,
+    null,
     h(
       "thead",
       null,
       h(
         "tr",
         null,
-        h("th", null),
-        h("th", null),
-        h("th", null, t("plans.list.name")),
-        h("th", null, t("plans.list.description")),
-        h("th", null, t("plans.list.last_build_time")),
-        h("th", null, t("plans.list.last_success")),
-        h("th", null, t("plans.list.last_failure"))
+        h(Th, null),
+        h(Th, null),
+        h(Th, null, t("plans.list.name")),
+        h(Th, null, t("plans.list.description")),
+        h(Th, null, t("plans.list.last_build_time")),
+        h(Th, null, t("plans.list.last_success")),
+        h(Th, null, t("plans.list.last_failure"))
       )
     ),
     h("tbody", null, listRows(plans, t))
@@ -155,7 +153,7 @@ function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
         h(
           "li",
           { key: `${plan.project.name}/${plan.name}` },
-          h("div", { className: "status" }, statusIcon(plan.status, "large", plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
+          h("div", { className: "status" }, statusBadge(plan.status, plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
           h(
             "div",
             { className: "details" },

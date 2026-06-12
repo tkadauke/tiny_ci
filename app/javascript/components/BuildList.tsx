@@ -1,6 +1,9 @@
 import React from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import { StatusBadge } from "@/components/ui/Badge"
+import { Button } from "@/components/ui/Button"
+import { Table, Td, Th, Tr } from "@/components/ui/Table"
 import type { Build } from "@/hooks/useBuilds"
 import { buildsQueryKey } from "@/hooks/useBuilds"
 
@@ -66,12 +69,11 @@ async function stopBuild(build: Build) {
 
 function StatusCell({ build }: { build: Build }) {
   const { t } = useTranslation()
-  const label = t(`build.status.${build.status}`, { defaultValue: build.status })
 
   return (
-    <td>
-      <img src={build.status_icon_path} alt="" width={16} height={16} /> {label}
-    </td>
+    <Td>
+      <StatusBadge status={build.status} label={t(`build.status.${build.status}`, { defaultValue: build.status })} />
+    </Td>
   )
 }
 
@@ -96,20 +98,20 @@ function StopCell({
   })
 
   if (FINISHED_STATUSES.has(build.status)) {
-    return <td />
+    return <Td />
   }
 
   return (
-    <td>
-      <button
+    <Td>
+      <Button
         type="button"
-        className="stop-link"
+        variant="ghost"
         disabled={mutation.isPending || build.status === "stopping"}
         onClick={() => mutation.mutate()}
       >
         <img src={stopIconPath} alt="" width={16} height={16} /> {t("spa.actions.stop")}
-      </button>
-    </td>
+      </Button>
+    </Td>
   )
 }
 
@@ -127,21 +129,21 @@ function BuildRow({
   stopIconPath?: string
 }) {
   return (
-    <tr>
-      <td>
+    <Tr>
+      <Td>
         {child ? "+ " : null}
         <a href={pathForBuild(build)}>{build.position}</a>
-      </td>
-      <td>
+      </Td>
+      <Td>
         <a href={pathForProject(build)}>{build.plan.project_name}</a> /{" "}
         <a href={pathForPlan(build)}>{build.plan.name}</a>
-      </td>
-      <td>
+      </Td>
+      <Td>
         <a href={pathForBuild(build)}>{formatTimestamp(build.created_at)}</a>
-      </td>
+      </Td>
       <StatusCell build={build} />
       <StopCell build={build} projectId={projectId} planId={planId} stopIconPath={stopIconPath} />
-    </tr>
+    </Tr>
   )
 }
 
@@ -159,14 +161,14 @@ export function BuildList({
   }
 
   return (
-    <table className="list">
+    <Table>
       <thead>
         <tr>
-          <th>{t("builds.list.number")}</th>
-          <th>{t("builds.list.name")}</th>
-          <th>{t("builds.list.timestamp")}</th>
-          <th>{t("builds.list.status")}</th>
-          <th />
+          <Th>{t("builds.list.number")}</Th>
+          <Th>{t("builds.list.name")}</Th>
+          <Th>{t("builds.list.timestamp")}</Th>
+          <Th>{t("builds.list.status")}</Th>
+          <Th />
         </tr>
       </thead>
       <tbody>
@@ -190,6 +192,6 @@ export function BuildList({
           ))
         ])}
       </tbody>
-    </table>
+    </Table>
   )
 }

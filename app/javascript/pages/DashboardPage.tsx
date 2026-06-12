@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { StatusBadge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Table, Td, Th, Tr } from "@/components/ui/Table";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useChannel } from "@/hooks/useChannel";
 import { api } from "@/lib/api";
@@ -74,10 +77,6 @@ function formatDuration(value: number | null, t: (key: string) => string) {
     .join(", ");
 }
 
-function statusIconPath(build: Build) {
-  return build.status_icon_path || `/assets/icons/small/${build.status}.png`;
-}
-
 function QuickLinks() {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
@@ -116,14 +115,14 @@ function StopButton({ build }: { build: Build }) {
   });
 
   return (
-    <button
+    <Button
       type="button"
-      className="stop-link"
+      variant="ghost"
       disabled={mutation.isPending || build.status === "stopping"}
       onClick={() => mutation.mutate()}
     >
       <img src="/assets/icons/small/stopped.png" alt="" width={16} height={16} /> {t("spa.actions.stop")}
-    </button>
+    </Button>
   );
 }
 
@@ -141,27 +140,26 @@ function BuildRow({
   const { t } = useTranslation();
 
   return (
-    <tr>
-      <td>
+    <Tr>
+      <Td>
         {child ? "+ " : null}
         <Link to={buildPath(build)}>{build.position}</Link>
-      </td>
-      <td>
+      </Td>
+      <Td>
         <Link to={projectPath(build)}>{build.plan.project_name}</Link> /{" "}
         <Link to={planPath(build)}>{build.plan.name}</Link>
-      </td>
-      <td>
+      </Td>
+      <Td>
         <Link to={buildPath(build)}>{formatTimestamp(build.created_at)}</Link>
-      </td>
-      <td>
-        <img src={statusIconPath(build)} alt="" width={16} height={16} />{" "}
-        {t(`build.status.${build.status}`, { defaultValue: build.status })}
-      </td>
-      {showDuration ? <td>{formatDuration(build.duration, t)}</td> : null}
+      </Td>
+      <Td>
+        <StatusBadge status={build.status} label={t(`build.status.${build.status}`, { defaultValue: build.status })} />
+      </Td>
+      {showDuration ? <Td>{formatDuration(build.duration, t)}</Td> : null}
       {showStopAction ? (
-        <td>{unfinishedStatuses.has(build.status) ? <StopButton build={build} /> : null}</td>
+        <Td>{unfinishedStatuses.has(build.status) ? <StopButton build={build} /> : null}</Td>
       ) : null}
-    </tr>
+    </Tr>
   );
 }
 
@@ -179,15 +177,15 @@ function DashboardBuildList({
   if (builds.length === 0) return <p>{t("builds.list.no_builds")}</p>;
 
   return (
-    <table className="list">
+    <Table>
       <thead>
         <tr>
-          <th>{t("builds.list.number")}</th>
-          <th>{t("builds.list.name")}</th>
-          <th>{t("builds.list.timestamp")}</th>
-          <th>{t("builds.list.status")}</th>
-          {showDuration ? <th>{t("builds.completed.duration")}</th> : null}
-          {showStopAction ? <th /> : null}
+          <Th>{t("builds.list.number")}</Th>
+          <Th>{t("builds.list.name")}</Th>
+          <Th>{t("builds.list.timestamp")}</Th>
+          <Th>{t("builds.list.status")}</Th>
+          {showDuration ? <Th>{t("builds.completed.duration")}</Th> : null}
+          {showStopAction ? <Th /> : null}
         </tr>
       </thead>
       <tbody>
@@ -209,7 +207,7 @@ function DashboardBuildList({
           )),
         ])}
       </tbody>
-    </table>
+    </Table>
   );
 }
 
