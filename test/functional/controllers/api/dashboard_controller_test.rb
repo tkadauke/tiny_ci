@@ -3,18 +3,10 @@ require_relative "../../test_helper"
 class Api::DashboardControllerTest < ActionController::TestCase
   def setup
     @user = create_user
-    login_with @user
-  end
-
-  test "requires login" do
     logout
-
-    get :show
-
-    assert_redirected_to_login
   end
 
-  test "returns dashboard data" do
+  test "returns dashboard data without login" do
     project = Project.create!(name: "default")
     plan = project.plans.create!(name: "some_plan")
     pending = plan.builds.create!(status: "pending", starter: @user)

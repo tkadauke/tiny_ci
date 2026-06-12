@@ -19,6 +19,18 @@ describe("DashboardPage", () => {
     expect(screen.getAllByText("tiny-ci")[0]).toBeInTheDocument();
   });
 
+  it("renders dashboard widgets with fixture data for guests", async () => {
+    server.use(http.get("/api/me", () => HttpResponse.json(guestUser)));
+
+    renderWithProviders(<DashboardPage />);
+
+    expect(await screen.findByRole("heading", { name: "Build queue" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Slave status" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Recently finished builds" })).toBeInTheDocument();
+    expect(await screen.findByText("builder-1")).toBeInTheDocument();
+    expect(screen.getAllByText("tiny-ci")[0]).toBeInTheDocument();
+  });
+
   it("shows quick links for guests and logged-in users", async () => {
     server.use(http.get("/api/me", () => HttpResponse.json(guestUser)));
     renderWithProviders(<DashboardPage />);

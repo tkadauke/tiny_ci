@@ -280,7 +280,6 @@ function RecentBuildsWidget({ builds }: { builds: Build[] }) {
 
 export function DashboardPage() {
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
   const queryClient = useQueryClient();
   const onQueueMessage = () => {
     queryClient.invalidateQueries({ queryKey: dashboardQueryKey });
@@ -288,7 +287,6 @@ export function DashboardPage() {
   const { data = { queue: [], workers: [], recent_builds: [] }, error, isLoading } = useQuery({
     queryKey: dashboardQueryKey,
     queryFn: fetchDashboard,
-    enabled: !currentUser.guest,
   });
 
   useChannel("QueueChannel", {}, onQueueMessage);
