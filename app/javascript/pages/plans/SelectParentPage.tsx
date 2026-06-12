@@ -1,5 +1,9 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Reference } from "../../components/plans/PlanForm";
 
 type SelectParentPageProps = {
@@ -113,12 +117,12 @@ export default function SelectParentPage(props: SelectParentPageProps) {
 
   return (
     <>
-      <h1>Select parent plan for {plan?.name ?? planId}</h1>
+      <PageHeader title={`Select parent plan for ${plan?.name ?? planId}`} />
 
       {errors.length > 0 ? (
-        <div className="errorExplanation">
-          <h2>{errors.length} prohibited this plan from being saved</h2>
-          <ul>
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="font-medium">{errors.length} prohibited this plan from being saved</p>
+          <ul className="mt-2 list-disc pl-5">
             {errors.map((error) => (
               <li key={error}>{error}</li>
             ))}
@@ -126,12 +130,11 @@ export default function SelectParentPage(props: SelectParentPageProps) {
         </div>
       ) : null}
 
+      <Card>
+        <CardBody>
       <form onSubmit={submitParent}>
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="plan_parent_id">Select Parent Plan</label>
-          </span>
-          <select id="plan_parent_id" name="plan[parent_id]" value={parentId ?? ""} onChange={updateParent}>
+        <FormField label="Select Parent Plan">
+          <select className={inputClassName} id="plan_parent_id" name="plan[parent_id]" value={parentId ?? ""} onChange={updateParent}>
             <option value="" />
             {rootPlanOptions.map((rootPlan) => (
               <option key={rootPlan.id} value={rootPlan.id}>
@@ -139,12 +142,14 @@ export default function SelectParentPage(props: SelectParentPageProps) {
               </option>
             ))}
           </select>
-        </p>
+        </FormField>
 
-        <button type="submit" disabled={submitting}>
+        <Button type="submit" disabled={submitting}>
           Update
-        </button>
+        </Button>
       </form>
+        </CardBody>
+      </Card>
     </>
   );
 }

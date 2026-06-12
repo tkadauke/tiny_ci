@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { Card, CardBody } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { StatusBadge } from "@/components/ui/Badge";
+import { Table, Td, Th, Tr } from "@/components/ui/Table";
 import type { LoggedInCurrentUser } from "../../hooks/useCurrentUser";
 import type { User } from "../../hooks/useUser";
 import { api } from "../../lib/api";
@@ -19,15 +23,19 @@ export default function UsersPage({ currentUser }: UsersPageProps) {
   });
 
   return (
-    <div className="react-page">
-      <p>
-        You are here: <Link to="/">Home</Link> &gt; Users
-      </p>
-      <h1>Listing Users</h1>
+    <>
+      <PageHeader
+        title="Listing Users"
+        actions={
+          currentUser.can_create_accounts ? (
+            <Link className="text-sm text-blue-600 hover:text-blue-500" to="/signup">New Account</Link>
+          ) : null
+        }
+      />
 
       {usersQuery.isPending ? <p>Loading users...</p> : null}
       {usersQuery.isError ? (
-        <div className="error" role="alert">
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           Could not load users.
         </div>
       ) : null}
@@ -45,36 +53,36 @@ export default function UsersPage({ currentUser }: UsersPageProps) {
 
       {usersQuery.data && usersQuery.data.length > 0 ? (
         <>
-          <table className="list">
+          <Card>
+            <CardBody>
+          <Table>
             <thead>
               <tr>
-                <th>Login name</th>
-                <th>Options</th>
+                <Th>Login</Th>
+                <Th>Role</Th>
+                <Th>Options</Th>
               </tr>
             </thead>
             <tbody>
               {usersQuery.data.map((user) => (
-                <tr key={user.login}>
-                  <td>
+                <Tr key={user.login}>
+                  <Td>
                     <Link to={`/users/${encodeURIComponent(user.login)}`}>{user.login}</Link>
-                  </td>
-                  <td>
+                  </Td>
+                  <Td><StatusBadge status={user.role} /></Td>
+                  <Td>
                     {canEditUser(currentUser, user) ? (
                       <Link to={`/users/${encodeURIComponent(user.login)}/edit`}>Edit</Link>
                     ) : null}
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               ))}
             </tbody>
-          </table>
-
-          {currentUser.can_create_accounts ? (
-            <p>
-              <a href="/signup">New Account</a>
-            </p>
-          ) : null}
+          </Table>
+            </CardBody>
+          </Card>
         </>
       ) : null}
-    </div>
+    </>
   );
 }

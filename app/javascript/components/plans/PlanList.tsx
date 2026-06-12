@@ -2,6 +2,7 @@ import React from "react"
 import { WeatherIcon } from "@/components/plans/WeatherIcon"
 import { StatusBadge } from "@/components/ui/Badge"
 import { Table, Td, Th, Tr } from "@/components/ui/Table"
+import { Card, CardBody } from "@/components/ui/Card"
 
 const h = React.createElement
 
@@ -139,27 +140,20 @@ function PlanTable({ plans }: { plans: PlanListPlan[] }) {
 
 function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
   return h(
-    React.Fragment,
-    null,
-    h(
-      "ul",
-      { className: "plan-overview" },
+    "div",
+    { className: "plan-overview grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3" },
       plans.map((plan) =>
         h(
-          "li",
+          Card,
           { key: `${plan.project.name}/${plan.name}` },
-          h("div", { className: "status" }, statusBadge(plan.status)),
           h(
-            "div",
-            { className: "details" },
-            h("a", { href: planPath(plan) }, plan.name),
-            h("br"),
-            h("span", { className: "secondary" }, "(", h("a", { href: projectPath(plan) }, plan.project.name), ")")
+            CardBody,
+            null,
+            h("div", { className: "mb-2 flex items-center justify-between gap-3" }, h("a", { className: "font-medium text-blue-600 hover:text-blue-500", href: planPath(plan) }, plan.name), statusBadge(plan.status)),
+            h("p", { className: "text-sm text-gray-500" }, h("a", { className: "text-blue-600 hover:text-blue-500", href: projectPath(plan) }, plan.project.name))
           )
         )
       )
-    ),
-    h("div", { className: "clearer" })
   )
 }
 

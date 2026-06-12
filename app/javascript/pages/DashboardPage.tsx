@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { StatusBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Table, Td, Th, Tr } from "@/components/ui/Table";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useChannel } from "@/hooks/useChannel";
@@ -85,9 +86,10 @@ function QuickLinks() {
       : { label: "Sign up", path: "/users/new" };
 
   return (
-    <>
-      <h2>Quick links</h2>
-      <ul className="asterisk">
+    <Card>
+      <CardHeader>Quick links</CardHeader>
+      <CardBody>
+      <ul className="space-y-2 text-sm">
         <li>
           <Link to={accountLink.path}>{accountLink.label}</Link>
         </li>
@@ -98,7 +100,8 @@ function QuickLinks() {
           <Link to="/admin/slaves">Manage build slaves</Link>
         </li>
       </ul>
-    </>
+      </CardBody>
+    </Card>
   );
 }
 
@@ -118,7 +121,7 @@ function StopButton({ build }: { build: Build }) {
       disabled={mutation.isPending || build.status === "stopping"}
       onClick={() => mutation.mutate()}
     >
-      <img src="/assets/icons/small/stopped.png" alt="" width={16} height={16} /> Stop
+      Stop
     </Button>
   );
 }
@@ -207,8 +210,12 @@ function DashboardBuildList({
 function BuildQueueWidget({ builds }: { builds: Build[] }) {
   return (
     <section>
-      <h2>Build queue</h2>
+    <Card>
+      <CardHeader>Build queue</CardHeader>
+      <CardBody>
       <DashboardBuildList builds={builds} />
+      </CardBody>
+    </Card>
     </section>
   );
 }
@@ -216,8 +223,8 @@ function BuildQueueWidget({ builds }: { builds: Build[] }) {
 function SlaveStatus({ slave }: { slave: Slave }) {
   if (slave.offline) {
     return (
-      <p>
-        <img src="/assets/icons/small/offline.png" alt="" width={16} height={16} />{" "}
+      <p className="flex items-center gap-2 text-sm">
+        <span className="h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
         <Link to={`/admin/slaves/${slave.name}/edit`}>Configure</Link>
       </p>
     );
@@ -230,27 +237,36 @@ function SlaveStatusWidget({ slaves }: { slaves: Slave[] }) {
   if (slaves.length === 0) {
     return (
       <section>
-        <h2>Slave status</h2>
+      <Card>
+        <CardHeader>Slave status</CardHeader>
+        <CardBody>
         <p>
           No slaves configured. <Link to="/admin/slaves">Configure them now</Link>
         </p>
+        </CardBody>
+      </Card>
       </section>
     );
   }
 
   return (
     <section>
-      <h2>Slave status</h2>
-      <ul>
+    <Card>
+      <CardHeader>Slave status</CardHeader>
+      <CardBody>
+      <ul className="space-y-4">
         {slaves.map((slave) => (
           <li key={slave.name}>
-            <p>
+            <p className="mb-2 flex items-center gap-2 text-sm">
+              <span className={`h-2.5 w-2.5 rounded-full ${slave.offline ? "bg-red-500" : "bg-green-500"}`} aria-hidden="true" />
               <strong>{slave.name}</strong>
             </p>
             <SlaveStatus slave={slave} />
           </li>
         ))}
       </ul>
+      </CardBody>
+    </Card>
     </section>
   );
 }
@@ -258,8 +274,12 @@ function SlaveStatusWidget({ slaves }: { slaves: Slave[] }) {
 function RecentBuildsWidget({ builds }: { builds: Build[] }) {
   return (
     <section>
-      <h2>Recently finished builds</h2>
+    <Card>
+      <CardHeader>Recently finished builds</CardHeader>
+      <CardBody>
       <DashboardBuildList builds={builds} showDuration showStopAction={false} />
+      </CardBody>
+    </Card>
     </section>
   );
 }
@@ -280,10 +300,12 @@ export function DashboardPage() {
 
   return (
     <>
-      <QuickLinks />
       {error ? <p>Dashboard data could not be loaded.</p> : null}
       {isLoading ? <p>Loading...</p> : null}
-      <div id="queue">
+      <div className="mb-4">
+        <QuickLinks />
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <BuildQueueWidget builds={data.queue} />
         <SlaveStatusWidget slaves={data.slaves} />
         <RecentBuildsWidget builds={data.recent_builds} />

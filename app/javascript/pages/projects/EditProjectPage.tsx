@@ -1,4 +1,5 @@
-import { createElement as h, useState } from "react"
+import { useState } from "react"
+import { PageHeader } from "@/components/ui/PageHeader"
 import { useUpdateProject } from "hooks/projects/useUpdateProject"
 import { ProjectForm, showFlash } from "pages/projects/NewProjectPage"
 import type { Project } from "hooks/projects/useProjects"
@@ -22,10 +23,10 @@ export default function EditProjectPage({ project }: { project: Project }) {
     }
   }
 
-  return h(
-    "div",
-    null,
-    h("h1", null, `Edit Project ${project.name}`),
-    h(ProjectForm, { project, submitLabel: "Update", onSubmit: handleSubmit, errors })
+  return (
+    <>
+      <PageHeader title={`Edit Project ${project.name}`} />
+      <ProjectForm project={project} submitLabel="Save" onSubmit={handleSubmit} errors={errors} />
+    </>
   )
 }

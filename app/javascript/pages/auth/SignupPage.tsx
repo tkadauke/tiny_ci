@@ -1,6 +1,9 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
 import { useCreateUser } from "@/hooks/useCreateUser";
 import type { CreateUserInput } from "@/hooks/useCreateUser";
 
@@ -44,13 +47,15 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
   }
 
   return (
-    <div className="react-page">
-      <h2>Create New Account</h2>
+    <div className="mx-auto mt-16 max-w-sm">
+      <Card>
+        <CardHeader>Create New Account</CardHeader>
+        <CardBody>
       <form action="/users" method="post" onSubmit={submit}>
         {errors.length > 0 && (
-          <div id="errorExplanation" className="errorExplanation">
-            <h2>Could not create account</h2>
-            <ul>
+          <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p className="font-medium">Could not create account</p>
+            <ul className="mt-2 list-disc pl-5">
               {errors.map((message) => (
                 <li key={message}>{message}</li>
               ))}
@@ -58,45 +63,36 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
           </div>
         )}
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_login">Login name</label>
-          </span>
-          <span className="desc">The nick name used for logins</span>
-          <input id="user_login" name="login" type="text" value={form.login} onChange={updateField} />
-        </p>
+        <FormField label="Login name">
+          <p className="mb-2 text-sm text-gray-500">The nick name used for logins</p>
+          <input className={inputClassName} id="user_login" name="login" type="text" value={form.login} onChange={updateField} />
+        </FormField>
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_email">Email address</label>
-          </span>
-          <span className="desc">The email address is used for notifications</span>
-          <input id="user_email" name="email" type="text" value={form.email} onChange={updateField} />
-        </p>
+        <FormField label="Email address">
+          <p className="mb-2 text-sm text-gray-500">The email address is used for notifications</p>
+          <input className={inputClassName} id="user_email" name="email" type="text" value={form.email} onChange={updateField} />
+        </FormField>
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_password">Password</label>
-          </span>
-          <input id="user_password" name="password" type="password" value={form.password} onChange={updateField} />
-        </p>
+        <FormField label="Password">
+          <input className={inputClassName} id="user_password" name="password" type="password" value={form.password} onChange={updateField} />
+        </FormField>
 
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="user_password_confirmation">Password confirmation</label>
-          </span>
-          <span className="desc">Please repeat the password exactly as above</span>
+        <FormField label="Password confirmation">
+          <p className="mb-2 text-sm text-gray-500">Please repeat the password exactly as above</p>
           <input
+            className={inputClassName}
             id="user_password_confirmation"
             name="password_confirmation"
             type="password"
             value={form.password_confirmation}
             onChange={updateField}
           />
-        </p>
+        </FormField>
 
-        <input type="submit" value={createUser.isPending ? "Creating account..." : "Create account"} disabled={createUser.isPending} />
+        <Button type="submit" disabled={createUser.isPending}>{createUser.isPending ? "Creating account..." : "Create account"}</Button>
       </form>
+        </CardBody>
+      </Card>
     </div>
   );
 }

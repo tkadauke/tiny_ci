@@ -10,7 +10,7 @@ export function Table({ children }: { children: ReactNode }) {
 
 export function Th({ children, className = "", ...props }: ThHTMLAttributes<HTMLTableCellElement> & { children?: ReactNode }) {
   return (
-    <th className={`px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide ${className}`.trim()} {...props}>
+    <th className={`sticky top-0 z-10 bg-white px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide ${className}`.trim()} {...props}>
       {children}
     </th>
   )

@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { TabBar } from "@/components/ui/TabBar";
 import { PlanList, type PlanListPlan } from "@/components/plans/PlanList";
 
 type ReportMode = "list" | "overview";
@@ -31,21 +34,13 @@ async function fetchPlans(endpoint: string) {
 
 function ModeToggle({ mode, basePath }: { mode: ReportMode; basePath: string }) {
   return (
-    <ul className="action-list">
-      <li>
-        <Link to={`${basePath}?report=list`} aria-current={mode === "list" ? "page" : undefined}>
-          Details
-        </Link>
-      </li>
-      <li>
-        <Link
-          to={`${basePath}?report=overview`}
-          aria-current={mode === "overview" ? "page" : undefined}
-        >
-          Overview
-        </Link>
-      </li>
-    </ul>
+    <TabBar
+      activeKey={mode}
+      items={[
+        { key: "list", label: "Details", href: `${basePath}?report=list` },
+        { key: "overview", label: "Overview", href: `${basePath}?report=overview` },
+      ]}
+    />
   );
 }
 
@@ -67,18 +62,22 @@ export function PlanListing({
 
   return (
     <>
-      <h1>{heading}</h1>
+      <PageHeader
+        title={heading}
+        actions={
+          canCreatePlans && newPlanPath ? (
+            <Link to={newPlanPath}>
+              <Button type="button">New Plan</Button>
+            </Link>
+          ) : null
+        }
+      />
       <ModeToggle mode={mode} basePath={basePath} />
-      <div id="plans">
+      <div>
         {isLoading ? <p>Loading...</p> : null}
-        {error ? <p className="error">Could not load plans.</p> : null}
+        {error ? <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">Could not load plans.</p> : null}
         {!isLoading && !error ? <PlanList plans={plans} mode={mode} /> : null}
       </div>
-      {canCreatePlans && newPlanPath ? (
-        <p>
-          <Link to={newPlanPath}>New Plan</Link>
-        </p>
-      ) : null}
     </>
   );
 }

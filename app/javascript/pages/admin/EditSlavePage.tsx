@@ -1,4 +1,5 @@
 import SlaveForm from "../../components/admin/SlaveForm"
+import { PageHeader } from "@/components/ui/PageHeader"
 import { useSlave } from "../../hooks/admin/useSlave"
 import { useUpdateSlave } from "../../hooks/admin/useUpdateSlave"
 import type { Slave } from "../../hooks/admin/useSlaves"
@@ -22,7 +23,7 @@ export default function EditSlavePage({ name }: Props) {
 
   return (
     <>
-      <h1>Edit Slave {slave.name}</h1>
+      <PageHeader title={`Edit Slave ${slave.name}`} />
       <SlaveForm slave={slave} submitLabel="Update" onSubmit={submit} />
     </>
   )

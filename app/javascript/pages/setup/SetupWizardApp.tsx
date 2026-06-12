@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
 
 type SetupStep = "loading" | "choose_language" | "config" | "restart";
 
@@ -61,19 +64,17 @@ function Field({
   description?: string;
 }) {
   return (
-    <p className="form_item">
-      <span className="label">
-        <label htmlFor={`setup_${name}`}>{label}</label>
-      </span>
-      {description ? <span className="desc">{description}</span> : null}
+    <FormField label={label}>
+      {description ? <p className="mb-2 text-sm text-gray-500">{description}</p> : null}
       <input
+        className={inputClassName}
         id={`setup_${name}`}
         name={name}
         type={type}
         value={form[name]}
         onChange={(event) => setForm((current) => ({ ...current, [name]: event.target.value }))}
       />
-    </p>
+    </FormField>
   );
 }
 
@@ -81,28 +82,27 @@ function LanguageStep({ onChoose }: { onChoose: (language: string) => void }) {
   const [language, setLanguage] = useState("en");
 
   return (
-    <section>
-      <h1>TinyCI Setup</h1>
-      <p>Please choose your language</p>
-      <p>Bitte waehlen Sie Ihre Sprache</p>
+    <Card>
+      <CardHeader>TinyCI Setup</CardHeader>
+      <CardBody>
+      <p className="text-sm text-gray-600">Please choose your language</p>
+      <p className="mb-4 text-sm text-gray-600">Bitte waehlen Sie Ihre Sprache</p>
       <form
         onSubmit={(event) => {
           event.preventDefault();
           onChoose(language);
         }}
       >
-        <p className="form_item">
-          <span className="label">
-            <label htmlFor="setup_language">Language</label>
-          </span>
-          <select id="setup_language" value={language} onChange={(event) => setLanguage(event.target.value)}>
+        <FormField label="Language">
+          <select className={inputClassName} id="setup_language" value={language} onChange={(event) => setLanguage(event.target.value)}>
             <option value="en">English</option>
             <option value="de">Deutsch</option>
           </select>
-        </p>
-        <button type="submit">Ok</button>
+        </FormField>
+        <Button type="submit">Ok</Button>
       </form>
-    </section>
+      </CardBody>
+    </Card>
   );
 }
 
@@ -124,13 +124,14 @@ function ConfigStep({
   }, [initialForm]);
 
   return (
-    <section>
-      <h1>Welcome to TinyCI</h1>
-      <p>
+    <Card>
+      <CardHeader>Welcome to TinyCI</CardHeader>
+      <CardBody>
+      <p className="mb-4 text-sm text-gray-600">
         Please fill out the following information to get started with TinyCI. This is the minimal configuration necessary
         for the correct operation of TinyCI.
       </p>
-      <h2>Database configuration</h2>
+      <h2 className="mb-3 text-base font-semibold text-gray-900">Database configuration</h2>
       <form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -140,7 +141,7 @@ function ConfigStep({
         }}
       >
         {error ? (
-          <div className="errorExplanation">
+          <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             <p>Could not connect to the database. The following error message was received:</p>
             <p>
               <strong>{error}</strong>
@@ -165,11 +166,12 @@ function ConfigStep({
           description="The database will be created if it does not exist."
         />
         <Field name="db_host" label="Database host" type="text" form={form} setForm={setForm} />
-        <button type="submit" disabled={saving}>
+        <Button type="submit" disabled={saving}>
           {saving ? "Saving..." : "Save and restart"}
-        </button>
+        </Button>
       </form>
-    </section>
+      </CardBody>
+    </Card>
   );
 }
 

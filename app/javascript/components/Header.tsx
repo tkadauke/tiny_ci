@@ -20,26 +20,20 @@ export function Header({ currentUser, onFlash }: HeaderProps) {
   }
 
   return (
-    <div id="react_header">
-      <div id="top_header">
-        <div id="logo">
+    <div className="border-b border-gray-200 bg-white">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4">
+        <div>
           <h1>
-            <Link to="/">TinyCI</Link>
+            <Link className="text-xl font-semibold text-gray-900" to="/">TinyCI</Link>
           </h1>
-          <p>Continuous Integration for Ruby on Rails</p>
+          <p className="text-sm text-gray-500">Continuous Integration for Ruby on Rails</p>
         </div>
-        <div id="center_header">
-          <div id="suggestion">
-            <div className="suggestion_corner_right">
-              <span>
+        <div className="hidden text-sm text-gray-500 md:block">
                 Found a bug? <a href="http://github.com/tkadauke/tiny_ci/issues">Report it!</a>
-              </span>
-            </div>
-          </div>
         </div>
-        <div id="right_header">
+        <div>
           {loggedIn ? (
-            <ul className="action-list">
+            <ul className="flex items-center gap-3 text-sm">
               <li>Welcome, {currentUser.login}!</li>
               <li>
                 <a href="/settings">Settings</a>
@@ -51,7 +45,7 @@ export function Header({ currentUser, onFlash }: HeaderProps) {
               </li>
             </ul>
           ) : (
-            <ul className="action-list">
+            <ul className="flex items-center gap-3 text-sm">
               <li>Welcome, Guest!</li>
               <li>
                 <Link to="/login">Login</Link>
@@ -62,13 +56,12 @@ export function Header({ currentUser, onFlash }: HeaderProps) {
             </ul>
           )}
         </div>
-        <div className="clearer" />
       </div>
-      <div id="menu_container">
-        <div id="menu">
-          <ul>
+      <div className="border-t border-gray-100">
+        <nav className="mx-auto max-w-7xl px-4">
+          <ul className="flex flex-wrap gap-4 py-3 text-sm">
             <li>
-              <Link to="/" className="first">
+              <Link to="/">
                 Home
               </Link>
             </li>
@@ -95,8 +88,7 @@ export function Header({ currentUser, onFlash }: HeaderProps) {
               <a href="/help_topics">Help</a>
             </li>
           </ul>
-        </div>
-        <div className="clearer" />
+        </nav>
       </div>
     </div>
   );

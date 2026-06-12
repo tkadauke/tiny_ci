@@ -1,7 +1,12 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { StatusBadge } from "@/components/ui/Badge";
 import { Table, Td, Th, Tr } from "@/components/ui/Table";
+import { WeatherIcon } from "@/components/plans/WeatherIcon";
+import { inputClassName } from "@/components/ui/FormField";
 
 type Reference = {
   id: number;
@@ -109,10 +114,6 @@ function truncate(value: string | null, length = 40) {
   return value.length > length ? `${value.slice(0, length - 3)}...` : value;
 }
 
-function Icon({ name, size, title }: { name: string; size: "small" | "large"; title?: string }) {
-  return <img src={`/assets/icons/${size}/${name}.png`} alt={title ?? name} title={title} />;
-}
-
 function PlanList({ plans }: { plans: PlanSummary[] }) {
   return (
     <Table>
@@ -131,15 +132,7 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
         {plans.map((plan) => (
           <Tr key={plan.id}>
             <Td>{plan.status ? <StatusBadge status={plan.status} /> : null}</Td>
-            <Td>
-              {plan.weather !== null ? (
-                <Icon
-                  name={`weather-${plan.weather}`}
-                  size="small"
-                  title={`${plan.weather} of the last 5 builds were successful`}
-                />
-              ) : null}
-            </Td>
+            <Td>{plan.weather !== null ? <WeatherIcon weather={plan.weather} /> : null}</Td>
             <Td>
               <a href={`/projects/${encodePathPart(plan.project.name)}`}>{plan.project.name}</a> /{" "}
               <a href={planPath(plan.project.name, plan.name)}>{plan.name}</a>
@@ -257,187 +250,152 @@ export default function PlanShowPage(props: PlanShowPageProps) {
   }
 
   if (loading) return <p>Loading...</p>;
-  if (error && !plan) return <p className="error">{error}</p>;
+  if (error && !plan) return <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>;
   if (!plan) return null;
 
   const isChild = plan.parent !== null;
   const parent = plan.parent;
   const hasChildren = plan.children.length > 0;
 
+  const linkClass = "text-sm text-blue-600 hover:text-blue-500";
+
   return (
     <>
-      <h1>
-        Plan {plan.name}{" "}
-        {plan.parent ? (
-          <span>
-            (child of <a href={planPath(projectId, plan.parent.name)}>{plan.parent.name}</a>)
-          </span>
-        ) : null}
-      </h1>
-
-      {error ? <p className="error">{error}</p> : null}
-      {notice ? <div className="notice">{notice}</div> : null}
-
-      <ul className="action-list">
-        {plan.can_edit_plan ? (
-          <li>
-            <a href={`${planPath(projectId, plan.name)}/edit`}>Edit</a>
-          </li>
-        ) : null}
-        <li>
-          <a href={`${planPath(projectId, plan.name)}/builds`}>Builds</a>
-        </li>
-        {plan.can_create_plans ? (
-          <li>
-            <a href={`/projects/${encodePathPart(projectId)}/plans/new?clone=${encodeURIComponent(plan.name)}`}>Clone</a>
-          </li>
-        ) : null}
-        {isChild && plan.can_edit_plan ? (
+      <PageHeader
+        title={
           <>
-            <li>
-              <a href={`${planPath(projectId, plan.name)}/child`}>Move to another Parent</a>
-            </li>
-            <li>
-              <a href={planPath(projectId, plan.name)} onClick={convertToStandalone}>
-                Convert to Standalone Plan
-              </a>
-            </li>
+            Plan {plan.name}
+            {plan.parent ? (
+              <span className="ml-2 text-sm font-normal text-gray-500">
+                child of <a className={linkClass} href={planPath(projectId, plan.parent.name)}>{plan.parent.name}</a>
+              </span>
+            ) : null}
           </>
-        ) : null}
-        {!isChild && plan.can_create_plans ? (
-          <li>
-            <a href={`/projects/${encodePathPart(projectId)}/plans/new?parent=${encodeURIComponent(plan.name)}`}>New Child Plan</a>
-          </li>
-        ) : null}
-        {!isChild && !hasChildren && plan.can_edit_plan ? (
-          <li>
-            <a href={`${planPath(projectId, plan.name)}/child`}>Convert to Child Plan</a>
-          </li>
-        ) : null}
-        {plan.can_destroy_plan ? (
-          <li>
-            <button type="button" onClick={() => setShowDeleteConfirmation(true)} disabled={submitting}>
-              Delete
-            </button>
-          </li>
-        ) : null}
-      </ul>
+        }
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            {plan.can_edit_plan ? <a className={linkClass} href={`${planPath(projectId, plan.name)}/edit`}>Edit</a> : null}
+            <a className={linkClass} href={`${planPath(projectId, plan.name)}/builds`}>Builds</a>
+            {plan.can_create_plans ? <a className={linkClass} href={`/projects/${encodePathPart(projectId)}/plans/new?clone=${encodeURIComponent(plan.name)}`}>Clone</a> : null}
+            {isChild && plan.can_edit_plan ? <a className={linkClass} href={`${planPath(projectId, plan.name)}/child`}>Move</a> : null}
+            {isChild && plan.can_edit_plan ? <a className={linkClass} href={planPath(projectId, plan.name)} onClick={convertToStandalone}>Standalone</a> : null}
+            {!isChild && plan.can_create_plans ? <a className={linkClass} href={`/projects/${encodePathPart(projectId)}/plans/new?parent=${encodeURIComponent(plan.name)}`}>New Child</a> : null}
+            {!isChild && !hasChildren && plan.can_edit_plan ? <a className={linkClass} href={`${planPath(projectId, plan.name)}/child`}>Make Child</a> : null}
+            {plan.can_destroy_plan ? (
+              <Button type="button" variant="danger" size="sm" onClick={() => setShowDeleteConfirmation(true)} disabled={submitting}>
+                Delete
+              </Button>
+            ) : null}
+          </div>
+        }
+      />
+
+      {error ? <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
+      {notice ? <div className="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{notice}</div> : null}
 
       {plan.previous_plan || plan.next_plan ? (
         <>
-          <h2>Build chain</h2>
-          <table>
-            <tbody>
-              <tr>
-                <td>{plan.previous_plan ? <a href={planPath(projectId, plan.previous_plan.name)}>{plan.previous_plan.name}</a> : null}</td>
-                <td>{plan.name}</td>
-                <td>{plan.next_plan ? <a href={planPath(projectId, plan.next_plan.name)}>{plan.next_plan.name}</a> : null}</td>
-              </tr>
-            </tbody>
-          </table>
+          <h2 className="mb-3 text-base font-semibold text-gray-900">Build chain</h2>
+          <Card className="mb-6">
+            <CardBody>
+              <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                <div>{plan.previous_plan ? <a className={linkClass} href={planPath(projectId, plan.previous_plan.name)}>{plan.previous_plan.name}</a> : "No previous plan"}</div>
+                <div className="font-medium text-gray-900">{plan.name}</div>
+                <div>{plan.next_plan ? <a className={linkClass} href={planPath(projectId, plan.next_plan.name)}>{plan.next_plan.name}</a> : "No next plan"}</div>
+              </div>
+            </CardBody>
+          </Card>
         </>
       ) : null}
 
       {hasChildren ? (
-        <>
-          <h2>Children</h2>
-          <PlanList plans={plan.children} />
-        </>
+        <Card className="mb-6">
+          <CardHeader>Children</CardHeader>
+          <CardBody>
+            <PlanList plans={plan.children} />
+          </CardBody>
+        </Card>
       ) : null}
 
-      <h2>Plan details</h2>
-      <dl>
-        {plan.status ? (
-          <>
-            <dt>Status</dt>
-            <dd>
-              <StatusBadge status={plan.status} />{" "}
-              <span>
-                {plan.last_finished_build ? (
-                  <a href={buildPath(projectId, plan.name, plan.last_finished_build.position)}>Latest Build</a>
-                ) : null}
-              </span>
-            </dd>
-          </>
-        ) : null}
-
-        {plan.weather !== null ? (
-          <>
-            <dt>Weather</dt>
-            <dd>
-              <Icon name={`weather-${plan.weather}`} size="large" />{" "}
-              <span>{plan.weather} of the last 5 builds were successful</span>
-            </dd>
-          </>
-        ) : null}
-
-        <dt>Description</dt>
-        <dd style={{ whiteSpace: "pre-wrap" }}>{plan.description}</dd>
-
-        <dt>Steps</dt>
-        <dd>
-          <pre>{plan.steps}</pre>
-        </dd>
-
-        <dt>Requirements</dt>
-        <dd>{plan.requirements || "\u00a0"}</dd>
-
-        {!isChild ? (
-          <>
-            <dt>Commit Hook</dt>
-            <dd>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>URL</th>
-                    <td>
-                      <input type="text" readOnly size={80} value={plan.commit_hook_url} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>wget</th>
-                    <td>
-                      <input type="text" readOnly size={80} value={`wget --post-data="" --output-file=/dev/null ${plan.commit_hook_url}`} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>curl</th>
-                    <td>
-                      <input type="text" readOnly size={80} value={`curl --data "" --output /dev/null --silent ${plan.commit_hook_url}`} />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </dd>
-          </>
-        ) : null}
-      </dl>
+      <Card className="mb-6">
+        <CardHeader>Plan details</CardHeader>
+        <CardBody>
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {plan.status ? (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Status</dt>
+                <dd className="mt-1 flex items-center gap-2">
+                  <StatusBadge status={plan.status} />
+                  {plan.last_finished_build ? <a className={linkClass} href={buildPath(projectId, plan.name, plan.last_finished_build.position)}>Latest Build</a> : null}
+                </dd>
+              </div>
+            ) : null}
+            {plan.weather !== null ? (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Weather</dt>
+                <dd className="mt-1 flex items-center gap-2 text-sm text-gray-700">
+                  <WeatherIcon weather={plan.weather} size="large" />
+                  <span>{plan.weather} of the last 5 builds were successful</span>
+                </dd>
+              </div>
+            ) : null}
+            <div className="sm:col-span-2">
+              <dt className="text-sm font-medium text-gray-500">Description</dt>
+              <dd className="mt-1 whitespace-pre-wrap text-sm text-gray-900">{plan.description}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-sm font-medium text-gray-500">Steps</dt>
+              <dd className="mt-1">
+                <pre className="overflow-x-auto rounded-lg bg-gray-950 p-4 font-mono text-xs text-gray-100">{plan.steps}</pre>
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-sm font-medium text-gray-500">Requirements</dt>
+              <dd className="mt-1 text-sm text-gray-900">{plan.requirements || "\u00a0"}</dd>
+            </div>
+            {!isChild ? (
+              <div className="space-y-3 sm:col-span-2">
+                <dt className="text-sm font-medium text-gray-500">Commit Hook</dt>
+                <input className={inputClassName} type="text" readOnly value={plan.commit_hook_url} />
+                <input className={inputClassName} type="text" readOnly value={`wget --post-data="" --output-file=/dev/null ${plan.commit_hook_url}`} />
+                <input className={inputClassName} type="text" readOnly value={`curl --data "" --output /dev/null --silent ${plan.commit_hook_url}`} />
+              </div>
+            ) : null}
+          </dl>
+        </CardBody>
+      </Card>
 
       {!isChild ? (
-        <button type="button" onClick={buildNow} disabled={submitting}>
+        <Button type="button" onClick={buildNow} disabled={submitting}>
           Build now
-        </button>
+        </Button>
       ) : parent ? (
-        <p>
-          <a href={planPath(projectId, parent.name)}>Back to parent plan {parent.name}</a>
+        <p className="text-sm">
+          <a className={linkClass} href={planPath(projectId, parent.name)}>Back to parent plan {parent.name}</a>
         </p>
       ) : null}
 
-      <p>
-        Back to project <a href={`/projects/${encodePathPart(projectId)}/plans`}>{plan.project.name}</a>
+      <p className="mt-4 text-sm text-gray-600">
+        Back to project <a className={linkClass} href={`/projects/${encodePathPart(projectId)}/plans`}>{plan.project.name}</a>
       </p>
 
       {showDeleteConfirmation ? (
-        <div role="dialog" aria-modal="true" aria-labelledby="delete-plan-title">
-          <h2 id="delete-plan-title">Delete plan</h2>
-          <p>{DELETE_CONFIRMATION}</p>
-          <button type="button" onClick={deletePlan} disabled={submitting}>
-            Confirm
-          </button>
-          <button type="button" onClick={() => setShowDeleteConfirmation(false)} disabled={submitting}>
-            Cancel
-          </button>
-        </div>
+        <Card className="mt-6 border-red-200 bg-red-50">
+          <CardBody>
+            <div role="dialog" aria-modal="true" aria-labelledby="delete-plan-title">
+              <h2 id="delete-plan-title" className="mb-2 text-base font-semibold text-red-900">Delete plan</h2>
+              <p className="mb-4 text-sm text-red-800">{DELETE_CONFIRMATION}</p>
+              <div className="flex gap-3">
+                <Button type="button" variant="danger" onClick={deletePlan} disabled={submitting}>
+                  Confirm
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => setShowDeleteConfirmation(false)} disabled={submitting}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
       ) : null}
     </>
   );

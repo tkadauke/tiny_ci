@@ -5,6 +5,8 @@ import { GistReport } from "@/components/builds/reports/GistReport"
 import { RawOutput } from "@/components/builds/reports/RawOutput"
 import { StatusBadge } from "@/components/ui/Badge"
 import { Button } from "@/components/ui/Button"
+import { Card, CardBody, CardHeader } from "@/components/ui/Card"
+import { TabBar } from "@/components/ui/TabBar"
 import { api } from "@/lib/api"
 import { useBuild, type OutputRow } from "@/hooks/useBuild"
 import { useChannel } from "@/hooks/useChannel"
@@ -15,10 +17,6 @@ type Props = {
   projectId: string
   planId: string
   buildId: string
-}
-
-function iconPath(size: "small" | "large", status: string) {
-  return `/assets/icons/${size}/${status}.png`
 }
 
 function duration(seconds: number | null) {
@@ -89,20 +87,31 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
         Build output of <a href={planPath}>{build.plan.name}</a> #{build.position}
         {build.slave ? ` on slave ${build.slave.name}` : ""}
       </h1>
-      <dl>
-        <dt>Status</dt>
-        <dd><StatusBadge status={build.status} /></dd>
-        <dt>Revision</dt>
-        <dd>{build.revision || "unknown"}</dd>
-        <dt>Duration</dt>
-        <dd>{duration(build.duration)}&nbsp;</dd>
-        {build.starter_login ? (
-          <>
-            <dt>Started by</dt>
-            <dd><a href={`/users/${build.starter_id}`}>{build.starter_login}</a> (Requested manually)</dd>
-          </>
-        ) : null}
-      </dl>
+      <Card className="mb-6">
+        <CardHeader>Metadata</CardHeader>
+        <CardBody>
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Status</dt>
+              <dd className="mt-1"><StatusBadge status={build.status} /></dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Revision</dt>
+              <dd className="mt-1 break-all font-mono text-xs text-gray-900">{build.revision || "unknown"}</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Duration</dt>
+              <dd className="mt-1 text-sm text-gray-900">{duration(build.duration)}&nbsp;</dd>
+            </div>
+            {build.starter_login ? (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Started by</dt>
+                <dd className="mt-1 text-sm text-gray-900"><a href={`/users/${build.starter_id}`}>{build.starter_login}</a> (Requested manually)</dd>
+              </div>
+            ) : null}
+          </dl>
+        </CardBody>
+      </Card>
       {showStop ? (
         <p>
           <Button
@@ -114,22 +123,27 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
               await api.post(`/api/projects/${encodeURIComponent(projectId)}/plans/${encodeURIComponent(planId)}/builds/${encodeURIComponent(buildId)}/stop`, {})
             }}
           >
-            <img src={iconPath("small", "stopped")} alt="" /> Stop
+            Stop
           </Button>
         </p>
       ) : null}
-      <ul className="action-list">
-        {(["raw", "gist", "details"] as const).map((nextMode) => (
-          <li key={nextMode}>
-            <a href={`?report=${nextMode}`} aria-current={mode === nextMode ? "page" : undefined} onClick={(event) => { event.preventDefault(); setMode(nextMode) }}>
-              {nextMode === "raw" ? "Raw output" : nextMode[0].toUpperCase() + nextMode.slice(1)}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div className="report" id="report"><ReportBody mode={mode} rows={build.output_rows} /></div>
+      <TabBar
+        activeKey={mode}
+        onSelect={setMode}
+        items={[
+          { key: "raw", label: "Raw", href: "?report=raw" },
+          { key: "gist", label: "Gist", href: "?report=gist" },
+          { key: "details", label: "Details", href: "?report=details" },
+        ]}
+      />
+      <div><ReportBody mode={mode} rows={build.output_rows} /></div>
       {FINISHED_STATUSES.has(build.status) ? <p><StatusBadge status={build.status} /></p> : null}
-      {build.status === "running" ? <img src="/assets/spinner.gif" alt="Running" /> : null}
+      {build.status === "running" ? (
+        <div className="mt-4 inline-flex items-center gap-2 text-sm text-blue-700" role="status" aria-label="Running">
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-blue-600" />
+          Running
+        </div>
+      ) : null}
     </>
   )
 }

@@ -19,29 +19,27 @@ export function RawOutput({ rows }: Props) {
 
   let lastCommand: string | undefined
   let lastTimestamp: number | undefined
+  let commandIndex = -1
 
   return (
-    <div className="raw-output">
-      <table>
-        <tbody>
-          {rows.map((row) => {
-            const timestamp = Math.trunc(Number(row.timestamp))
-            const showTimestamp = timestamp !== lastTimestamp
-            const showCommand = row.command !== lastCommand
-            lastTimestamp = timestamp
-            lastCommand = row.command
+    <pre className="overflow-x-auto rounded-lg bg-gray-950 p-4 font-mono text-xs leading-5 text-gray-100">
+      {rows.map((row) => {
+        const timestamp = Math.trunc(Number(row.timestamp))
+        const showTimestamp = timestamp !== lastTimestamp
+        const showCommand = row.command !== lastCommand
+        if (showCommand) commandIndex += 1
+        lastTimestamp = timestamp
+        lastCommand = row.command
 
-            return (
-              <tr key={row.index}>
-                <td className="row">{row.index}</td>
-                <td className="timestamp">{showTimestamp ? timeText(row.timestamp) : ""}</td>
-                <td className="command">{showCommand ? row.command : ""}</td>
-                <td className="line">{row.line}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+        return (
+          <div key={row.index} role="row" className={commandIndex % 2 === 0 ? "bg-gray-950" : "bg-gray-900/70"}>
+            <span className="inline-block w-12 select-none text-gray-500">{row.index}</span>
+            <span className="timestamp inline-block w-20 select-none text-gray-500">{showTimestamp ? timeText(row.timestamp) : ""}</span>
+            <span className="command inline-block w-40 select-none truncate pr-4 text-gray-400">{showCommand ? row.command : ""}</span>
+            <span>{row.line}</span>
+          </div>
+        )
+      })}
+    </pre>
   )
 }

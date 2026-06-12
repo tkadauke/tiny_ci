@@ -1,6 +1,10 @@
-import { createElement as h, useState } from "react"
-import { useCreateProject } from "hooks/projects/useCreateProject"
+import { useState } from "react"
 import type { ChangeEvent, FormEvent } from "react"
+import { Button } from "@/components/ui/Button"
+import { Card, CardBody } from "@/components/ui/Card"
+import { FormField, inputClassName } from "@/components/ui/FormField"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { useCreateProject } from "hooks/projects/useCreateProject"
 import type { Project } from "hooks/projects/useProjects"
 
 declare global {
@@ -23,20 +27,24 @@ function showFlash(message: string) {
   if (!flash) {
     flash = document.createElement("div")
     flash.id = "flash"
-    document.getElementById("body")?.prepend(flash)
+    document.getElementById("root")?.prepend(flash)
   }
-  flash.className = "notice"
+  flash.className = "mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
   flash.textContent = message
 }
 
 function ErrorSummary({ errors }: { errors: string[] }) {
   if (!errors.length) return null
 
-  return h(
-    "div",
-    { className: "errorExplanation" },
-    h("h2", null, "Project could not be saved"),
-    h("ul", null, errors.map((error) => h("li", { key: error }, error)))
+  return (
+    <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <p className="font-medium">Project could not be saved</p>
+      <ul className="mt-2 list-disc pl-5">
+        {errors.map((error) => (
+          <li key={error}>{error}</li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -49,40 +57,43 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }: ProjectFormProp
     onSubmit({ name, description })
   }
 
-  return h(
-    "form",
-    { onSubmit: handleSubmit },
-    h(ErrorSummary, { errors }),
-    h(
-      "p",
-      { className: "form_item" },
-      h("span", { className: "label" }, h("label", { htmlFor: "project_name" }, "Name")),
-      h(
-        "span",
-        { className: "desc" },
-        "The project's name will appear in the URL. Changes to the name will change all URLs for this project. Only characters, numbers, underscores and dashes are allowed in the name."
-      ),
-      h("input", {
-        id: "project_name",
-        name: "project[name]",
-        type: "text",
-        value: name,
-        onChange: (event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)
-      })
-    ),
-    h(
-      "p",
-      { className: "form_item" },
-      h("span", { className: "label" }, h("label", { htmlFor: "project_description" }, "Description")),
-      h("textarea", {
-        id: "project_description",
-        name: "project[description]",
-        rows: 5,
-        value: description,
-        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)
-      })
-    ),
-    h("input", { type: "submit", value: submitLabel })
+  return (
+    <Card>
+      <CardBody>
+        <form onSubmit={handleSubmit}>
+          <ErrorSummary errors={errors} />
+          <FormField label="Name">
+            <input
+              className={inputClassName}
+              id="project_name"
+              name="project[name]"
+              type="text"
+              value={name}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
+            />
+          </FormField>
+          <p className="-mt-2 mb-4 text-sm text-gray-500">
+            The project's name will appear in the URL. Changes to the name will change all URLs for this project.
+          </p>
+          <FormField label="Description">
+            <textarea
+              className={inputClassName}
+              id="project_description"
+              name="project[description]"
+              rows={5}
+              value={description}
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)}
+            />
+          </FormField>
+          <div className="flex items-center gap-3">
+            <Button type="submit">{submitLabel === "Create" ? "Save" : submitLabel}</Button>
+            <a className="text-sm text-gray-600 hover:text-gray-900" href="/projects">
+              Cancel
+            </a>
+          </div>
+        </form>
+      </CardBody>
+    </Card>
   )
 }
 
@@ -108,5 +119,10 @@ export default function NewProjectPage() {
     }
   }
 
-  return h("div", null, h("h1", null, "New Project"), h(ProjectForm, { project: {}, submitLabel: "Create", onSubmit: handleSubmit, errors }))
+  return (
+    <>
+      <PageHeader title="New Project" />
+      <ProjectForm project={{}} submitLabel="Save" onSubmit={handleSubmit} errors={errors} />
+    </>
+  )
 }

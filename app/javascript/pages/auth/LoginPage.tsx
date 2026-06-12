@@ -1,5 +1,8 @@
 import { FormEvent, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
 import { ApiError } from "@/lib/api";
 import { useLogin } from "../../hooks/useLogin";
 
@@ -30,18 +33,19 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
   }
 
   return (
-    <div className="react-page">
-      <p>You are here: <a href="/">Home</a> &gt; Login</p>
-      <h2>Login</h2>
+    <div className="mx-auto mt-16 max-w-sm">
+      <Card>
+        <CardHeader>Login</CardHeader>
+        <CardBody>
       {error ? (
-        <div className="error" role="alert">
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {error}
         </div>
       ) : null}
-      <form className="form" onSubmit={handleSubmit}>
-        <p>
-          <label htmlFor="login">User name</label>
+      <form onSubmit={handleSubmit}>
+        <FormField label="User name">
           <input
+            className={inputClassName}
             id="login"
             name="login"
             type="text"
@@ -49,10 +53,10 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
             onChange={(event) => setLogin(event.target.value)}
             autoComplete="username"
           />
-        </p>
-        <p>
-          <label htmlFor="password">Password</label>
+        </FormField>
+        <FormField label="Password">
           <input
+            className={inputClassName}
             id="password"
             name="password"
             type="password"
@@ -60,10 +64,11 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"
           />
-        </p>
-        <p>
-          <label htmlFor="remember_me">
+        </FormField>
+        <p className="mb-4">
+          <label className="flex items-center gap-2 text-sm text-gray-700" htmlFor="remember_me">
             <input
+              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               id="remember_me"
               name="remember_me"
               type="checkbox"
@@ -74,11 +79,13 @@ export default function LoginPage({ onFlash }: LoginPageProps) {
           </label>
         </p>
         <p>
-          <button type="submit" disabled={loginMutation.isPending}>
+          <Button type="submit" disabled={loginMutation.isPending}>
             Login
-          </button>
+          </Button>
         </p>
       </form>
+        </CardBody>
+      </Card>
     </div>
   );
 }

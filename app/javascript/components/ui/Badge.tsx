@@ -8,6 +8,8 @@ const statusStyles: Record<string, string> = {
   stopping: "bg-amber-100 text-amber-700",
   stopped: "bg-gray-100 text-gray-600",
   canceled: "bg-gray-100 text-gray-600",
+  admin: "bg-purple-100 text-purple-700",
+  user: "bg-slate-100 text-slate-700",
 }
 
 export function StatusBadge({ status }: { status: string }) {

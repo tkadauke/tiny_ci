@@ -105,7 +105,7 @@ function StopCell({
         disabled={mutation.isPending || build.status === "stopping"}
         onClick={() => mutation.mutate()}
       >
-        <img src={stopIconPath} alt="" width={16} height={16} /> Stop
+        Stop
       </Button>
     </Td>
   )

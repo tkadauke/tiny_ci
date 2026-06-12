@@ -1,6 +1,10 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { LoggedInCurrentUser } from "../../hooks/useCurrentUser";
 import { useUpdateUser } from "../../hooks/useUpdateUser";
 import { useUser } from "../../hooks/useUser";
@@ -88,32 +92,29 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
   }
 
   return (
-    <div className="react-page">
-      <p>
-        You are here: <Link to="/">Home</Link> &gt; <Link to="/users">Users</Link> &gt;{" "}
-        {login} &gt; Edit
-      </p>
-
+    <>
       {userQuery.isPending ? <p>Loading profile...</p> : null}
       {userQuery.isError ? (
-        <div className="error" role="alert">
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           Could not load profile.
         </div>
       ) : null}
       {unauthorized ? (
-        <div className="error" role="alert">
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           Access denied
         </div>
       ) : null}
 
       {userQuery.data && !unauthorized ? (
         <>
-          <h2>Edit {userQuery.data.login}'s Profile</h2>
-          <form className="form" onSubmit={handleSubmit}>
+          <PageHeader title={`Edit ${userQuery.data.login}'s Profile`} />
+          <Card>
+            <CardBody>
+          <form onSubmit={handleSubmit}>
             {errors.length > 0 ? (
-              <div className="error" role="alert">
+              <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
                 <p>Please fix the following errors:</p>
-                <ul>
+                <ul className="mt-2 list-disc pl-5">
                   {errors.map((error) => (
                     <li key={error}>{error}</li>
                   ))}
@@ -121,27 +122,23 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
               </div>
             ) : null}
 
-            <p className="form_item">
-              <span className="label">
-                <label htmlFor="user_email">Email address</label>
-              </span>
-              <span className="desc">The email address is used for notifications.</span>
+            <FormField label="Email address">
+              <p className="mb-2 text-sm text-gray-500">The email address is used for notifications.</p>
               <input
+                className={inputClassName}
                 id="user_email"
                 name="user[email]"
                 type="text"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
-            </p>
+            </FormField>
 
             {canEditRole(currentUser, userQuery.data.login) ? (
-              <p className="form_item">
-                <span className="label">
-                  <label htmlFor="user_role">Role</label>
-                </span>
-                <span className="desc">The user's role.</span>
+              <FormField label="Role">
+                <p className="mb-2 text-sm text-gray-500">The user's role.</p>
                 <select
+                  className={inputClassName}
                   id="user_role"
                   name="user[role]"
                   value={role}
@@ -150,17 +147,20 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
                   <option value="user">user</option>
                   <option value="admin">admin</option>
                 </select>
-              </p>
+              </FormField>
             ) : null}
 
-            <p>
-              <button type="submit" disabled={updateUser.isPending}>
+            <p className="flex items-center gap-3">
+              <Button type="submit" disabled={updateUser.isPending}>
                 Update
-              </button>
+              </Button>
+              <Link className="text-sm text-gray-600 hover:text-gray-900" to={`/users/${encodeURIComponent(userQuery.data.login)}`}>Cancel</Link>
             </p>
           </form>
+            </CardBody>
+          </Card>
         </>
       ) : null}
-    </div>
+    </>
   );
 }

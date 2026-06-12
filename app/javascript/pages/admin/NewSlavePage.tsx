@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { PageHeader } from "@/components/ui/PageHeader"
 import SlaveForm from "../../components/admin/SlaveForm"
 import { useCreateSlave } from "../../hooks/admin/useCreateSlave"
 import { useSlave } from "../../hooks/admin/useSlave"
@@ -24,7 +25,7 @@ export default function NewSlavePage() {
 
   return (
     <>
-      <h1>New Slave</h1>
+      <PageHeader title="New Slave" />
       <SlaveForm slave={initialSlave} submitLabel="Create" onSubmit={submit} />
     </>
   )
