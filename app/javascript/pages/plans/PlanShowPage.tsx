@@ -1,5 +1,7 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { StatusBadge } from "@/components/ui/Badge";
+import { Table, Td, Th, Tr } from "@/components/ui/Table";
 
 type Reference = {
   id: number;
@@ -51,18 +53,6 @@ type ApiError = {
 const DELETE_CONFIRMATION =
   "Do you really want to delete this plan and all its children and builds? This operation can not be undone.";
 
-const STATUS_LABELS: Record<string, string> = {
-  canceled: "Canceled",
-  error: "Error",
-  failure: "Failure",
-  pending: "Pending",
-  running: "Running",
-  stopped: "Stopped",
-  stopping: "Stopping",
-  success: "Success",
-  waiting: "Waiting",
-};
-
 function encodePathPart(value: string) {
   return encodeURIComponent(value);
 }
@@ -105,10 +95,6 @@ function storeNotice(message: string) {
   window.sessionStorage.setItem("tiny_ci_flash_notice", message);
 }
 
-function statusLabel(status: string) {
-  return STATUS_LABELS[status] ?? status;
-}
-
 function formatMaybeDate(value: string | null) {
   if (!value) return "unknown";
 
@@ -129,23 +115,23 @@ function Icon({ name, size, title }: { name: string; size: "small" | "large"; ti
 
 function PlanList({ plans }: { plans: PlanSummary[] }) {
   return (
-    <table className="list">
+    <Table>
       <thead>
         <tr>
-          <th />
-          <th />
-          <th>Name</th>
-          <th>Description</th>
-          <th>Last Build time</th>
-          <th>Last Success</th>
-          <th>Last Failure</th>
+          <Th />
+          <Th />
+          <Th>Name</Th>
+          <Th>Description</Th>
+          <Th>Last Build time</Th>
+          <Th>Last Success</Th>
+          <Th>Last Failure</Th>
         </tr>
       </thead>
       <tbody>
         {plans.map((plan) => (
-          <tr key={plan.id}>
-            <td>{plan.status ? <Icon name={plan.status} size="small" /> : null}</td>
-            <td>
+          <Tr key={plan.id}>
+            <Td>{plan.status ? <StatusBadge status={plan.status} /> : null}</Td>
+            <Td>
               {plan.weather !== null ? (
                 <Icon
                   name={`weather-${plan.weather}`}
@@ -153,19 +139,19 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
                   title={`${plan.weather} of the last 5 builds were successful`}
                 />
               ) : null}
-            </td>
-            <td>
+            </Td>
+            <Td>
               <a href={`/projects/${encodePathPart(plan.project.name)}`}>{plan.project.name}</a> /{" "}
               <a href={planPath(plan.project.name, plan.name)}>{plan.name}</a>
-            </td>
-            <td>{truncate(plan.description)}</td>
-            <td>{formatMaybeDate(plan.last_build_at)}</td>
-            <td>{formatMaybeDate(plan.last_success_at)}</td>
-            <td>{formatMaybeDate(plan.last_failure_at)}</td>
-          </tr>
+            </Td>
+            <Td>{truncate(plan.description)}</Td>
+            <Td>{formatMaybeDate(plan.last_build_at)}</Td>
+            <Td>{formatMaybeDate(plan.last_success_at)}</Td>
+            <Td>{formatMaybeDate(plan.last_failure_at)}</Td>
+          </Tr>
         ))}
       </tbody>
-    </table>
+    </Table>
   );
 }
 
@@ -365,9 +351,8 @@ export default function PlanShowPage(props: PlanShowPageProps) {
           <>
             <dt>Status</dt>
             <dd>
-              <Icon name={plan.status} size="large" />{" "}
+              <StatusBadge status={plan.status} />{" "}
               <span>
-                {statusLabel(plan.status)}{" "}
                 {plan.last_finished_build ? (
                   <a href={buildPath(projectId, plan.name, plan.last_finished_build.position)}>Latest Build</a>
                 ) : null}

@@ -1,5 +1,8 @@
 import React from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { StatusBadge } from "@/components/ui/Badge"
+import { Button } from "@/components/ui/Button"
+import { Table, Td, Th, Tr } from "@/components/ui/Table"
 import type { Build } from "@/hooks/useBuilds"
 import { buildsQueryKey } from "@/hooks/useBuilds"
 
@@ -12,18 +15,6 @@ type BuildListProps = {
 }
 
 const FINISHED_STATUSES = new Set(["success", "error", "failure", "canceled", "stopped"])
-
-const STATUS_LABELS: Record<string, string> = {
-  canceled: "Canceled",
-  error: "Error",
-  failure: "Failure",
-  pending: "Pending",
-  running: "Running",
-  stopped: "Stopped",
-  stopping: "Stopping",
-  success: "Success",
-  waiting: "Waiting"
-}
 
 function pathForBuild(build: Build) {
   return `/projects/${build.plan.project_id}/plans/${build.plan.plan_id}/builds/${build.position}`
@@ -76,12 +67,10 @@ async function stopBuild(build: Build) {
 }
 
 function StatusCell({ build }: { build: Build }) {
-  const label = STATUS_LABELS[build.status] || build.status
-
   return (
-    <td>
-      <img src={build.status_icon_path} alt="" width={16} height={16} /> {label}
-    </td>
+    <Td>
+      <StatusBadge status={build.status} />
+    </Td>
   )
 }
 
@@ -105,20 +94,20 @@ function StopCell({
   })
 
   if (FINISHED_STATUSES.has(build.status)) {
-    return <td />
+    return <Td />
   }
 
   return (
-    <td>
-      <button
+    <Td>
+      <Button
         type="button"
-        className="stop-link"
+        variant="ghost"
         disabled={mutation.isPending || build.status === "stopping"}
         onClick={() => mutation.mutate()}
       >
         <img src={stopIconPath} alt="" width={16} height={16} /> Stop
-      </button>
-    </td>
+      </Button>
+    </Td>
   )
 }
 
@@ -136,21 +125,21 @@ function BuildRow({
   stopIconPath?: string
 }) {
   return (
-    <tr>
-      <td>
+    <Tr>
+      <Td>
         {child ? "+ " : null}
         <a href={pathForBuild(build)}>{build.position}</a>
-      </td>
-      <td>
+      </Td>
+      <Td>
         <a href={pathForProject(build)}>{build.plan.project_name}</a> /{" "}
         <a href={pathForPlan(build)}>{build.plan.name}</a>
-      </td>
-      <td>
+      </Td>
+      <Td>
         <a href={pathForBuild(build)}>{formatTimestamp(build.created_at)}</a>
-      </td>
+      </Td>
       <StatusCell build={build} />
       <StopCell build={build} projectId={projectId} planId={planId} stopIconPath={stopIconPath} />
-    </tr>
+    </Tr>
   )
 }
 
@@ -166,14 +155,14 @@ export function BuildList({
   }
 
   return (
-    <table className="list">
+    <Table>
       <thead>
         <tr>
-          <th>Number</th>
-          <th>Name</th>
-          <th>Timestamp</th>
-          <th>Status</th>
-          <th />
+          <Th>Number</Th>
+          <Th>Name</Th>
+          <Th>Timestamp</Th>
+          <Th>Status</Th>
+          <Th />
         </tr>
       </thead>
       <tbody>
@@ -197,6 +186,6 @@ export function BuildList({
           ))
         ])}
       </tbody>
-    </table>
+    </Table>
   )
 }

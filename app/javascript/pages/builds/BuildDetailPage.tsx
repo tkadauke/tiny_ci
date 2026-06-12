@@ -3,31 +3,18 @@ import { useQueryClient } from "@tanstack/react-query"
 import { DetailsReport } from "@/components/builds/reports/DetailsReport"
 import { GistReport } from "@/components/builds/reports/GistReport"
 import { RawOutput } from "@/components/builds/reports/RawOutput"
+import { StatusBadge } from "@/components/ui/Badge"
+import { Button } from "@/components/ui/Button"
 import { api } from "@/lib/api"
 import { useBuild, type OutputRow } from "@/hooks/useBuild"
 import { useChannel } from "@/hooks/useChannel"
 
 const FINISHED_STATUSES = new Set(["success", "error", "failure", "canceled", "stopped"])
-const STATUS_TEXT: Record<string, string> = {
-  canceled: "Canceled",
-  error: "Error",
-  failure: "Failure",
-  pending: "Pending",
-  running: "Running",
-  stopped: "Stopped",
-  stopping: "Stopping",
-  success: "Success",
-  waiting: "Waiting",
-}
 
 type Props = {
   projectId: string
   planId: string
   buildId: string
-}
-
-function statusText(status: string) {
-  return STATUS_TEXT[status] || status
 }
 
 function iconPath(size: "small" | "large", status: string) {
@@ -104,7 +91,7 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
       </h1>
       <dl>
         <dt>Status</dt>
-        <dd><img src={iconPath("large", build.status)} alt="" /> {build.status_text || statusText(build.status)}</dd>
+        <dd><StatusBadge status={build.status} /></dd>
         <dt>Revision</dt>
         <dd>{build.revision || "unknown"}</dd>
         <dt>Duration</dt>
@@ -118,8 +105,9 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
       </dl>
       {showStop ? (
         <p>
-          <button
-            className="stop-link"
+          <Button
+            type="button"
+            variant="ghost"
             disabled={stopping}
             onClick={async () => {
               setStopping(true)
@@ -127,7 +115,7 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
             }}
           >
             <img src={iconPath("small", "stopped")} alt="" /> Stop
-          </button>
+          </Button>
         </p>
       ) : null}
       <ul className="action-list">
@@ -140,7 +128,7 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
         ))}
       </ul>
       <div className="report" id="report"><ReportBody mode={mode} rows={build.output_rows} /></div>
-      {FINISHED_STATUSES.has(build.status) ? <p><img src={iconPath("small", build.status)} alt="" /> {build.status_text || statusText(build.status)}</p> : null}
+      {FINISHED_STATUSES.has(build.status) ? <p><StatusBadge status={build.status} /></p> : null}
       {build.status === "running" ? <img src="/assets/spinner.gif" alt="Running" /> : null}
     </>
   )

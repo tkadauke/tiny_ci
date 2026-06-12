@@ -19,7 +19,7 @@ describe("BuildDetailPage", () => {
     expect(screen.getByText("Running tests")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Stop/ })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Raw output" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getAllByText("Success").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("success").length).toBeGreaterThan(0);
   });
 
   it("shows the stop button and running spinner while running", async () => {
