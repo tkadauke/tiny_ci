@@ -77,6 +77,7 @@ describe("Dashboard widgets", () => {
     renderWithProviders(<DashboardPage />);
 
     expect(await screen.findByText("offline-worker")).toBeInTheDocument();
+    expect(screen.getByText("Slave is offline.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Configure" })).toHaveAttribute("href", "/admin/workers/offline-worker/edit");
     expect(screen.getByText("idle-worker").closest("li")).toHaveTextContent("No builds");
     expect(screen.getByText("busy-worker").closest("li")).toHaveTextContent("running");
