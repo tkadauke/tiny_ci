@@ -99,7 +99,7 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
         {build.starter_login ? (
           <>
             <dt>{t("builds.build.started_by")}</dt>
-            <dd><a href={`/users/${build.starter_id}`}>{build.starter_login}</a> {t("builds.build.requested_manually")}</dd>
+            <dd><a href={`/users/${encodeURIComponent(build.starter_login)}`}>{build.starter_login}</a> {t("builds.build.requested_manually")}</dd>
           </>
         ) : null}
       </dl>
