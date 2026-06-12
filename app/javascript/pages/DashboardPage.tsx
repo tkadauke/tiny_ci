@@ -219,6 +219,7 @@ function WorkerStatus({ worker }: { worker: Worker }) {
     return (
       <p>
         <img src="/assets/icons/small/offline.png" alt="" width={16} height={16} />{" "}
+        Slave is offline.{" "}
         <Link to={`/admin/workers/${worker.name}/edit`}>Configure</Link>
       </p>
     );
