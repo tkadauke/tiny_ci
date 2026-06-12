@@ -1,7 +1,10 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { LoggedInCurrentUser } from "../../hooks/useCurrentUser";
 import { useUpdateUser } from "../../hooks/useUpdateUser";
 import { useUser } from "../../hooks/useUser";
@@ -21,7 +24,6 @@ function canEditRole(currentUser: EditUserPageProps["currentUser"], login: strin
 }
 
 export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps) {
-  const { t } = useTranslation();
   const { login } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -46,7 +48,7 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
   useEffect(() => {
     if (unauthorized && !flashedAccessDenied.current) {
       flashedAccessDenied.current = true;
-      onFlash(t("flash.error.access_denied"), "error");
+      onFlash("Access denied", "error");
     }
   }, [onFlash, unauthorized]);
 
@@ -70,7 +72,7 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
         queryClient.invalidateQueries({ queryKey: ["user", userQuery.data.login] }),
         queryClient.invalidateQueries({ queryKey: ["user", updatedUser.login] }),
       ]);
-      onFlash(t("flash.notice.updated_profile", { user: updatedUser.login }));
+      onFlash(`Successfully updated ${updatedUser.login}'s profile`);
       navigate(`/users/${encodeURIComponent(updatedUser.login)}`);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -85,37 +87,34 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
         }
       }
 
-      setErrors([t("spa.users.update_profile_error")]);
+      setErrors(["Could not update profile."]);
     }
   }
 
   return (
-    <div className="react-page">
-      <p>
-        {t("spa.breadcrumbs.you_are_here")} <Link to="/">{t("breadcrumb.home")}</Link> &gt; <Link to="/users">{t("breadcrumb.users")}</Link> &gt;{" "}
-        {login} &gt; {t("breadcrumb.edit")}
-      </p>
-
-      {userQuery.isPending ? <p>{t("spa.users.loading_profile")}</p> : null}
+    <>
+      {userQuery.isPending ? <p>Loading profile...</p> : null}
       {userQuery.isError ? (
-        <div className="error" role="alert">
-          {t("spa.users.load_profile_error")}
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+          Could not load profile.
         </div>
       ) : null}
       {unauthorized ? (
-        <div className="error" role="alert">
-          {t("flash.error.access_denied")}
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+          Access denied
         </div>
       ) : null}
 
       {userQuery.data && !unauthorized ? (
         <>
-          <h2>{t("users.edit.edit_users_profile", { login: userQuery.data.login })}</h2>
-          <form className="form" onSubmit={handleSubmit}>
+          <PageHeader title={`Edit ${userQuery.data.login}'s Profile`} />
+          <Card>
+            <CardBody>
+          <form onSubmit={handleSubmit}>
             {errors.length > 0 ? (
-              <div className="error" role="alert">
-                <p>{t("spa.forms.fix_errors")}</p>
-                <ul>
+              <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+                <p>Please fix the following errors:</p>
+                <ul className="mt-2 list-disc pl-5">
                   {errors.map((error) => (
                     <li key={error}>{error}</li>
                   ))}
@@ -123,27 +122,23 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
               </div>
             ) : null}
 
-            <p className="form_item">
-              <span className="label">
-                <label htmlFor="user_email">{t("users.edit.email_address")}</label>
-              </span>
-              <span className="desc">{t("users.edit.the_email_address_is_used_for_notifications")}</span>
+            <FormField label="E-Mail Address">
+              <p className="mb-2 text-sm text-gray-500">The email address is used for notifications.</p>
               <input
+                className={inputClassName}
                 id="user_email"
                 name="user[email]"
                 type="text"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
-            </p>
+            </FormField>
 
             {canEditRole(currentUser, userQuery.data.login) ? (
-              <p className="form_item">
-                <span className="label">
-                  <label htmlFor="user_role">{t("spa.users.role")}</label>
-                </span>
-                <span className="desc">{t("users.edit.the_users_role")}</span>
+              <FormField label="Role">
+                <p className="mb-2 text-sm text-gray-500">The user's role.</p>
                 <select
+                  className={inputClassName}
                   id="user_role"
                   name="user[role]"
                   value={role}
@@ -152,17 +147,20 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
                   <option value="user">user</option>
                   <option value="admin">admin</option>
                 </select>
-              </p>
+              </FormField>
             ) : null}
 
-            <p>
-              <button type="submit" disabled={updateUser.isPending}>
-                {t("users.edit.update")}
-              </button>
+            <p className="flex items-center gap-3">
+              <Button type="submit" disabled={updateUser.isPending}>
+                Update
+              </Button>
+              <Link className="text-sm text-gray-600 hover:text-gray-900" to={`/users/${encodeURIComponent(userQuery.data.login)}`}>Cancel</Link>
             </p>
           </form>
+            </CardBody>
+          </Card>
         </>
       ) : null}
-    </div>
+    </>
   );
 }

@@ -2,32 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.react-page button {
-  cursor: pointer;
-}
-
-.react-page .error {
-  background: #fbe3e4;
-  border: 1px solid #fbc2c4;
-  color: #8a1f11;
-  margin: 0 0 1em;
-  padding: 0.8em;
-}
-
-.react-page form p {
-  margin: 0 0 1em;
-}
-
-.react-page label {
-  display: block;
-  font-weight: bold;
-}
-
-.react-page input[type="text"],
-.react-page input[type="password"] {
-  width: 20em;
-}
-
-.react-page input[type="checkbox"] {
-  margin-right: 0.4em;
+/* Build output raw view - monospace pre blocks */
+@layer components {
+  .output-line { @apply font-mono text-sm leading-relaxed; }
 }

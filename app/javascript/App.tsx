@@ -219,7 +219,6 @@ function BuildHistoryRoute() {
       projectId={projectId}
       planId={planId}
       planName={plan?.name ?? planId}
-      stopIconPath="/assets/icons/small/stopped.png"
     />
   );
 }

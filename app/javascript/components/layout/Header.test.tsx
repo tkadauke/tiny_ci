@@ -25,7 +25,7 @@ describe("Header", () => {
     expect(screen.getByRole("link", { name: "Login" })).toHaveAttribute("href", "/login");
     expect(screen.getByRole("link", { name: "Signup" })).toHaveAttribute("href", "/signup");
     expect(screen.queryByRole("link", { name: "Settings" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Logout" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Logout" })).not.toBeInTheDocument();
   });
 
   it("shows logged-in actions and welcome text", async () => {
@@ -35,7 +35,7 @@ describe("Header", () => {
 
     expect(await screen.findByText("Welcome, admin!")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("href", "/settings");
-    expect(screen.getByRole("link", { name: "Logout" })).toHaveAttribute("href", "/logout");
+    expect(screen.getByRole("button", { name: "Logout" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Login" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Signup" })).not.toBeInTheDocument();
   });

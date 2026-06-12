@@ -9,7 +9,7 @@ describe("PlanList", () => {
     renderWithProviders(<PlanList plans={[planFixture]} mode="list" />);
 
     expect(screen.getByRole("link", { name: "main" })).toHaveAttribute("href", "/projects/tiny-ci/plans/main");
-    expect(screen.getByAltText("Success")).toHaveAttribute("src", "/assets/icons/small/success.png");
+    expect(screen.getByText("Success")).toBeInTheDocument();
     expect(screen.getByTitle("4 of the last 5 builds were successful")).toBeInTheDocument();
   });
 

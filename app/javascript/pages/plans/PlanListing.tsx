@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { TabBar } from "@/components/ui/TabBar";
 import { PlanList, type PlanListPlan } from "@/components/plans/PlanList";
 
 type ReportMode = "list" | "overview";
@@ -31,24 +33,14 @@ async function fetchPlans(endpoint: string) {
 }
 
 function ModeToggle({ mode, basePath }: { mode: ReportMode; basePath: string }) {
-  const { t } = useTranslation();
-
   return (
-    <ul className="action-list">
-      <li>
-        <Link to={`${basePath}?report=list`} aria-current={mode === "list" ? "page" : undefined}>
-          {t("plans.full_index.details")}
-        </Link>
-      </li>
-      <li>
-        <Link
-          to={`${basePath}?report=overview`}
-          aria-current={mode === "overview" ? "page" : undefined}
-        >
-          {t("plans.full_index.overview")}
-        </Link>
-      </li>
-    </ul>
+    <TabBar
+      activeKey={mode}
+      items={[
+        { key: "list", label: "Details", href: `${basePath}?report=list` },
+        { key: "overview", label: "Overview", href: `${basePath}?report=overview` },
+      ]}
+    />
   );
 }
 
@@ -59,7 +51,6 @@ export function PlanListing({
   canCreatePlans = false,
   newPlanPath = null,
 }: PlanListingProps) {
-  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const report = searchParams.get("report");
   const mode = isReportMode(report) ? report : "list";
@@ -71,18 +62,22 @@ export function PlanListing({
 
   return (
     <>
-      <h1>{heading}</h1>
+      <PageHeader
+        title={heading}
+        actions={
+          canCreatePlans && newPlanPath ? (
+            <Link to={newPlanPath}>
+              <Button type="button">New Plan</Button>
+            </Link>
+          ) : null
+        }
+      />
       <ModeToggle mode={mode} basePath={basePath} />
-      <div id="plans">
-        {isLoading ? <p>{t("spa.loading")}</p> : null}
-        {error ? <p className="error">{t("spa.plans.load_error")}</p> : null}
+      <div>
+        {isLoading ? <p>Loading...</p> : null}
+        {error ? <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">Could not load plans.</p> : null}
         {!isLoading && !error ? <PlanList plans={plans} mode={mode} /> : null}
       </div>
-      {canCreatePlans && newPlanPath ? (
-        <p>
-          <Link to={newPlanPath}>{t("plans.index.new_plan")}</Link>
-        </p>
-      ) : null}
     </>
   );
 }

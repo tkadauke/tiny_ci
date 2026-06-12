@@ -1,5 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/Button";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { FormField, inputClassName } from "@/components/ui/FormField";
 
 export type LocalizedString = string | Record<string, string>;
 
@@ -18,11 +20,15 @@ type ConfigOptionFormProps = {
   submitLabel: string;
 };
 
-function localizedValue(value: LocalizedString | null | undefined, locale: string): string | null {
+function currentLocale(): string {
+  return document.documentElement.lang || "en";
+}
+
+function localizedValue(value: LocalizedString | null | undefined): string | null {
   if (value == null) return null;
   if (typeof value === "string") return value;
 
-  return value[locale] ?? Object.values(value)[0] ?? null;
+  return value[currentLocale()] ?? Object.values(value)[0] ?? null;
 }
 
 function currentValue(option: ConfigOption): string {
@@ -31,12 +37,15 @@ function currentValue(option: ConfigOption): string {
   return String(option.current_value);
 }
 
+function optionCategory(option: ConfigOption) {
+  return option.key.split(/[._]/)[0] || "Configuration";
+}
+
 export default function ConfigOptionForm({
   options,
   onSubmit,
   submitLabel,
 }: ConfigOptionFormProps) {
-  const { i18n } = useTranslation();
   const visibleOptions = options.filter((option) => option.type !== "Hash");
   const [values, setValues] = useState<Record<string, string>>({});
 
@@ -62,42 +71,59 @@ export default function ConfigOptionForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      {visibleOptions.map((option) => {
-        const label = localizedValue(option.name, i18n.language) ?? option.key;
-        const description = localizedValue(option.description, i18n.language);
+      <div className="space-y-4">
+        {Object.entries(
+          visibleOptions.reduce<Record<string, ConfigOption[]>>((groups, option) => {
+            const category = optionCategory(option);
+            groups[category] = groups[category] || [];
+            groups[category].push(option);
+            return groups;
+          }, {}),
+        ).map(([category, categoryOptions]) => (
+          <Card key={category}>
+            <CardHeader>{category}</CardHeader>
+            <CardBody>
+              {categoryOptions.map((option) => {
+                const label = localizedValue(option.name) ?? option.key;
+                const description = localizedValue(option.description);
 
-        return (
-          <p className="form_item" key={option.key}>
-            <span className="label">
-              <label htmlFor={`config_${option.key}`}>{label}</label>
-            </span>
-            {description ? <span className="desc">{description}</span> : null}
-            {option.values ? (
-              <select
-                id={`config_${option.key}`}
-                name={`config[${option.key}]`}
-                value={values[option.key] ?? ""}
-                onChange={(event) => updateValue(option.key, event.target.value)}
-              >
-                {option.values.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                id={`config_${option.key}`}
-                name={`config[${option.key}]`}
-                type="text"
-                value={values[option.key] ?? ""}
-                onChange={(event) => updateValue(option.key, event.target.value)}
-              />
-            )}
-          </p>
-        );
-      })}
-      <input type="submit" value={submitLabel} />
+                return (
+                  <FormField key={option.key} label={label}>
+                    {description ? <p className="mb-2 text-sm text-gray-500">{description}</p> : null}
+                    {option.values ? (
+                      <select
+                        className={inputClassName}
+                        id={`config_${option.key}`}
+                        name={`config[${option.key}]`}
+                        value={values[option.key] ?? ""}
+                        onChange={(event) => updateValue(option.key, event.target.value)}
+                      >
+                        {option.values.map((value) => (
+                          <option key={value} value={value}>
+                            {value}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        className={inputClassName}
+                        id={`config_${option.key}`}
+                        name={`config[${option.key}]`}
+                        type="text"
+                        value={values[option.key] ?? ""}
+                        onChange={(event) => updateValue(option.key, event.target.value)}
+                      />
+                    )}
+                  </FormField>
+                );
+              })}
+            </CardBody>
+          </Card>
+        ))}
+      </div>
+      <div className="mt-4">
+        <Button type="submit">{submitLabel}</Button>
+      </div>
     </form>
   );
 }

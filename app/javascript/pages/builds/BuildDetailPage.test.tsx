@@ -18,8 +18,8 @@ describe("BuildDetailPage", () => {
     expect(screen.getByText("bundle exec rake")).toBeInTheDocument();
     expect(screen.getByText("Running tests")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Stop/ })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Raw output" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getAllByText("Success").length).toBeGreaterThan(0);
+    expect(screen.getByRole("link", { name: "Raw" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getAllByText("success").length).toBeGreaterThan(0);
   });
 
   it("shows the stop button and running spinner while running", async () => {
@@ -32,7 +32,7 @@ describe("BuildDetailPage", () => {
     renderWithProviders(<BuildDetailPage projectId="tiny-ci" planId="main" buildId="7" />);
 
     expect(await screen.findByRole("button", { name: /Stop/ })).toBeInTheDocument();
-    expect(screen.getByAltText("Running")).toHaveAttribute("src", "/assets/spinner.gif");
+    expect(screen.getByRole("status", { name: "Running" })).toBeInTheDocument();
   });
 
   it("switches between Raw, Gist, and Details report views", async () => {
@@ -44,7 +44,7 @@ describe("BuildDetailPage", () => {
     await waitFor(() => expect(screen.getByRole("link", { name: "Gist" })).toHaveAttribute("aria-current", "page"));
     await user.click(screen.getByRole("link", { name: "Details" }));
     await waitFor(() => expect(screen.getByRole("link", { name: "Details" })).toHaveAttribute("aria-current", "page"));
-    await user.click(screen.getByRole("link", { name: "Raw output" }));
-    await waitFor(() => expect(screen.getByRole("link", { name: "Raw output" })).toHaveAttribute("aria-current", "page"));
+    await user.click(screen.getByRole("link", { name: "Raw" }));
+    await waitFor(() => expect(screen.getByRole("link", { name: "Raw" })).toHaveAttribute("aria-current", "page"));
   });
 });

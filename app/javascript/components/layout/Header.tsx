@@ -16,7 +16,7 @@ export default function Header() {
   const { setFlash } = useFlash();
   const { t } = useTranslation();
 
-  const logout = async (event: MouseEvent<HTMLAnchorElement>) => {
+  const logout = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     const response = await fetch("/api/session", {
@@ -44,49 +44,38 @@ export default function Header() {
   };
 
   return (
-    <div id="top_header">
-      <div id="logo">
-        <h1>
-          <Link to="/">TinyCI</Link>
-        </h1>
-        <p>{t("layouts.subtitle")}</p>
-      </div>
-      <div id="center_header">
-        <div id="suggestion">
-          <div className="suggestion_corner_right">
-            <span>
-              {t("spa.layout.report_bugs_prefix")}{" "}
-              <a href="http://github.com/tkadauke/tiny_ci/issues">{t("layouts.report_link_text")}</a>
-            </span>
-          </div>
+    <header className="bg-slate-900 text-white">
+      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div>
+          <Link to="/" className="text-lg font-semibold tracking-tight text-white hover:text-blue-300">
+            TinyCI
+          </Link>
+          <p className="sr-only">{t("layouts.subtitle")}</p>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
+          {currentUser.guest ? (
+            <>
+              <span className="text-slate-400">{t("layouts.guest_greeter")}</span>
+              <Link to="/login" className="text-white hover:text-blue-300">
+                {t("layouts.login")}
+              </Link>
+              <Link to="/signup" className="bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded text-white font-medium">
+                {t("layouts.signup")}
+              </Link>
+            </>
+          ) : (
+            <>
+              <span className="text-slate-300">{t("layouts.user_greeter", { user: currentUser.login })}</span>
+              <Link to="/settings" className="text-slate-300 hover:text-white">
+                {t("layouts.settings")}
+              </Link>
+              <button type="button" onClick={logout} className="text-slate-300 hover:text-white">
+                {t("layouts.logout")}
+              </button>
+            </>
+          )}
         </div>
       </div>
-      <div id="right_header">
-        {currentUser.guest ? (
-          <ul className="action-list">
-            <li>{t("layouts.guest_greeter")}</li>
-            <li>
-              <Link to="/login">{t("layouts.login")}</Link>
-            </li>
-            <li>
-              <Link to="/signup">{t("layouts.signup")}</Link>
-            </li>
-          </ul>
-        ) : (
-          <ul className="action-list">
-            <li>{t("layouts.user_greeter", { user: currentUser.login })}</li>
-            <li>
-              <Link to="/settings">{t("layouts.settings")}</Link>
-            </li>
-            <li>
-              <a href="/logout" onClick={logout}>
-                {t("layouts.logout")}
-              </a>
-            </li>
-          </ul>
-        )}
-      </div>
-      <div className="clearer"></div>
-    </div>
+    </header>
   );
 }

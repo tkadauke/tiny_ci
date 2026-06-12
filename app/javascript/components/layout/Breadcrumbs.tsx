@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -37,14 +38,19 @@ export default function Breadcrumbs() {
   });
 
   return (
-    <p>
-      {t("spa.breadcrumbs.you_are_here")}{" "}
+    <nav className="mb-4 flex items-center gap-1.5 text-sm text-gray-500" aria-label={t("spa.breadcrumbs.you_are_here")}>
       {crumbs.map((crumb, index) => (
-        <span key={crumb.path}>
-          {index > 0 ? " / " : null}
-          {index === crumbs.length - 1 ? crumb.label : <Link to={crumb.path}>{crumb.label}</Link>}
-        </span>
+        <Fragment key={crumb.path}>
+          {index > 0 && <span className="text-gray-300">/</span>}
+          {index === crumbs.length - 1 ? (
+            <span className="text-gray-900 font-medium">{crumb.label}</span>
+          ) : (
+            <Link to={crumb.path} className="hover:text-gray-700">
+              {crumb.label}
+            </Link>
+          )}
+        </Fragment>
       ))}
-    </p>
+    </nav>
   );
 }
