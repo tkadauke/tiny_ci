@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import WorkerForm from "../../components/admin/WorkerForm"
+import { WorkerForm } from "../../components/admin/WorkerForm"
 import { useCreateWorker } from "../../hooks/admin/useCreateWorker"
 import { useWorker } from "../../hooks/admin/useWorker"
 import type { Worker } from "../../hooks/admin/useWorkers"
@@ -8,7 +8,7 @@ function cloneName() {
   return new URLSearchParams(window.location.search).get("clone")
 }
 
-export default function NewWorkerPage() {
+export function NewWorkerPage() {
   const sourceName = cloneName()
   const { worker, loading, error } = useWorker(sourceName)
   const { createWorker } = useCreateWorker()
@@ -29,3 +29,5 @@ export default function NewWorkerPage() {
     </>
   )
 }
+
+export default NewWorkerPage

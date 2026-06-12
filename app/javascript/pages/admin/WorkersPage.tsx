@@ -12,7 +12,7 @@ function statusIcon(offline: boolean) {
   )
 }
 
-export default function WorkersPage() {
+export function WorkersPage() {
   const { workers, loading, error } = useWorkers()
   const { createWorker } = useCreateWorker()
   const [quickCreateError, setQuickCreateError] = useState<string | null>(null)
@@ -82,3 +82,5 @@ export default function WorkersPage() {
     </>
   )
 }
+
+export default WorkersPage

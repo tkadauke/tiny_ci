@@ -48,7 +48,7 @@ function toEnvironmentVariables(rows: EnvironmentRow[]) {
   }, {})
 }
 
-export default function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
+export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
   const initialWorker = useMemo(() => ({ ...blankWorker, ...(worker || {}) }), [worker])
   const [form, setForm] = useState<Partial<Worker>>(initialWorker)
   const [rows, setRows] = useState<EnvironmentRow[]>(environmentRows(worker))
@@ -220,3 +220,5 @@ export default function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
     </form>
   )
 }
+
+export default WorkerForm

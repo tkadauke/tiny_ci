@@ -10,7 +10,7 @@ function flashMessage() {
   return new URLSearchParams(window.location.search).get("flash")
 }
 
-export default function WorkerShowPage({ name }: Props) {
+export function WorkerShowPage({ name }: Props) {
   const { worker, loading, error } = useWorker(name)
   const { deleteWorker } = useDeleteWorker(name)
   const [confirming, setConfirming] = useState(false)
@@ -88,3 +88,5 @@ export default function WorkerShowPage({ name }: Props) {
     </>
   )
 }
+
+export default WorkerShowPage

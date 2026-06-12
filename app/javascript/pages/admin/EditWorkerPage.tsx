@@ -1,4 +1,4 @@
-import WorkerForm from "../../components/admin/WorkerForm"
+import { WorkerForm } from "../../components/admin/WorkerForm"
 import { useWorker } from "../../hooks/admin/useWorker"
 import { useUpdateWorker } from "../../hooks/admin/useUpdateWorker"
 import type { Worker } from "../../hooks/admin/useWorkers"
@@ -7,7 +7,7 @@ type Props = {
   name: string
 }
 
-export default function EditWorkerPage({ name }: Props) {
+export function EditWorkerPage({ name }: Props) {
   const { worker, loading, error } = useWorker(name)
   const { updateWorker } = useUpdateWorker(name)
 
@@ -27,3 +27,5 @@ export default function EditWorkerPage({ name }: Props) {
     </>
   )
 }
+
+export default EditWorkerPage
