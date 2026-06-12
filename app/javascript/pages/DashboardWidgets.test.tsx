@@ -54,7 +54,7 @@ describe("Dashboard widgets", () => {
     await screen.findByText("2 minutes");
     const recent = screen.getByRole("heading", { name: "Recently finished builds" }).closest("section") as HTMLElement;
     expect(within(recent).getByText("2 minutes")).toBeInTheDocument();
-    expect(within(recent).getByRole("link", { name: "8" }).closest("tr")).toHaveTextContent(/success\s*$/);
+    expect(within(recent).getByRole("link", { name: "8" }).closest("tr")).toHaveTextContent(/Success\s*$/);
     expect(within(recent).queryByRole("button", { name: /Stop/ })).not.toBeInTheDocument();
   });
 
@@ -79,7 +79,7 @@ describe("Dashboard widgets", () => {
     expect(await screen.findByText("offline-worker")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Configure" })).toHaveAttribute("href", "/admin/workers/offline-worker/edit");
     expect(screen.getByText("idle-worker").closest("li")).toHaveTextContent("No builds");
-    expect(screen.getByText("busy-worker").closest("li")).toHaveTextContent("running");
+    expect(screen.getByText("busy-worker").closest("li")).toHaveTextContent("Running");
   });
 
   it("renders quick links for initial admin, account creators, and guests", async () => {

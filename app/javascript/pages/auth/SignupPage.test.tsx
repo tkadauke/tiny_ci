@@ -10,10 +10,10 @@ describe("SignupPage", () => {
   it("renders all required fields", () => {
     renderWithProviders(<SignupPage onFlash={vi.fn()} />);
 
-    expect(screen.getByLabelText("Login name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Login Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("E-Mail Address")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
-    expect(screen.getByLabelText("Password confirmation")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password Confirmation")).toBeInTheDocument();
   });
 
   it("submits to the users API and flashes success", async () => {
@@ -28,10 +28,10 @@ describe("SignupPage", () => {
     const user = userEvent.setup();
     renderWithProviders(<SignupPage onFlash={onFlash} />);
 
-    await user.type(screen.getByLabelText("Login name"), "sam");
-    await user.type(screen.getByLabelText("Email address"), "sam@example.test");
+    await user.type(screen.getByLabelText("Login Name"), "sam");
+    await user.type(screen.getByLabelText("E-Mail Address"), "sam@example.test");
     await user.type(screen.getByLabelText("Password"), "secret");
-    await user.type(screen.getByLabelText("Password confirmation"), "secret");
+    await user.type(screen.getByLabelText("Password Confirmation"), "secret");
     await user.click(screen.getByRole("button", { name: "Create account" }));
 
     await waitFor(() => expect(submitted).toMatchObject({ login: "sam", email: "sam@example.test" }));

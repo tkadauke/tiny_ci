@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useDeleteWorker } from "../../hooks/admin/useDeleteWorker"
 import { useWorker } from "../../hooks/admin/useWorker"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   name: string
@@ -11,6 +12,7 @@ function flashMessage() {
 }
 
 export function WorkerShowPage({ name }: Props) {
+  const { t } = useTranslation()
   const { worker, loading, error } = useWorker(name)
   const { deleteWorker } = useDeleteWorker(name)
   const [confirming, setConfirming] = useState(false)
@@ -28,7 +30,7 @@ export function WorkerShowPage({ name }: Props) {
     }
   }
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p>{t("spa.loading")}</p>
   if (error) return <p>{error}</p>
   if (!worker) return null
 
@@ -46,7 +48,7 @@ export function WorkerShowPage({ name }: Props) {
         </li>
         <li>
           <button type="button" onClick={() => setConfirming(true)}>
-            Delete
+            {t("admin.slaves.show.delete")}
           </button>
         </li>
       </ul>
@@ -57,10 +59,10 @@ export function WorkerShowPage({ name }: Props) {
           <h2 id="delete-worker-heading">Delete Worker</h2>
           <p>Do you really want to delete this worker? This operation can not be undone.</p>
           <button type="button" onClick={confirmDelete}>
-            Delete
+            {t("admin.slaves.show.delete")}
           </button>
           <button type="button" onClick={() => setConfirming(false)}>
-            Cancel
+            {t("spa.actions.cancel")}
           </button>
         </div>
       ) : null}

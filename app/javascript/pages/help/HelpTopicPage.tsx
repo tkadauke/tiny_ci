@@ -1,5 +1,6 @@
 import React, { MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useHelpTopic } from "../../hooks/useHelpTopic";
 
 function isHelpTopicNotFound(topic: unknown): topic is { notFound: true } {
@@ -7,6 +8,7 @@ function isHelpTopicNotFound(topic: unknown): topic is { notFound: true } {
 }
 
 export function HelpTopicPage() {
+  const { t } = useTranslation();
   const { "*": wildcardPath } = useParams();
   const navigate = useNavigate();
   const { data: topic, isLoading, isError } = useHelpTopic(wildcardPath);
@@ -43,18 +45,18 @@ export function HelpTopicPage() {
   };
 
   if (isLoading) {
-    return <p>Loading help topic...</p>;
+    return <p>{t("spa.help.loading")}</p>;
   }
 
   if (isError) {
-    return <p>Unable to load this help topic.</p>;
+    return <p>{t("spa.help.load_error")}</p>;
   }
 
   if (!topic || isHelpTopicNotFound(topic)) {
     return (
       <>
-        <h2>Help topic not found</h2>
-        <p>The requested help topic could not be found.</p>
+        <h2>{t("spa.help.not_found_title")}</h2>
+        <p>{t("spa.help.not_found_message")}</p>
       </>
     );
   }

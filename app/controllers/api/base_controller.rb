@@ -68,6 +68,7 @@ module Api
     def current_user_payload
       {
         guest: !logged_in?,
+        locale: I18n.locale.to_s,
         login: logged_in? ? current_user.login : nil,
         email: logged_in? ? current_user.email : nil,
         role: current_role,

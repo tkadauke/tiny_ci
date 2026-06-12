@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type SetupStep = "loading" | "choose_language" | "config" | "restart";
 
@@ -78,13 +79,14 @@ function Field({
 }
 
 function LanguageStep({ onChoose }: { onChoose: (language: string) => void }) {
+  const { t } = useTranslation();
   const [language, setLanguage] = useState("en");
 
   return (
     <section>
-      <h1>TinyCI Setup</h1>
-      <p>Please choose your language</p>
-      <p>Bitte waehlen Sie Ihre Sprache</p>
+      <h1>{t("spa.setup.title")}</h1>
+      <p>{t("spa.setup.choose_language_en")}</p>
+      <p>{t("spa.setup.choose_language_de")}</p>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -93,14 +95,14 @@ function LanguageStep({ onChoose }: { onChoose: (language: string) => void }) {
       >
         <p className="form_item">
           <span className="label">
-            <label htmlFor="setup_language">Language</label>
+            <label htmlFor="setup_language">{t("spa.setup.language")}</label>
           </span>
           <select id="setup_language" value={language} onChange={(event) => setLanguage(event.target.value)}>
             <option value="en">English</option>
             <option value="de">Deutsch</option>
           </select>
         </p>
-        <button type="submit">Ok</button>
+        <button type="submit">{t("spa.setup.ok")}</button>
       </form>
     </section>
   );
@@ -115,6 +117,7 @@ function ConfigStep({
   onSubmit: (form: SetupForm) => Promise<void>;
   error: string | null;
 }) {
+  const { t } = useTranslation();
   const initialForm = useMemo(() => ({ ...DEFAULTS, ...defaults, db_password: "" }), [defaults]);
   const [form, setForm] = useState<SetupForm>(initialForm);
   const [saving, setSaving] = useState(false);
@@ -125,12 +128,11 @@ function ConfigStep({
 
   return (
     <section>
-      <h1>Welcome to TinyCI</h1>
+      <h1>{t("admin.setup.index.welcome_to_tinyci")}</h1>
       <p>
-        Please fill out the following information to get started with TinyCI. This is the minimal configuration necessary
-        for the correct operation of TinyCI.
+        {t("spa.setup.config_intro")}
       </p>
-      <h2>Database configuration</h2>
+      <h2>{t("admin.setup.index.database_configuration")}</h2>
       <form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -141,32 +143,32 @@ function ConfigStep({
       >
         {error ? (
           <div className="errorExplanation">
-            <p>Could not connect to the database. The following error message was received:</p>
+            <p>{t("admin.setup.index.db_error")}</p>
             <p>
               <strong>{error}</strong>
             </p>
           </div>
         ) : null}
-        <Field name="db_user" label="Database username" type="text" form={form} setForm={setForm} />
+        <Field name="db_user" label={t("admin.setup.index.database_username")} type="text" form={form} setForm={setForm} />
         <Field
           name="db_password"
-          label="Database password"
+          label={t("admin.setup.index.database_password")}
           type="password"
           form={form}
           setForm={setForm}
-          description="This password will be saved as plain text in config/database.yml."
+          description={t("admin.setup.index.password_description", { path: "config/database.yml" })}
         />
         <Field
           name="db_name"
-          label="Database name"
+          label={t("admin.setup.index.database_name")}
           type="text"
           form={form}
           setForm={setForm}
-          description="The database will be created if it does not exist."
+          description={t("admin.setup.index.database_name_description")}
         />
-        <Field name="db_host" label="Database host" type="text" form={form} setForm={setForm} />
+        <Field name="db_host" label={t("admin.setup.index.database_host")} type="text" form={form} setForm={setForm} />
         <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save and restart"}
+          {saving ? t("spa.setup.saving") : t("admin.setup.index.save_and_restart")}
         </button>
       </form>
     </section>
@@ -174,19 +176,21 @@ function ConfigStep({
 }
 
 function RestartStep() {
+  const { t } = useTranslation();
+
   return (
     <section>
-      <h1>TinyCI is restarting...</h1>
-      <p>Please wait while TinyCI is restarting.</p>
+      <h1>{t("spa.setup.restarting_title")}</h1>
+      <p>{t("spa.setup.restarting")}</p>
       <p>
-        In a few moments, you will be redirected to the start page. If not, <a href="/">please click here to get there</a>
-        .
+        {t("spa.setup.redirect_prefix")} <a href="/">{t("spa.setup.redirect_link")}</a>.
       </p>
     </section>
   );
 }
 
 export default function SetupWizardApp() {
+  const { t } = useTranslation();
   const startsOnRestart = window.location.pathname === "/admin/setup/restart";
   const [step, setStep] = useState<SetupStep>(startsOnRestart ? "restart" : "loading");
   const [defaults, setDefaults] = useState<Partial<SetupForm>>(DEFAULTS);
@@ -204,7 +208,7 @@ export default function SetupWizardApp() {
       })
       .catch((responseError: SetupResponse) => {
         if (!active) return;
-        setError(responseError.error || "Could not load setup state.");
+        setError(responseError.error || t("spa.setup.load_error"));
         setStep("config");
       });
 
@@ -247,12 +251,12 @@ export default function SetupWizardApp() {
       setStep("restart");
       await fetchJson("/admin/setup/restart.json");
     } catch (responseError) {
-      setError((responseError as SetupResponse).error || "Could not connect to the database.");
+      setError((responseError as SetupResponse).error || t("flash.error.connect_to_database"));
     }
   };
 
   if (step === "loading") {
-    return <p>Loading setup...</p>;
+    return <p>{t("spa.setup.loading")}</p>;
   }
   if (step === "choose_language") {
     return <LanguageStep onChoose={chooseLanguage} />;

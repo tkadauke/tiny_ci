@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 export type Flash = {
   type: "notice" | "error";
@@ -40,6 +41,7 @@ export function useFlash() {
 
 export default function FlashMessage() {
   const { flash, clearFlash } = useFlash();
+  const { t } = useTranslation();
 
   if (!flash) {
     return null;
@@ -55,7 +57,7 @@ export default function FlashMessage() {
           clearFlash();
         }}
       >
-        Close
+        {t("layouts.close_flash")}
       </a>
     </div>
   );

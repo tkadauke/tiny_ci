@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { LoggedInCurrentUser } from "../../hooks/useCurrentUser";
 import { useUpdateUser } from "../../hooks/useUpdateUser";
 import { useUser } from "../../hooks/useUser";
@@ -20,6 +21,7 @@ function canEditRole(currentUser: EditUserPageProps["currentUser"], login: strin
 }
 
 export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps) {
+  const { t } = useTranslation();
   const { login } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -44,7 +46,7 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
   useEffect(() => {
     if (unauthorized && !flashedAccessDenied.current) {
       flashedAccessDenied.current = true;
-      onFlash("Access denied", "error");
+      onFlash(t("flash.error.access_denied"), "error");
     }
   }, [onFlash, unauthorized]);
 
@@ -68,7 +70,7 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
         queryClient.invalidateQueries({ queryKey: ["user", userQuery.data.login] }),
         queryClient.invalidateQueries({ queryKey: ["user", updatedUser.login] }),
       ]);
-      onFlash(`Successfully updated ${updatedUser.login}'s profile`);
+      onFlash(t("flash.notice.updated_profile", { user: updatedUser.login }));
       navigate(`/users/${encodeURIComponent(updatedUser.login)}`);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -83,36 +85,36 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
         }
       }
 
-      setErrors(["Could not update profile."]);
+      setErrors([t("spa.users.update_profile_error")]);
     }
   }
 
   return (
     <div className="react-page">
       <p>
-        You are here: <Link to="/">Home</Link> &gt; <Link to="/users">Users</Link> &gt;{" "}
-        {login} &gt; Edit
+        {t("spa.breadcrumbs.you_are_here")} <Link to="/">{t("breadcrumb.home")}</Link> &gt; <Link to="/users">{t("breadcrumb.users")}</Link> &gt;{" "}
+        {login} &gt; {t("breadcrumb.edit")}
       </p>
 
-      {userQuery.isPending ? <p>Loading profile...</p> : null}
+      {userQuery.isPending ? <p>{t("spa.users.loading_profile")}</p> : null}
       {userQuery.isError ? (
         <div className="error" role="alert">
-          Could not load profile.
+          {t("spa.users.load_profile_error")}
         </div>
       ) : null}
       {unauthorized ? (
         <div className="error" role="alert">
-          Access denied
+          {t("flash.error.access_denied")}
         </div>
       ) : null}
 
       {userQuery.data && !unauthorized ? (
         <>
-          <h2>Edit {userQuery.data.login}'s Profile</h2>
+          <h2>{t("users.edit.edit_users_profile", { login: userQuery.data.login })}</h2>
           <form className="form" onSubmit={handleSubmit}>
             {errors.length > 0 ? (
               <div className="error" role="alert">
-                <p>Please fix the following errors:</p>
+                <p>{t("spa.forms.fix_errors")}</p>
                 <ul>
                   {errors.map((error) => (
                     <li key={error}>{error}</li>
@@ -123,9 +125,9 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
 
             <p className="form_item">
               <span className="label">
-                <label htmlFor="user_email">Email address</label>
+                <label htmlFor="user_email">{t("users.edit.email_address")}</label>
               </span>
-              <span className="desc">The email address is used for notifications.</span>
+              <span className="desc">{t("users.edit.the_email_address_is_used_for_notifications")}</span>
               <input
                 id="user_email"
                 name="user[email]"
@@ -138,9 +140,9 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
             {canEditRole(currentUser, userQuery.data.login) ? (
               <p className="form_item">
                 <span className="label">
-                  <label htmlFor="user_role">Role</label>
+                  <label htmlFor="user_role">{t("spa.users.role")}</label>
                 </span>
-                <span className="desc">The user's role.</span>
+                <span className="desc">{t("users.edit.the_users_role")}</span>
                 <select
                   id="user_role"
                   name="user[role]"
@@ -155,7 +157,7 @@ export default function EditUserPage({ currentUser, onFlash }: EditUserPageProps
 
             <p>
               <button type="submit" disabled={updateUser.isPending}>
-                Update
+                {t("users.edit.update")}
               </button>
             </p>
           </form>

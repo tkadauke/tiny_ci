@@ -1,4 +1,5 @@
 import React from "react"
+import { useTranslation } from "react-i18next"
 import { WeatherIcon } from "@/components/plans/WeatherIcon"
 
 const h = React.createElement
@@ -19,13 +20,13 @@ export type PlanListPlan = {
   last_failure_at?: string | null
 }
 
-function statusIcon(status: string | null | undefined, size: "small" | "large") {
+function statusIcon(status: string | null | undefined, size: "small" | "large", title?: string) {
   if (!status) return null
 
   return h("img", {
     src: `/assets/icons/${size}/${status}.png`,
-    alt: status,
-    title: status
+    alt: title ?? status,
+    title: title ?? status
   })
 }
 
@@ -34,11 +35,11 @@ function truncate(text: string | null | undefined, length: number) {
   return text.length > length ? `${text.slice(0, length - 3)}...` : text
 }
 
-function duration(seconds: number | string | null | undefined) {
-  if (seconds === null || seconds === undefined || seconds === "") return "unknown"
+function duration(seconds: number | string | null | undefined, t: (key: string) => string) {
+  if (seconds === null || seconds === undefined || seconds === "") return t("plans.list.unknown")
 
   let remaining = Number(seconds)
-  if (!Number.isFinite(remaining)) return "unknown"
+  if (!Number.isFinite(remaining)) return t("plans.list.unknown")
 
   const days = Math.floor(remaining / 86400)
   remaining %= 86400
@@ -47,20 +48,20 @@ function duration(seconds: number | string | null | undefined) {
   const minutes = Math.floor(remaining / 60)
   const secs = Math.floor(remaining % 60)
   const parts = [
-    [days, "days"],
-    [hours, "hours"],
-    [minutes, "minutes"],
-    [secs, "seconds"]
+    [days, t("duration.days")],
+    [hours, t("duration.hours")],
+    [minutes, t("duration.minutes")],
+    [secs, t("duration.seconds")]
   ].filter(([value]) => value !== 0) as Array<[number, string]>
 
-  return parts.length ? parts.map(([value, unit]) => `${value} ${unit}`).join(", ") : "0 seconds"
+  return parts.length ? parts.map(([value, unit]) => `${value} ${unit}`).join(", ") : `0 ${t("duration.seconds")}`
 }
 
-function timeAgo(value: string | null | undefined) {
-  if (!value) return "unknown"
+function timeAgo(value: string | null | undefined, t: (key: string, options?: Record<string, unknown>) => string) {
+  if (!value) return t("plans.list.unknown")
 
   const time = new Date(value).getTime()
-  if (!Number.isFinite(time)) return "unknown"
+  if (!Number.isFinite(time)) return t("plans.list.unknown")
 
   const seconds = Math.max(0, Math.floor((Date.now() - time) / 1000))
   const units: Array<[number, string]> = [
@@ -75,11 +76,11 @@ function timeAgo(value: string | null | undefined) {
   for (const [unitSeconds, label] of units) {
     if (seconds >= unitSeconds) {
       const count = Math.floor(seconds / unitSeconds)
-      return `${count} ${label}${count === 1 ? "" : "s"} ago`
+      return t("plans.list.time_ago", { time: `${count} ${label}${count === 1 ? "" : "s"}` })
     }
   }
 
-  return "less than a minute ago"
+  return t("plans.list.time_ago", { time: t("spa.time.less_than_minute") })
 }
 
 function planPath(plan: PlanListPlan) {
@@ -100,23 +101,25 @@ function planName(plan: PlanListPlan) {
   )
 }
 
-function listRows(plans: PlanListPlan[]) {
+function listRows(plans: PlanListPlan[], t: (key: string, options?: Record<string, unknown>) => string) {
   return plans.map((plan) =>
     h(
       "tr",
       { key: `${plan.project.name}/${plan.name}` },
-      h("td", null, statusIcon(plan.status, "small")),
+      h("td", null, statusIcon(plan.status, "small", plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
       h("td", null, h(WeatherIcon, { weather: plan.weather })),
       h("td", null, planName(plan)),
       h("td", null, truncate(plan.description, 40)),
-      h("td", null, duration(plan.last_build_time)),
-      h("td", null, plan.last_success_at ? timeAgo(plan.last_success_at) : "unknown"),
-      h("td", null, plan.last_failure_at ? timeAgo(plan.last_failure_at) : "unknown")
+      h("td", null, duration(plan.last_build_time, t)),
+      h("td", null, plan.last_success_at ? timeAgo(plan.last_success_at, t) : t("plans.list.unknown")),
+      h("td", null, plan.last_failure_at ? timeAgo(plan.last_failure_at, t) : t("plans.list.unknown"))
     )
   )
 }
 
 function PlanTable({ plans }: { plans: PlanListPlan[] }) {
+  const { t } = useTranslation()
+
   return h(
     "table",
     { className: "list" },
@@ -128,18 +131,20 @@ function PlanTable({ plans }: { plans: PlanListPlan[] }) {
         null,
         h("th", null),
         h("th", null),
-        h("th", null, "Name"),
-        h("th", null, "Description"),
-        h("th", null, "Last Build time"),
-        h("th", null, "Last Success"),
-        h("th", null, "Last Failure")
+        h("th", null, t("plans.list.name")),
+        h("th", null, t("plans.list.description")),
+        h("th", null, t("plans.list.last_build_time")),
+        h("th", null, t("plans.list.last_success")),
+        h("th", null, t("plans.list.last_failure"))
       )
     ),
-    h("tbody", null, listRows(plans))
+    h("tbody", null, listRows(plans, t))
   )
 }
 
 function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
+  const { t } = useTranslation()
+
   return h(
     React.Fragment,
     null,
@@ -150,7 +155,7 @@ function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
         h(
           "li",
           { key: `${plan.project.name}/${plan.name}` },
-          h("div", { className: "status" }, statusIcon(plan.status, "large")),
+          h("div", { className: "status" }, statusIcon(plan.status, "large", plan.status ? t(`build.status.${plan.status}`, { defaultValue: plan.status }) : undefined)),
           h(
             "div",
             { className: "details" },
@@ -166,7 +171,9 @@ function PlanOverview({ plans }: { plans: PlanListPlan[] }) {
 }
 
 export function PlanList({ plans, mode }: { plans: PlanListPlan[]; mode: "list" | "overview" }) {
-  if (plans.length === 0) return h("p", null, "No plans")
+  const { t } = useTranslation()
+
+  if (plans.length === 0) return h("p", null, t("spa.plans.no_plans"))
 
   return mode === "overview" ? h(PlanOverview, { plans }) : h(PlanTable, { plans })
 }

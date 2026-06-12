@@ -1,0 +1,528 @@
+{
+  "admin": {
+    "configurations": {
+      "show": {
+        "update": "Update"
+      }
+    },
+    "setup": {
+      "index": {
+        "database_configuration": "Database configuration",
+        "database_host": "Database Host",
+        "database_name": "Database Name",
+        "database_name_description": "You can leave this as is if this database already exists or if your database user has enough privileges to create a database. Otherwise, please create a database now and enter its name here.",
+        "database_password": "Database Password",
+        "database_username": "Database Username",
+        "db_error": "Could not connect to the database. The following error message was received:",
+        "password_description": "This password will be saved as plain text in %{path}.",
+        "save_and_restart": "Save and restart",
+        "welcome_to_tinyci": "Welcome to TinyCI"
+      }
+    },
+    "slaves": {
+      "edit": {
+        "edit_slave": "Edit Slave %{name}",
+        "update": "Update"
+      },
+      "form": {
+        "base_path": "Base Path",
+        "base_path_description": "Leave blank to use the default of %{default_path}",
+        "capabilities_description": "Separated by commas.",
+        "host_name": "Host Name",
+        "max_builds_description": "Maximum number of parallel builds on this slave (0 = unlimited)",
+        "maximum_builds": "Maximum builds",
+        "name": "Name",
+        "offline": "Offline",
+        "password": "Password",
+        "protocol": "Protocol",
+        "slave_capabilities": "Slave capabilities",
+        "user_name": "User Name",
+        "value": "Value",
+        "variable_name": "Variable name"
+      },
+      "index": {
+        "add_the_first_slave": "Add the first slave",
+        "hostname": "Hostname",
+        "listing_slaves": "Listing Slaves",
+        "name": "Name",
+        "new_slave": "New Slave",
+        "offline": "Offline",
+        "online": "Online",
+        "or": "or",
+        "protocol": "Protocol",
+        "status": "Status",
+        "there_are_no_slaves_configured_yet": "There are no slaves configured yet.",
+        "use_localhost_as_the_first_slave": "Use localhost as the first slave"
+      },
+      "new": {
+        "create": "Create",
+        "new_slave": "New Slave"
+      },
+      "show": {
+        "busy": "Busy?",
+        "capabilities": "Capabilities",
+        "clone": "Clone",
+        "delete": "Delete",
+        "delete_confirmation": "Do you really want to delete this slave? This operation can not be undone.",
+        "edit": "Edit",
+        "host_name": "Host name",
+        "no": "No",
+        "offline": "Offline",
+        "protocol": "Protocol",
+        "slave_name": "Slave %{name}",
+        "slaves_overview": "Slaves Overview",
+        "yes": "Yes"
+      }
+    }
+  },
+  "breadcrumb": {
+    "admin": "Admin",
+    "builds": "Builds",
+    "child": "Convert to Child",
+    "configuration": "Configuration",
+    "edit": "Edit",
+    "help_topics": "Help",
+    "home": "Home",
+    "login": "Login",
+    "new": "New",
+    "plans": "Plans",
+    "projects": "Projects",
+    "settings": "Settings",
+    "slaves": "Slaves",
+    "users": "Users"
+  },
+  "build": {
+    "status": {
+      "canceled": "Canceled",
+      "error": "Error",
+      "failure": "Failure",
+      "pending": "Pending",
+      "running": "Running",
+      "stopped": "Stopped",
+      "stopping": "Stopping",
+      "success": "Success",
+      "waiting": "Waiting"
+    }
+  },
+  "build_mailer": {
+    "subject": {
+      "failure": "[TinyCI] Build %{project} / %{plan} failed",
+      "success": "[TinyCI] Build %{project} / %{plan} succeeded"
+    }
+  },
+  "builds": {
+    "build": {
+      "build_output_of_plan_html": "Build output of %{plan} #%{position}",
+      "details": "Details",
+      "duration": "Duration",
+      "gist": "Gist",
+      "on_slave": "on slave %{slave_name}",
+      "raw_output": "Raw output",
+      "requested_manually": "(Requested manually)",
+      "revision": "Revision",
+      "started_by": "Started by",
+      "status": "Status",
+      "unknown": "unknown"
+    },
+    "completed": {
+      "duration": "Duration",
+      "name": "Name",
+      "no_builds": "No builds",
+      "number": "Number",
+      "status": "Status",
+      "timestamp": "Timestamp"
+    },
+    "index": {
+      "back_to_plan": "Back to Plan",
+      "builds_of_plan_html": "Builds of Plan %{plan_link}"
+    },
+    "list": {
+      "name": "Name",
+      "no_builds": "No builds",
+      "number": "Number",
+      "status": "Status",
+      "timestamp": "Timestamp"
+    },
+    "report": {
+      "no_output_yet": "No output (yet)"
+    },
+    "show": {
+      "back_to_builds": "Back to Builds"
+    }
+  },
+  "configurations": {
+    "show": {
+      "update": "Update"
+    }
+  },
+  "duration": {
+    "days": "days",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds"
+  },
+  "errors": {
+    "404": {
+      "error_message": "You may have mistyped the address or the page may have moved.",
+      "title": "The page you were looking for doesn't exist."
+    },
+    "422": {
+      "error_message": "Maybe you tried to change something you didn't have access to.",
+      "title": "The change you wanted was rejected."
+    },
+    "500": {
+      "error_message": "We've been notified about this issue and we'll take a look at it shortly.",
+      "title": "We're sorry, but something went wrong."
+    }
+  },
+  "flash": {
+    "error": {
+      "access_denied": "You can not do that",
+      "connect_to_database": "Could not connect to the database"
+    },
+    "notice": {
+      "building_plan": "Building plan %{name}",
+      "created_account": "Successfully created account",
+      "created_plan": "Successfully created plan",
+      "created_project": "Successfully created project",
+      "created_slave": "Successfully created slave",
+      "deleted_slave": "Successfully deleted slave",
+      "logged_in": "Successfully logged in",
+      "logged_out": "Successfully logged out",
+      "login_required": "You must be logged in to access this page",
+      "updated_configuration": "Successfully updated configuration",
+      "updated_plan": "Successfully updated plan",
+      "updated_profile": "Successfully updated %{user}'s profile",
+      "updated_project": "Successfully updated project",
+      "updated_slave": "Successfully updated slave"
+    }
+  },
+  "growl_notifier": {
+    "subject": {
+      "failure": "Failure",
+      "success": "Success"
+    },
+    "text": {
+      "failure": "Build %{project} / %{plan} (%{build}) failed (status %{status})!",
+      "success": "Build %{project} / %{plan} (%{build}) finished successfully!"
+    }
+  },
+  "layouts": {
+    "all_plans": "All Plans",
+    "close_flash": "Close",
+    "configuration": "Configuration",
+    "github_project_page": "Github project page",
+    "guest_greeter": "Welcome, Guest!",
+    "help": "Help",
+    "home": "Home",
+    "login": "Login",
+    "logout": "Logout",
+    "projects": "Projects",
+    "quick_links": "Quick links",
+    "report_bugs_html": "Found a bug? %{report_link}",
+    "report_link_text": "Report it!",
+    "settings": "Settings",
+    "setup": "Setup",
+    "signup": "Signup",
+    "slaves": "Slaves",
+    "subtitle": "Continuous Integration for Ruby on Rails",
+    "user_greeter": "Welcome, %{user}!",
+    "users": "Users",
+    "you_are_here_html": "You are here: %{bread_crumb}"
+  },
+  "navigation": {
+    "help": "Help"
+  },
+  "plans": {
+    "child": {
+      "select_parent_plan": "Select Parent Plan",
+      "select_parent_plan_for_plan": "Select parent plan for %{plan}",
+      "update": "Update"
+    },
+    "edit": {
+      "edit_plan_name": "Edit Plan %{name}",
+      "update": "Update"
+    },
+    "form": {
+      "description": "Description",
+      "name": "Name",
+      "name_description": "The plan's name will appear in the URL. Changes to the name will change all URLs for this plan. Only characters, numbers, underscores and dashes are allowed in the name.",
+      "plan_requirements": "Plan requirements",
+      "plan_requirements_description": "Capabilities a build slave must have to build this plan, separated by commas.",
+      "previous_plan": "Previous Plan",
+      "repository_url": "Repository URL",
+      "run_this_plan_after": "Run this plan after",
+      "steps": "Steps",
+      "steps_description": "Steps necessary to build the plan."
+    },
+    "full_index": {
+      "details": "Details",
+      "listing_all_plans": "Listing All Plans",
+      "overview": "Overview"
+    },
+    "index": {
+      "details": "Details",
+      "listing_plans": "Listing Plans",
+      "new_plan": "New Plan",
+      "overview": "Overview"
+    },
+    "list": {
+      "count_of_the_last_5_builds_were_successful": "%{count} of the last 5 builds were successful",
+      "description": "Description",
+      "last_build_time": "Last Build time",
+      "last_failure": "Last Failure",
+      "last_success": "Last Success",
+      "name": "Name",
+      "time_ago": "%{time} ago",
+      "unknown": "unknown"
+    },
+    "new": {
+      "create": "Create",
+      "new_plan": "New Plan"
+    },
+    "show": {
+      "back_to_parent_plan": "Back to parent plan %{parent}",
+      "back_to_project_html": "Back to project %{link}",
+      "build_chain": "Build chain",
+      "build_now": "Build now",
+      "builds": "Builds",
+      "child_of_parent_plan_html": "(child of %{parent_plan})",
+      "children": "Children",
+      "clone": "Clone",
+      "commit_hook": "Commit Hook",
+      "confirm_delete": "Do you really want to delete this plan and all its children and builds? This operation can not be undone.",
+      "convert_to_child_plan": "Convert to Child Plan",
+      "convert_to_standalone_plan": "Convert to Standalone Plan",
+      "count_of_the_last_5_builds_were_successful": "%{count} of the last 5 builds were successful",
+      "delete": "Delete",
+      "description": "Description",
+      "edit": "Edit",
+      "latest_build": "Latest Build",
+      "move_to_another_parent": "Move to another Parent",
+      "new_child_plan": "New Child Plan",
+      "plan_details": "Plan details",
+      "plan_name": "Plan %{name}",
+      "requirements": "Requirements",
+      "status": "Status",
+      "steps": "Steps",
+      "url": "URL",
+      "weather": "Weather"
+    }
+  },
+  "projects": {
+    "edit": {
+      "edit_project_name": "Edit Project %{name}",
+      "update": "Update"
+    },
+    "form": {
+      "description": "Description",
+      "name": "Name",
+      "name_description": "The project's name will appear in the URL. Changes to the name will change all URLs for this project. Only characters, numbers, underscores and dashes are allowed in the name."
+    },
+    "index": {
+      "description": "Description",
+      "edit": "Edit",
+      "listing_projects": "Listing Projects",
+      "name": "Name",
+      "new_project": "New Project",
+      "options": "Options"
+    },
+    "new": {
+      "create": "Create",
+      "new_project": "New Project"
+    }
+  },
+  "report": {
+    "assertions": "Assertions",
+    "build": "Build",
+    "build_tool": "Build tool",
+    "command": "Command %{name}",
+    "command_output": "Command output:",
+    "deploy": "Deploy",
+    "deploy_tool": "Deploy tool",
+    "details": "Details",
+    "duration": "Duration",
+    "errors": "Errors",
+    "failures": "Failures",
+    "status": "Status",
+    "summary": "Summary",
+    "targets": "Targets",
+    "task": "Task %{name}",
+    "tasks": "Tasks",
+    "test_case": "Test Case",
+    "test_run": "Test Run %{name}",
+    "tests": "Tests",
+    "total_time": "Total time"
+  },
+  "start": {
+    "index": {
+      "create_a_project": "Create a project",
+      "create_accounts": "Create accounts",
+      "create_admin_account": "Create first administrator account",
+      "manage_build_slaves": "Manage build slaves",
+      "quick_links": "Quick links",
+      "sign_up": "Sign up"
+    },
+    "queue": {
+      "build_queue": "Build queue",
+      "recently_finished_builds": "Recently finished builds",
+      "slave_status": "Slave status"
+    },
+    "slave_status": {
+      "configure_slave": "Configure",
+      "configure_slaves_now": "Configure them now",
+      "no_slaves_configured": "No slaves configured.",
+      "slave_is_offline": "Slave is offline."
+    }
+  },
+  "user_sessions": {
+    "new": {
+      "login": "Login",
+      "password": "Password",
+      "remember_me": "Remember me",
+      "user_name": "User name"
+    }
+  },
+  "users": {
+    "edit": {
+      "edit_users_profile": "Edit %{login}'s Profile",
+      "email_address": "E-Mail Address",
+      "the_email_address_is_used_for_notifications": "The email address is used for notifications.",
+      "the_users_role": "The user's role. Set to \"user\" for normal user accounts.",
+      "update": "Update"
+    },
+    "index": {
+      "create_first_administrator_account": "Create first administrator account",
+      "edit": "Edit",
+      "listing_users": "Listing Users",
+      "login_name": "Login name",
+      "new_account": "New Account",
+      "options": "Options",
+      "there_are_no_user_accounts_yet": "There are no user accounts yet."
+    },
+    "new": {
+      "create_account": "Create account",
+      "create_new_account": "Create new account",
+      "email_address": "E-Mail Address",
+      "login_name": "Login Name",
+      "password": "Password",
+      "password_confirmation": "Password Confirmation",
+      "please_repeat_the_password_exactly_as_above": "Please repeat the password exactly as above.",
+      "the_email_address_is_used_for_notifications": "The email address is used for notifications.",
+      "the_nick_name_used_for_logins": "The nick name used for logins."
+    },
+    "show": {
+      "edit_profile": "Edit profile",
+      "users_profile": "%{login}'s Profile"
+    }
+  },
+  "spa": {
+    "loading": "Loading...",
+    "layout": {
+      "report_bugs_prefix": "Found a bug?"
+    },
+    "breadcrumbs": {
+      "you_are_here": "You are here:"
+    },
+    "not_found": {
+      "title": "Not Found",
+      "message": "The requested page could not be found."
+    },
+    "flash": {
+      "error": {
+        "unable_to_log_out": "Unable to log out"
+      }
+    },
+    "projects": {
+      "not_found": "Project not found.",
+      "save_error": "Project could not be saved"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "remove": "Remove",
+      "stop": "Stop"
+    },
+    "admin": {
+      "configuration": {
+        "loading": "Loading configuration...",
+        "update_error": "Failed to update configuration"
+      },
+      "slaves": {
+        "create_error": "Unable to create slave",
+        "delete_error": "Unable to delete slave",
+        "delete_heading": "Delete Slave",
+        "default_path": "the default path",
+        "environment_variables": "Environment Variables",
+        "save_error": "Unable to save slave"
+      }
+    },
+    "auth": {
+      "invalid_login": "Invalid login or password"
+    },
+    "builds": {
+      "builds_of_plan": "Builds of Plan",
+      "load_error": "Unable to load builds",
+      "loading_build": "Loading build...",
+      "load_build_error": "Could not load build.",
+      "build_output_of": "Build output of"
+    },
+    "dashboard": {
+      "load_error": "Dashboard data could not be loaded."
+    },
+    "forms": {
+      "fix_errors": "Please fix the following errors:"
+    },
+    "plans": {
+      "back_to_project": "Back to project",
+      "build_error": "Unable to build plan",
+      "child_of_prefix": "(child of",
+      "create_error": "Unable to create plan",
+      "delete_error": "Unable to delete plan",
+      "delete_heading": "Delete plan",
+      "load_error": "Could not load plans.",
+      "load_form_error": "Unable to load plan form",
+      "no_plans": "No plans",
+      "save_error": "%{count} prohibited this plan from being saved",
+      "update_error": "Unable to update plan"
+    },
+    "settings": {
+      "loading": "Loading settings...",
+      "update_error": "Failed to update user settings"
+    },
+    "time": {
+      "less_than_minute": "less than a minute"
+    },
+    "users": {
+      "create_error": "Could not create account",
+      "creating_account": "Creating account...",
+      "load_error": "Could not load users.",
+      "load_profile_error": "Could not load profile.",
+      "loading": "Loading users...",
+      "loading_profile": "Loading profile...",
+      "role": "Role",
+      "update_profile_error": "Could not update profile."
+    },
+    "setup": {
+      "title": "TinyCI Setup",
+      "choose_language_en": "Please choose your language",
+      "choose_language_de": "Bitte waehlen Sie Ihre Sprache",
+      "language": "Language",
+      "config_intro": "Please fill out the following information to get started with TinyCI. This is the minimal configuration necessary for the correct operation of TinyCI.",
+      "saving": "Saving...",
+      "restarting_title": "TinyCI is restarting...",
+      "restarting": "Please wait while TinyCI is restarting.",
+      "redirect_prefix": "In a few moments, you will be redirected to the start page. If not,",
+      "redirect_link": "please click here to get there",
+      "load_error": "Could not load setup state.",
+      "loading": "Loading setup...",
+      "ok": "Ok"
+    },
+    "help": {
+      "loading": "Loading help topic...",
+      "load_error": "Unable to load this help topic.",
+      "not_found_title": "Help topic not found",
+      "not_found_message": "The requested help topic could not be found."
+    }
+  }
+}

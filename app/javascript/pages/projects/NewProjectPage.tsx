@@ -1,4 +1,5 @@
 import { createElement as h, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useCreateProject } from "hooks/projects/useCreateProject"
 import type { ChangeEvent, FormEvent } from "react"
 import type { Project } from "hooks/projects/useProjects"
@@ -30,17 +31,20 @@ function showFlash(message: string) {
 }
 
 function ErrorSummary({ errors }: { errors: string[] }) {
+  const { t } = useTranslation()
+
   if (!errors.length) return null
 
   return h(
     "div",
     { className: "errorExplanation" },
-    h("h2", null, "Project could not be saved"),
+    h("h2", null, t("spa.projects.save_error")),
     h("ul", null, errors.map((error) => h("li", { key: error }, error)))
   )
 }
 
 function ProjectForm({ project, submitLabel, onSubmit, errors }: ProjectFormProps) {
+  const { t } = useTranslation()
   const [name, setName] = useState(project.name || "")
   const [description, setDescription] = useState(project.description || "")
 
@@ -56,11 +60,11 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }: ProjectFormProp
     h(
       "p",
       { className: "form_item" },
-      h("span", { className: "label" }, h("label", { htmlFor: "project_name" }, "Name")),
+      h("span", { className: "label" }, h("label", { htmlFor: "project_name" }, t("projects.form.name"))),
       h(
         "span",
         { className: "desc" },
-        "The project's name will appear in the URL. Changes to the name will change all URLs for this project. Only characters, numbers, underscores and dashes are allowed in the name."
+        t("projects.form.name_description")
       ),
       h("input", {
         id: "project_name",
@@ -73,7 +77,7 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }: ProjectFormProp
     h(
       "p",
       { className: "form_item" },
-      h("span", { className: "label" }, h("label", { htmlFor: "project_description" }, "Description")),
+      h("span", { className: "label" }, h("label", { htmlFor: "project_description" }, t("projects.form.description"))),
       h("textarea", {
         id: "project_description",
         name: "project[description]",
@@ -89,6 +93,7 @@ function ProjectForm({ project, submitLabel, onSubmit, errors }: ProjectFormProp
 export { ProjectForm, showFlash }
 
 export default function NewProjectPage() {
+  const { t } = useTranslation()
   const [errors, setErrors] = useState<string[]>([])
   const { createProject } = useCreateProject()
 
@@ -99,7 +104,7 @@ export default function NewProjectPage() {
       return
     }
 
-    showFlash("Successfully created project")
+    showFlash(t("flash.notice.created_project"))
     const projectPath = `/projects/${encodeURIComponent(result.project.name)}/plans`
     if (window.Turbo) {
       window.Turbo.visit(projectPath)
@@ -108,5 +113,5 @@ export default function NewProjectPage() {
     }
   }
 
-  return h("div", null, h("h1", null, "New Project"), h(ProjectForm, { project: {}, submitLabel: "Create", onSubmit: handleSubmit, errors }))
+  return h("div", null, h("h1", null, t("projects.new.new_project")), h(ProjectForm, { project: {}, submitLabel: t("projects.new.create"), onSubmit: handleSubmit, errors }))
 }

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import SetupWizardApp from "@/pages/setup/SetupWizardApp";
 import "./styles/application.css";
+import "./i18n";
 
 function showStoredFlash() {
   const message = window.sessionStorage?.getItem("tinyci.flash.notice");

@@ -1,5 +1,6 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type Reference = {
   id: number;
@@ -48,21 +49,6 @@ type ApiError = {
   errors?: string[];
 };
 
-const DELETE_CONFIRMATION =
-  "Do you really want to delete this plan and all its children and builds? This operation can not be undone.";
-
-const STATUS_LABELS: Record<string, string> = {
-  canceled: "Canceled",
-  error: "Error",
-  failure: "Failure",
-  pending: "Pending",
-  running: "Running",
-  stopped: "Stopped",
-  stopping: "Stopping",
-  success: "Success",
-  waiting: "Waiting",
-};
-
 function encodePathPart(value: string) {
   return encodeURIComponent(value);
 }
@@ -105,12 +91,8 @@ function storeNotice(message: string) {
   window.sessionStorage.setItem("tiny_ci_flash_notice", message);
 }
 
-function statusLabel(status: string) {
-  return STATUS_LABELS[status] ?? status;
-}
-
-function formatMaybeDate(value: string | null) {
-  if (!value) return "unknown";
+function formatMaybeDate(value: string | null, unknown: string) {
+  if (!value) return unknown;
 
   return new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -128,17 +110,19 @@ function Icon({ name, size, title }: { name: string; size: "small" | "large"; ti
 }
 
 function PlanList({ plans }: { plans: PlanSummary[] }) {
+  const { t } = useTranslation();
+
   return (
     <table className="list">
       <thead>
         <tr>
           <th />
           <th />
-          <th>Name</th>
-          <th>Description</th>
-          <th>Last Build time</th>
-          <th>Last Success</th>
-          <th>Last Failure</th>
+          <th>{t("plans.list.name")}</th>
+          <th>{t("plans.list.description")}</th>
+          <th>{t("plans.list.last_build_time")}</th>
+          <th>{t("plans.list.last_success")}</th>
+          <th>{t("plans.list.last_failure")}</th>
         </tr>
       </thead>
       <tbody>
@@ -150,7 +134,7 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
                 <Icon
                   name={`weather-${plan.weather}`}
                   size="small"
-                  title={`${plan.weather} of the last 5 builds were successful`}
+                  title={t("plans.list.count_of_the_last_5_builds_were_successful", { count: plan.weather })}
                 />
               ) : null}
             </td>
@@ -159,9 +143,9 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
               <a href={planPath(plan.project.name, plan.name)}>{plan.name}</a>
             </td>
             <td>{truncate(plan.description)}</td>
-            <td>{formatMaybeDate(plan.last_build_at)}</td>
-            <td>{formatMaybeDate(plan.last_success_at)}</td>
-            <td>{formatMaybeDate(plan.last_failure_at)}</td>
+            <td>{formatMaybeDate(plan.last_build_at, t("plans.list.unknown"))}</td>
+            <td>{formatMaybeDate(plan.last_success_at, t("plans.list.unknown"))}</td>
+            <td>{formatMaybeDate(plan.last_failure_at, t("plans.list.unknown"))}</td>
           </tr>
         ))}
       </tbody>
@@ -170,6 +154,7 @@ function PlanList({ plans }: { plans: PlanSummary[] }) {
 }
 
 export default function PlanShowPage(props: PlanShowPageProps) {
+  const { t } = useTranslation();
   const routeParams = useParams();
   const projectId = props.projectId ?? routeParams.projectId ?? "";
   const planId = props.planId ?? routeParams.planId ?? "";
@@ -198,7 +183,7 @@ export default function PlanShowPage(props: PlanShowPageProps) {
       });
       setPlan(await parseJsonResponse<PlanDetail>(response));
     } catch (apiError) {
-      setError(apiError instanceof Error ? apiError.message : "Unable to load plan");
+      setError(apiError instanceof Error ? apiError.message : t("spa.plans.load_error"));
     } finally {
       setLoading(false);
     }
@@ -222,10 +207,10 @@ export default function PlanShowPage(props: PlanShowPageProps) {
         body: JSON.stringify({ parent_id: null }),
       });
       const updatedPlan = await parseJsonResponse<PlanDetail>(response);
-      storeNotice("Successfully updated plan");
+      storeNotice(t("flash.notice.updated_plan"));
       window.location.assign(planPath(updatedPlan.project.name, updatedPlan.name));
     } catch (apiError) {
-      setError(apiError instanceof Error ? apiError.message : "Unable to update plan");
+      setError(apiError instanceof Error ? apiError.message : t("spa.plans.update_error"));
     } finally {
       setSubmitting(false);
     }
@@ -245,7 +230,7 @@ export default function PlanShowPage(props: PlanShowPageProps) {
       await parseJsonResponse<{ ok: boolean }>(response);
       window.location.assign(`/projects/${encodePathPart(projectId)}/plans`);
     } catch (apiError) {
-      setError(apiError instanceof Error ? apiError.message : "Unable to delete plan");
+      setError(apiError instanceof Error ? apiError.message : t("spa.plans.delete_error"));
       setSubmitting(false);
       setShowDeleteConfirmation(false);
     }
@@ -265,12 +250,12 @@ export default function PlanShowPage(props: PlanShowPageProps) {
       const body = await parseJsonResponse<{ build: { position: number } }>(response);
       window.location.assign(buildPath(projectId, plan.name, body.build.position));
     } catch (apiError) {
-      setError(apiError instanceof Error ? apiError.message : "Unable to build plan");
+      setError(apiError instanceof Error ? apiError.message : t("spa.plans.build_error"));
       setSubmitting(false);
     }
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{t("spa.loading")}</p>;
   if (error && !plan) return <p className="error">{error}</p>;
   if (!plan) return null;
 
@@ -281,10 +266,10 @@ export default function PlanShowPage(props: PlanShowPageProps) {
   return (
     <>
       <h1>
-        Plan {plan.name}{" "}
+        {t("plans.show.plan_name", { name: plan.name })}{" "}
         {plan.parent ? (
           <span>
-            (child of <a href={planPath(projectId, plan.parent.name)}>{plan.parent.name}</a>)
+            {t("spa.plans.child_of_prefix")} <a href={planPath(projectId, plan.parent.name)}>{plan.parent.name}</a>)
           </span>
         ) : null}
       </h1>
@@ -295,43 +280,43 @@ export default function PlanShowPage(props: PlanShowPageProps) {
       <ul className="action-list">
         {plan.can_edit_plan ? (
           <li>
-            <a href={`${planPath(projectId, plan.name)}/edit`}>Edit</a>
+            <a href={`${planPath(projectId, plan.name)}/edit`}>{t("plans.show.edit")}</a>
           </li>
         ) : null}
         <li>
-          <a href={`${planPath(projectId, plan.name)}/builds`}>Builds</a>
+          <a href={`${planPath(projectId, plan.name)}/builds`}>{t("plans.show.builds")}</a>
         </li>
         {plan.can_create_plans ? (
           <li>
-            <a href={`/projects/${encodePathPart(projectId)}/plans/new?clone=${encodeURIComponent(plan.name)}`}>Clone</a>
+            <a href={`/projects/${encodePathPart(projectId)}/plans/new?clone=${encodeURIComponent(plan.name)}`}>{t("plans.show.clone")}</a>
           </li>
         ) : null}
         {isChild && plan.can_edit_plan ? (
           <>
             <li>
-              <a href={`${planPath(projectId, plan.name)}/child`}>Move to another Parent</a>
+              <a href={`${planPath(projectId, plan.name)}/child`}>{t("plans.show.move_to_another_parent")}</a>
             </li>
             <li>
               <a href={planPath(projectId, plan.name)} onClick={convertToStandalone}>
-                Convert to Standalone Plan
+                {t("plans.show.convert_to_standalone_plan")}
               </a>
             </li>
           </>
         ) : null}
         {!isChild && plan.can_create_plans ? (
           <li>
-            <a href={`/projects/${encodePathPart(projectId)}/plans/new?parent=${encodeURIComponent(plan.name)}`}>New Child Plan</a>
+            <a href={`/projects/${encodePathPart(projectId)}/plans/new?parent=${encodeURIComponent(plan.name)}`}>{t("plans.show.new_child_plan")}</a>
           </li>
         ) : null}
         {!isChild && !hasChildren && plan.can_edit_plan ? (
           <li>
-            <a href={`${planPath(projectId, plan.name)}/child`}>Convert to Child Plan</a>
+            <a href={`${planPath(projectId, plan.name)}/child`}>{t("plans.show.convert_to_child_plan")}</a>
           </li>
         ) : null}
         {plan.can_destroy_plan ? (
           <li>
             <button type="button" onClick={() => setShowDeleteConfirmation(true)} disabled={submitting}>
-              Delete
+              {t("plans.show.delete")}
             </button>
           </li>
         ) : null}
@@ -339,7 +324,7 @@ export default function PlanShowPage(props: PlanShowPageProps) {
 
       {plan.previous_plan || plan.next_plan ? (
         <>
-          <h2>Build chain</h2>
+          <h2>{t("plans.show.build_chain")}</h2>
           <table>
             <tbody>
               <tr>
@@ -354,22 +339,22 @@ export default function PlanShowPage(props: PlanShowPageProps) {
 
       {hasChildren ? (
         <>
-          <h2>Children</h2>
+          <h2>{t("plans.show.children")}</h2>
           <PlanList plans={plan.children} />
         </>
       ) : null}
 
-      <h2>Plan details</h2>
+      <h2>{t("plans.show.plan_details")}</h2>
       <dl>
         {plan.status ? (
           <>
-            <dt>Status</dt>
+            <dt>{t("plans.show.status")}</dt>
             <dd>
               <Icon name={plan.status} size="large" />{" "}
               <span>
-                {statusLabel(plan.status)}{" "}
+                {t(`build.status.${plan.status}`, { defaultValue: plan.status })}{" "}
                 {plan.last_finished_build ? (
-                  <a href={buildPath(projectId, plan.name, plan.last_finished_build.position)}>Latest Build</a>
+                  <a href={buildPath(projectId, plan.name, plan.last_finished_build.position)}>{t("plans.show.latest_build")}</a>
                 ) : null}
               </span>
             </dd>
@@ -378,33 +363,33 @@ export default function PlanShowPage(props: PlanShowPageProps) {
 
         {plan.weather !== null ? (
           <>
-            <dt>Weather</dt>
+            <dt>{t("plans.show.weather")}</dt>
             <dd>
               <Icon name={`weather-${plan.weather}`} size="large" />{" "}
-              <span>{plan.weather} of the last 5 builds were successful</span>
+              <span>{t("plans.show.count_of_the_last_5_builds_were_successful", { count: plan.weather })}</span>
             </dd>
           </>
         ) : null}
 
-        <dt>Description</dt>
+        <dt>{t("plans.show.description")}</dt>
         <dd style={{ whiteSpace: "pre-wrap" }}>{plan.description}</dd>
 
-        <dt>Steps</dt>
+        <dt>{t("plans.show.steps")}</dt>
         <dd>
           <pre>{plan.steps}</pre>
         </dd>
 
-        <dt>Requirements</dt>
+        <dt>{t("plans.show.requirements")}</dt>
         <dd>{plan.requirements || "\u00a0"}</dd>
 
         {!isChild ? (
           <>
-            <dt>Commit Hook</dt>
+            <dt>{t("plans.show.commit_hook")}</dt>
             <dd>
               <table>
                 <tbody>
                   <tr>
-                    <th>URL</th>
+                    <th>{t("plans.show.url")}</th>
                     <td>
                       <input type="text" readOnly size={80} value={plan.commit_hook_url} />
                     </td>
@@ -430,27 +415,27 @@ export default function PlanShowPage(props: PlanShowPageProps) {
 
       {!isChild ? (
         <button type="button" onClick={buildNow} disabled={submitting}>
-          Build now
+          {t("plans.show.build_now")}
         </button>
       ) : parent ? (
         <p>
-          <a href={planPath(projectId, parent.name)}>Back to parent plan {parent.name}</a>
+          <a href={planPath(projectId, parent.name)}>{t("plans.show.back_to_parent_plan", { parent: parent.name })}</a>
         </p>
       ) : null}
 
       <p>
-        Back to project <a href={`/projects/${encodePathPart(projectId)}/plans`}>{plan.project.name}</a>
+        {t("spa.plans.back_to_project")} <a href={`/projects/${encodePathPart(projectId)}/plans`}>{plan.project.name}</a>
       </p>
 
       {showDeleteConfirmation ? (
         <div role="dialog" aria-modal="true" aria-labelledby="delete-plan-title">
-          <h2 id="delete-plan-title">Delete plan</h2>
-          <p>{DELETE_CONFIRMATION}</p>
+          <h2 id="delete-plan-title">{t("spa.plans.delete_heading")}</h2>
+          <p>{t("plans.show.confirm_delete")}</p>
           <button type="button" onClick={deletePlan} disabled={submitting}>
-            Confirm
+            {t("spa.actions.confirm")}
           </button>
           <button type="button" onClick={() => setShowDeleteConfirmation(false)} disabled={submitting}>
-            Cancel
+            {t("spa.actions.cancel")}
           </button>
         </div>
       ) : null}

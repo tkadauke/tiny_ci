@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from "react"
 import type { Worker } from "../../hooks/admin/useWorkers"
+import { useTranslation } from "react-i18next"
 
 type EnvironmentRow = {
   id: string
@@ -49,6 +50,7 @@ function toEnvironmentVariables(rows: EnvironmentRow[]) {
 }
 
 export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
+  const { t } = useTranslation()
   const initialWorker = useMemo(() => ({ ...blankWorker, ...(worker || {}) }), [worker])
   const [form, setForm] = useState<Partial<Worker>>(initialWorker)
   const [rows, setRows] = useState<EnvironmentRow[]>(environmentRows(worker))
@@ -165,12 +167,12 @@ export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
       </p>
 
       <div className="form_item">
-        <span className="label">Environment Variables</span>
+        <span className="label">{t("spa.admin.slaves.environment_variables")}</span>
         <table>
           <thead>
             <tr>
-              <th>Variable name</th>
-              <th>Value</th>
+              <th>{t("admin.slaves.form.variable_name")}</th>
+              <th>{t("admin.slaves.form.value")}</th>
               <th></th>
             </tr>
           </thead>
@@ -186,7 +188,7 @@ export function WorkerForm({ worker, submitLabel, onSubmit }: Props) {
                 <td>
                   {index < rows.length - 1 ? (
                     <button type="button" onClick={() => removeRow(index)}>
-                      Remove
+                      {t("spa.actions.remove")}
                     </button>
                   ) : null}
                 </td>

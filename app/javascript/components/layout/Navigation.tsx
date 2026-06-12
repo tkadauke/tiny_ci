@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function Navigation() {
   const { data: currentUser } = useCurrentUser();
+  const { t } = useTranslation();
 
   return (
     <div id="menu_container">
@@ -10,17 +12,17 @@ export default function Navigation() {
         <ul>
           <li>
             <Link to="/" className="first">
-              Home
+              {t("layouts.home")}
             </Link>
           </li>
           <li>
-            <Link to="/plans">All Plans</Link>
+            <Link to="/plans">{t("layouts.all_plans")}</Link>
           </li>
           <li>
-            <Link to="/projects">Projects</Link>
+            <Link to="/projects">{t("layouts.projects")}</Link>
           </li>
           <li>
-            <Link to="/users">Users</Link>
+            <Link to="/users">{t("layouts.users")}</Link>
           </li>
           {currentUser.can_configure_workers ? (
             <li>
@@ -29,11 +31,11 @@ export default function Navigation() {
           ) : null}
           {currentUser.can_configure_system_variables ? (
             <li>
-              <Link to="/admin/configuration">Configuration</Link>
+              <Link to="/admin/configuration">{t("layouts.configuration")}</Link>
             </li>
           ) : null}
           <li>
-            <Link to="/help_topics">Help</Link>
+            <Link to="/help_topics">{t("layouts.help")}</Link>
           </li>
         </ul>
       </div>

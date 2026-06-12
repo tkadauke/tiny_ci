@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 export type Reference = {
   id: number;
@@ -57,6 +58,7 @@ export default function PlanForm({
   onChange,
   onSubmit,
 }: PlanFormProps) {
+  const { t } = useTranslation();
   function updateText(field: keyof PlanFormValues) {
     return (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       onChange({ ...values, [field]: event.target.value });
@@ -73,7 +75,7 @@ export default function PlanForm({
     <form onSubmit={onSubmit}>
       {errors.length > 0 ? (
         <div className="errorExplanation">
-          <h2>{errors.length} prohibited this plan from being saved</h2>
+          <h2>{t("spa.plans.save_error", { count: errors.length })}</h2>
           <ul>
             {errors.map((error) => (
               <li key={error}>{error}</li>
@@ -86,18 +88,15 @@ export default function PlanForm({
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor={fieldId("name")}>Name</label>
+          <label htmlFor={fieldId("name")}>{t("plans.form.name")}</label>
         </span>
-        <span className="desc">
-          The plan&apos;s name will appear in the URL. Changes to the name will change all URLs for this plan. Only
-          characters, numbers, underscores and dashes are allowed in the name.
-        </span>
+        <span className="desc">{t("plans.form.name_description")}</span>
         <input id={fieldId("name")} name="plan[name]" type="text" value={values.name} onChange={updateText("name")} />
       </p>
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor={fieldId("description")}>Description</label>
+          <label htmlFor={fieldId("description")}>{t("plans.form.description")}</label>
         </span>
         <textarea
           id={fieldId("description")}
@@ -110,7 +109,7 @@ export default function PlanForm({
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor={fieldId("repository_url")}>Repository URL</label>
+          <label htmlFor={fieldId("repository_url")}>{t("plans.form.repository_url")}</label>
         </span>
         <input
           id={fieldId("repository_url")}
@@ -124,10 +123,10 @@ export default function PlanForm({
       {canEditPlans ? (
         <p className="form_item">
           <span className="label">
-            <label htmlFor={fieldId("steps")}>Steps</label>
+            <label htmlFor={fieldId("steps")}>{t("plans.form.steps")}</label>
           </span>
           <span className="desc">
-            Steps necessary to build the plan. <a href="/help_topics/plan">Help</a>
+            {t("plans.form.steps_description")} <a href="/help_topics/plan">{t("layouts.help")}</a>
           </span>
           <textarea id={fieldId("steps")} name="plan[steps]" rows={10} value={values.steps} onChange={updateText("steps")} />
         </p>
@@ -135,7 +134,7 @@ export default function PlanForm({
 
       <p className="form_item">
         <span className="label">
-          <label htmlFor={fieldId("requirements")}>Plan requirements</label>
+          <label htmlFor={fieldId("requirements")}>{t("plans.form.plan_requirements")}</label>
         </span>
         <span className="desc">
           Capabilities a build worker must have to build this plan, separated by commas.{" "}
@@ -152,11 +151,11 @@ export default function PlanForm({
 
       {!hasParent ? (
         <>
-          <h2>Run this plan after</h2>
+          <h2>{t("plans.form.run_this_plan_after")}</h2>
 
           <p className="form_item">
             <span className="label">
-              <label htmlFor={fieldId("previous_plan_id")}>Run this plan after</label>
+              <label htmlFor={fieldId("previous_plan_id")}>{t("plans.form.run_this_plan_after")}</label>
             </span>
             <select
               id={fieldId("previous_plan_id")}

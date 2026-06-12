@@ -7,6 +7,7 @@ class Api::MeControllerTest < ActionController::TestCase
     assert_response :success
     body = JSON.parse(response.body)
     assert_equal true, body["guest"]
+    assert_equal "en", body["locale"]
     assert_nil body["login"]
     assert_nil body["email"]
     assert_equal "initial_admin", body["role"]
@@ -40,6 +41,7 @@ class Api::MeControllerTest < ActionController::TestCase
     assert_equal(
       {
         "guest" => false,
+        "locale" => "en",
         "login" => "alice",
         "email" => "alice@example.com",
         "role" => "user",

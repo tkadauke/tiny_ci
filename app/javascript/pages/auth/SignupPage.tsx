@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { useCreateUser } from "@/hooks/useCreateUser";
 import type { CreateUserInput } from "@/hooks/useCreateUser";
 
@@ -23,6 +24,7 @@ type SignupPageProps = {
 };
 
 export default function SignupPage({ onFlash }: SignupPageProps) {
+  const { t } = useTranslation();
   const [form, setForm] = useState<CreateUserInput>(initialForm);
   const createUser = useCreateUser();
   const queryClient = useQueryClient();
@@ -37,7 +39,7 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
     createUser.mutate(form, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-        onFlash("Successfully created account");
+        onFlash(t("flash.notice.created_account"));
         window.location.assign("/");
       }
     });
@@ -45,11 +47,11 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
 
   return (
     <div className="react-page">
-      <h2>Create New Account</h2>
+      <h2>{t("users.new.create_new_account")}</h2>
       <form action="/users" method="post" onSubmit={submit}>
         {errors.length > 0 && (
           <div id="errorExplanation" className="errorExplanation">
-            <h2>Could not create account</h2>
+            <h2>{t("spa.users.create_error")}</h2>
             <ul>
               {errors.map((message) => (
                 <li key={message}>{message}</li>
@@ -60,32 +62,32 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
 
         <p className="form_item">
           <span className="label">
-            <label htmlFor="user_login">Login name</label>
+            <label htmlFor="user_login">{t("users.new.login_name")}</label>
           </span>
-          <span className="desc">The nick name used for logins</span>
+          <span className="desc">{t("users.new.the_nick_name_used_for_logins")}</span>
           <input id="user_login" name="login" type="text" value={form.login} onChange={updateField} />
         </p>
 
         <p className="form_item">
           <span className="label">
-            <label htmlFor="user_email">Email address</label>
+            <label htmlFor="user_email">{t("users.new.email_address")}</label>
           </span>
-          <span className="desc">The email address is used for notifications</span>
+          <span className="desc">{t("users.new.the_email_address_is_used_for_notifications")}</span>
           <input id="user_email" name="email" type="text" value={form.email} onChange={updateField} />
         </p>
 
         <p className="form_item">
           <span className="label">
-            <label htmlFor="user_password">Password</label>
+            <label htmlFor="user_password">{t("users.new.password")}</label>
           </span>
           <input id="user_password" name="password" type="password" value={form.password} onChange={updateField} />
         </p>
 
         <p className="form_item">
           <span className="label">
-            <label htmlFor="user_password_confirmation">Password confirmation</label>
+            <label htmlFor="user_password_confirmation">{t("users.new.password_confirmation")}</label>
           </span>
-          <span className="desc">Please repeat the password exactly as above</span>
+          <span className="desc">{t("users.new.please_repeat_the_password_exactly_as_above")}</span>
           <input
             id="user_password_confirmation"
             name="password_confirmation"
@@ -95,7 +97,7 @@ export default function SignupPage({ onFlash }: SignupPageProps) {
           />
         </p>
 
-        <input type="submit" value={createUser.isPending ? "Creating account..." : "Create account"} disabled={createUser.isPending} />
+        <input type="submit" value={createUser.isPending ? t("spa.users.creating_account") : t("users.new.create_account")} disabled={createUser.isPending} />
       </form>
     </div>
   );

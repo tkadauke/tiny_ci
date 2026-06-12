@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { DetailsReport } from "@/components/builds/reports/DetailsReport"
 import { GistReport } from "@/components/builds/reports/GistReport"
 import { RawOutput } from "@/components/builds/reports/RawOutput"
@@ -8,41 +9,25 @@ import { useBuild, type OutputRow } from "@/hooks/useBuild"
 import { useChannel } from "@/hooks/useChannel"
 
 const FINISHED_STATUSES = new Set(["success", "error", "failure", "canceled", "stopped"])
-const STATUS_TEXT: Record<string, string> = {
-  canceled: "Canceled",
-  error: "Error",
-  failure: "Failure",
-  pending: "Pending",
-  running: "Running",
-  stopped: "Stopped",
-  stopping: "Stopping",
-  success: "Success",
-  waiting: "Waiting",
-}
-
 type Props = {
   projectId: string
   planId: string
   buildId: string
 }
 
-function statusText(status: string) {
-  return STATUS_TEXT[status] || status
-}
-
 function iconPath(size: "small" | "large", status: string) {
   return `/assets/icons/${size}/${status}.png`
 }
 
-function duration(seconds: number | null) {
+function duration(seconds: number | null, t: (key: string) => string) {
   if (seconds == null) return ""
 
   let remaining = Math.floor(seconds)
   const parts = [
-    [Math.floor(remaining / 86400), "days"],
-    [Math.floor((remaining %= 86400) / 3600), "hours"],
-    [Math.floor((remaining %= 3600) / 60), "minutes"],
-    [remaining % 60, "seconds"],
+    [Math.floor(remaining / 86400), t("duration.days")],
+    [Math.floor((remaining %= 86400) / 3600), t("duration.hours")],
+    [Math.floor((remaining %= 3600) / 60), t("duration.minutes")],
+    [remaining % 60, t("duration.seconds")],
   ] as const
 
   return parts.filter(([value]) => value !== 0).map(([value, label]) => `${value} ${label}`).join(", ")
@@ -72,12 +57,14 @@ function useReportMode() {
 }
 
 function ReportBody({ mode, rows }: { mode: string; rows: OutputRow[] }) {
-  if (mode === "gist") return rows.length ? <GistReport rows={rows} /> : <p>No output (yet)</p>
-  if (mode === "details") return rows.length ? <DetailsReport rows={rows} /> : <p>No output (yet)</p>
+  const { t } = useTranslation()
+  if (mode === "gist") return rows.length ? <GistReport rows={rows} /> : <p>{t("builds.report.no_output_yet")}</p>
+  if (mode === "details") return rows.length ? <DetailsReport rows={rows} /> : <p>{t("builds.report.no_output_yet")}</p>
   return <RawOutput rows={rows} />
 }
 
 export function BuildDetailPage({ projectId, planId, buildId }: Props) {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { data: build, error, isLoading } = useBuild(projectId, planId, buildId)
   const [stopping, setStopping] = useState(false)
@@ -90,8 +77,8 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
     useCallback(() => queryClient.invalidateQueries({ queryKey }), [queryClient, queryKey])
   )
 
-  if (isLoading) return <p>Loading build...</p>
-  if (error || !build) return <p>Could not load build.</p>
+  if (isLoading) return <p>{t("spa.builds.loading_build")}</p>
+  if (error || !build) return <p>{t("spa.builds.load_build_error")}</p>
 
   const planPath = `/projects/${encodeURIComponent(build.plan.project_id)}/plans/${encodeURIComponent(build.plan.plan_id)}`
   const showStop = build.status === "pending" || build.status === "running"
@@ -99,20 +86,20 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
   return (
     <>
       <h1>
-        Build output of <a href={planPath}>{build.plan.name}</a> #{build.position}
+        {t("spa.builds.build_output_of")} <a href={planPath}>{build.plan.name}</a> #{build.position}
         {build.worker ? ` on worker ${build.worker.name}` : ""}
       </h1>
       <dl>
-        <dt>Status</dt>
-        <dd><img src={iconPath("large", build.status)} alt="" /> {build.status_text || statusText(build.status)}</dd>
-        <dt>Revision</dt>
-        <dd>{build.revision || "unknown"}</dd>
-        <dt>Duration</dt>
-        <dd>{duration(build.duration)}&nbsp;</dd>
+        <dt>{t("builds.build.status")}</dt>
+        <dd><img src={iconPath("large", build.status)} alt="" /> {t(`build.status.${build.status}`, { defaultValue: build.status_text || build.status })}</dd>
+        <dt>{t("builds.build.revision")}</dt>
+        <dd>{build.revision || t("builds.build.unknown")}</dd>
+        <dt>{t("builds.build.duration")}</dt>
+        <dd>{duration(build.duration, t)}&nbsp;</dd>
         {build.starter_login ? (
           <>
-            <dt>Started by</dt>
-            <dd><a href={`/users/${build.starter_id}`}>{build.starter_login}</a> (Requested manually)</dd>
+            <dt>{t("builds.build.started_by")}</dt>
+            <dd><a href={`/users/${build.starter_id}`}>{build.starter_login}</a> {t("builds.build.requested_manually")}</dd>
           </>
         ) : null}
       </dl>
@@ -126,7 +113,7 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
               await api.post(`/api/projects/${encodeURIComponent(projectId)}/plans/${encodeURIComponent(planId)}/builds/${encodeURIComponent(buildId)}/stop`, {})
             }}
           >
-            <img src={iconPath("small", "stopped")} alt="" /> Stop
+            <img src={iconPath("small", "stopped")} alt="" /> {t("spa.actions.stop")}
           </button>
         </p>
       ) : null}
@@ -134,14 +121,14 @@ export function BuildDetailPage({ projectId, planId, buildId }: Props) {
         {(["raw", "gist", "details"] as const).map((nextMode) => (
           <li key={nextMode}>
             <a href={`?report=${nextMode}`} aria-current={mode === nextMode ? "page" : undefined} onClick={(event) => { event.preventDefault(); setMode(nextMode) }}>
-              {nextMode === "raw" ? "Raw output" : nextMode[0].toUpperCase() + nextMode.slice(1)}
+              {nextMode === "raw" ? t("builds.build.raw_output") : t(`builds.build.${nextMode}`)}
             </a>
           </li>
         ))}
       </ul>
       <div className="report" id="report"><ReportBody mode={mode} rows={build.output_rows} /></div>
-      {FINISHED_STATUSES.has(build.status) ? <p><img src={iconPath("small", build.status)} alt="" /> {build.status_text || statusText(build.status)}</p> : null}
-      {build.status === "running" ? <img src="/assets/spinner.gif" alt="Running" /> : null}
+      {FINISHED_STATUSES.has(build.status) ? <p><img src={iconPath("small", build.status)} alt="" /> {t(`build.status.${build.status}`, { defaultValue: build.status_text || build.status })}</p> : null}
+      {build.status === "running" ? <img src="/assets/spinner.gif" alt={t("build.status.running")} /> : null}
     </>
   )
 }

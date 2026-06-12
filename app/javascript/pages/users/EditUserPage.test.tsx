@@ -24,12 +24,12 @@ describe("EditUserPage", () => {
   it("renders an editable email field", async () => {
     renderPage();
 
-    expect(await screen.findByLabelText("Email address")).toHaveValue("jane@example.test");
+    expect(await screen.findByLabelText("E-Mail Address")).toHaveValue("jane@example.test");
   });
 
   it("shows the role select only when an admin edits another user", async () => {
     renderPage(normalUser);
-    expect(await screen.findByLabelText("Email address")).toBeInTheDocument();
+    expect(await screen.findByLabelText("E-Mail Address")).toBeInTheDocument();
     expect(screen.queryByLabelText("Role")).not.toBeInTheDocument();
 
     renderPage(adminUser);
@@ -41,7 +41,7 @@ describe("EditUserPage", () => {
     const onFlash = vi.fn();
     renderPage(normalUser, onFlash);
 
-    const email = await screen.findByLabelText("Email address");
+    const email = await screen.findByLabelText("E-Mail Address");
     await user.clear(email);
     await user.type(email, "new@example.test");
     await user.click(screen.getByRole("button", { name: "Update" }));

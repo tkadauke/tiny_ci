@@ -1,4 +1,5 @@
 import React from "react"
+import { useTranslation } from "react-i18next"
 import type { OutputRow } from "@/hooks/useBuild"
 
 type Props = {
@@ -15,7 +16,9 @@ function timeText(timestamp: number) {
 }
 
 export function RawOutput({ rows }: Props) {
-  if (!rows.length) return <p>No output (yet)</p>
+  const { t } = useTranslation()
+
+  if (!rows.length) return <p>{t("builds.report.no_output_yet")}</p>
 
   let lastCommand: string | undefined
   let lastTimestamp: number | undefined

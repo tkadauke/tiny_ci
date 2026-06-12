@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import PlanForm, { Reference, emptyPlanFormValues, PlanFormValues } from "../../components/plans/PlanForm";
 
 type EditPlanPageProps = {
@@ -62,6 +63,7 @@ function planPath(projectId: string, planName: string) {
 }
 
 export default function EditPlanPage(props: EditPlanPageProps) {
+  const { t } = useTranslation();
   const routeParams = useParams();
   const projectId = props.projectId ?? routeParams.projectId ?? "";
   const planId = props.planId ?? routeParams.planId ?? "";
@@ -88,7 +90,7 @@ export default function EditPlanPage(props: EditPlanPageProps) {
         setCanEditPlans(plan.can_edit_plans);
         setHeadingName(plan.name);
       } catch (apiError) {
-        setErrors(apiError instanceof Error ? apiError.message.split("\n") : ["Unable to load plan"]);
+        setErrors(apiError instanceof Error ? apiError.message.split("\n") : [t("spa.plans.load_error")]);
       } finally {
         setLoading(false);
       }
@@ -111,23 +113,23 @@ export default function EditPlanPage(props: EditPlanPageProps) {
       const plan = await parseJsonResponse<PlanPayload>(response);
       window.location.assign(planPath(plan.project.name, plan.name));
     } catch (apiError) {
-      setErrors(apiError instanceof Error ? apiError.message.split("\n") : ["Unable to update plan"]);
+      setErrors(apiError instanceof Error ? apiError.message.split("\n") : [t("spa.plans.update_error")]);
       setSubmitting(false);
     }
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{t("spa.loading")}</p>;
 
   return (
     <>
-      <h1>Edit Plan {headingName}</h1>
+      <h1>{t("plans.edit.edit_plan_name", { name: headingName })}</h1>
       <PlanForm
         values={values}
         canEditPlans={canEditPlans}
         rootPlanOptions={rootPlanOptions}
         errors={errors}
         submitting={submitting}
-        submitLabel="Update"
+        submitLabel={t("plans.edit.update")}
         onChange={setValues}
         onSubmit={submitPlan}
       />
