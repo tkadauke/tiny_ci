@@ -23,7 +23,7 @@ describe("ProjectPlansPage", () => {
     renderPage();
 
     expect(await screen.findByRole("link", { name: "main" })).toHaveAttribute("href", "/projects/tiny-ci/plans/main");
-    expect(screen.getByRole("link", { name: "New Plan" })).toHaveAttribute("href", "/projects/tiny-ci/plans/new");
+    expect(await screen.findByRole("link", { name: "New Plan" })).toHaveAttribute("href", "/projects/tiny-ci/plans/new");
   });
 
   it("hides New Plan and shows no plan rows for normal users with empty fixtures", async () => {
