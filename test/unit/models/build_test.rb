@@ -357,4 +357,75 @@ class BuildTest < ActiveSupport::TestCase
 
     build.update_stats_if_neccessary
   end
+
+  # Lifecycle hook coverage: after_create_commit / after_update_commit.
+  # Replaces the old BuildObserver test file (Rails 5+ retired observers; the
+  # hooks live on Build directly).
+  class LifecycleHookTest < ActiveSupport::TestCase
+    setup do
+      @project = Project.create!(name: "lifecycle_project")
+      @plan = Plan.create!(project: @project, name: "lifecycle_plan")
+    end
+
+    test "should broadcast queue update on create" do
+      Build.any_instance.expects(:broadcast_refresh_to).with("queue").at_least_once
+
+      @plan.builds.create!(status: "pending")
+    end
+
+    test "should fire notifier when status changes to finished" do
+      build = @plan.builds.create!(status: "pending")
+      Build.any_instance.stubs(:broadcast_refresh_to)
+      TinyCI::Notifier::Base.expects(:notify).with do |notified|
+        notified.id == build.id
+      end
+
+      build.update!(status: "success", finished_at: Time.current)
+    end
+
+    test "should broadcast realtime updates when status changes" do
+      build = @plan.builds.create!(status: "pending")
+      TinyCI::Notifier::Base.stubs(:notify)
+      Build.any_instance.expects(:broadcast_refresh_to)
+        .with("build_#{@plan.name}_#{build.position}").at_least_once
+      Build.any_instance.expects(:broadcast_refresh_to).with("queue").at_least_once
+
+      build.update!(status: "success", finished_at: Time.current)
+    end
+
+    test "should broadcast realtime update but not notify when only output changes" do
+      build = @plan.builds.create!(status: "pending")
+      Build.any_instance.expects(:broadcast_refresh_to)
+        .with("build_#{@plan.name}_#{build.position}").at_least_once
+      TinyCI::Notifier::Base.expects(:notify).never
+
+      build.update!(output: "some new output")
+    end
+
+    test "should not re-fire notifier when only updated_at changes" do
+      build = @plan.builds.create!(status: "pending")
+      Build.any_instance.stubs(:broadcast_refresh_to)
+      TinyCI::Notifier::Base.expects(:notify).never
+
+      build.update!(updated_at: Time.current + 1.minute)
+    end
+
+    test "should not broadcast realtime updates when only updated_at changes" do
+      build = @plan.builds.create!(status: "pending")
+      # The on-create broadcasts already fired during create!; reset expectations.
+      Build.any_instance.expects(:broadcast_refresh_to).never
+
+      build.update!(updated_at: Time.current + 1.minute)
+    end
+
+    test "should not fire notifier on create even though status is set" do
+      # `previous_changes_for_observer` is captured in before_save and includes
+      # the initial status assignment, but the notify branch lives in
+      # after_update_commit, not after_create_commit.
+      Build.any_instance.stubs(:broadcast_refresh_to)
+      TinyCI::Notifier::Base.expects(:notify).never
+
+      @plan.builds.create!(status: "pending")
+    end
+  end
 end
