@@ -49,6 +49,7 @@ module TinyCI
         rescue StandardError => e
           Rails.logger.error(e.message)
           Rails.logger.error(e.backtrace.join("\n"))
+          Sentry.capture_exception(e) if defined?(Sentry) && Sentry.initialized?
         end
       end
 

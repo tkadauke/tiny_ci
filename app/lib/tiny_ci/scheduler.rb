@@ -31,6 +31,7 @@ module TinyCI
     rescue StandardError => e
       Rails.logger.error("Scheduler tick error: #{e.class}: #{e.message}")
       Rails.logger.error(e.backtrace.first(10).join("\n"))
+      Sentry.capture_exception(e) if defined?(Sentry) && Sentry.initialized?
     end
 
     def self.start(build)
