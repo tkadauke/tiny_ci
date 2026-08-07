@@ -1,0 +1,16 @@
+master:
+  name: fixture_master_plan
+  project: rails_project
+  repository_url: git@example.com:fixture/rails_project.git
+  requirements: ruby
+  status: success
+  weather: 5
+
+child:
+  name: fixture_child_plan
+  project: rails_project
+  parent: master
+  repository_url: git@example.com:fixture/rails_project.git
+  requirements: ruby
+  status: success
+  weather: 5

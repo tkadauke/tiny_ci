@@ -1,0 +1,6 @@
+fixture_slave:
+  name: fixture_slave
+  protocol: localhost
+  base_path: /tmp/fixture_tinyci
+  offline: false
+  max_builds: 0

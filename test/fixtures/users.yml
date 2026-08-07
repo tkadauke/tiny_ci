@@ -1,0 +1,25 @@
+<% password_digest = BCrypt::Password.create("password", cost: BCrypt::Engine::MIN_COST) %>
+
+admin:
+  login: fixture_admin
+  email: fixture_admin@example.com
+  password_digest: <%= password_digest %>
+  role: admin
+
+manager:
+  login: fixture_manager
+  email: fixture_manager@example.com
+  password_digest: <%= password_digest %>
+  role: admin
+
+regular_user:
+  login: fixture_user
+  email: fixture_user@example.com
+  password_digest: <%= password_digest %>
+  role: user
+
+guest_login_user:
+  login: fixture_guest_login
+  email: fixture_guest_login@example.com
+  password_digest: <%= password_digest %>
+  role: user

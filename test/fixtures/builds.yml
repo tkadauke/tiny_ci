@@ -1,0 +1,23 @@
+recent_success:
+  plan: master
+  slave: fixture_slave
+  status: success
+  position: 1
+  revision: abc123
+  started_at: <%= 2.hours.ago.to_fs(:db) %>
+  finished_at: <%= 1.hour.ago.to_fs(:db) %>
+
+recent_failure:
+  plan: master
+  slave: fixture_slave
+  status: failure
+  position: 2
+  revision: def456
+  started_at: <%= 90.minutes.ago.to_fs(:db) %>
+  finished_at: <%= 30.minutes.ago.to_fs(:db) %>
+
+pending:
+  plan: master
+  slave: fixture_slave
+  status: pending
+  position: 3
