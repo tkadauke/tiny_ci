@@ -1,0 +1,12 @@
+apiVersion: v2
+name: tiny-ci
+description: Helm chart for tiny_ci — a small CI server that runs builds as kubernetes Jobs.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/tkadauke/tiny_ci
+sources:
+  - https://github.com/tkadauke/tiny_ci
+maintainers:
+  - name: Thomas Kadauke
+    url: https://github.com/tkadauke

@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tiny-ci.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tiny-ci.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "tiny-ci.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        {{- include "tiny-ci.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: server
+        {{- with .Values.server.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        # Roll the deployment when the server ConfigMap changes.
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.server.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "tiny-ci.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: server
+          image: {{ include "tiny-ci.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.server.port }}
+              protocol: TCP
+          env:
+            - name: TINY_CI_RUNNER_NAMESPACE
+              value: {{ include "tiny-ci.runnerNamespace" . }}
+            - name: TINY_CI_CACHE_PATH
+              value: {{ .Values.config.storage.cachePath | quote }}
+            {{- range $k, $v := .Values.server.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+          {{- if .Values.server.envFromSecretName }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.server.envFromSecretName }}
+          {{- end }}
+          {{- if .Values.server.probes.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.server.probes.path }}
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.server.probes.path }}
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/config/runtime
+              readOnly: true
+            {{- if .Values.buildCache.enabled }}
+            - name: build-cache
+              mountPath: {{ .Values.config.storage.cachePath }}
+            {{- end }}
+          {{- with .Values.server.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "tiny-ci.fullname" . }}-config
+        {{- if .Values.buildCache.enabled }}
+        - name: build-cache
+          persistentVolumeClaim:
+            claimName: {{ include "tiny-ci.fullname" . }}-build-cache
+        {{- end }}
+      {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
